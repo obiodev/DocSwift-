@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -v '^$')",
+      "Bash(node -e \"const PDFParser = require\\(''pdf2json''\\); console.log\\(''pdf2json OK:'', typeof PDFParser\\);\")",
+      "Bash(npm run:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(node -e \":*)",
+      "Bash(curl -s -X POST http://localhost:3000/api/convert -F \"type=pdf-to-word\" -F \"file=@test.pdf;type=application/pdf\")",
+      "Bash(curl -s -X POST http://localhost:3000/api/convert -F \"type=compress-pdf\" -F \"file=@test.pdf;type=application/pdf\")",
+      "Bash(curl -s -X POST http://localhost:3000/api/convert -F \"type=merge-pdf\" -F \"files=@test.pdf;type=application/pdf\" -F \"files=@test.pdf;type=application/pdf\")",
+      "Bash(curl -s -X POST http://localhost:3000/api/convert -F \"type=split-pdf\" -F \"file=@test.pdf;type=application/pdf\" -F \"page=1\")",
+      "Bash(powershell -Command \":*)",
+      "Bash(curl -s -X POST http://localhost:3000/api/convert -F \"type=word-to-pdf\" -F \"file=@test.docx;type=application/vnd.openxmlformats-officedocument.wordprocessingml.document\")",
+      "Bash(npm install:*)",
+      "Bash(curl -s -X POST http://localhost:3000/api/convert -F \"type=pdf-to-word\" -F \"file=@test_rich.pdf;type=application/pdf\")",
+      "Bash(node -e:*)",
+      "Bash(curl -s -X POST http://localhost:3000/api/debug-pdf -F \"file=@test_raw.pdf;type=application/pdf\")",
+      "Bash(curl -s -X POST http://localhost:3000/api/convert -F \"type=pdf-to-word\" -F \"file=@test_contrat.pdf;type=application/pdf\")",
+      "Bash(curl -s -X POST http://localhost:3000/api/convert -F \"type=pdf-to-word\" -F \"file=@test_manuel.pdf;type=application/pdf\")",
+      "Bash(python -c \"import sys,json,base64,zipfile,io; d=json.load\\(sys.stdin\\); b=base64.b64decode\\(d[''''file'''']\\); z=zipfile.ZipFile\\(io.BytesIO\\(b\\)\\); print\\(''''Files in DOCX:'''', z.namelist\\(\\)[:8]\\); xml=z.read\\(''''word/document.xml''''\\).decode\\(\\); print\\(''''Length:'''', len\\(xml\\)\\); print\\(xml[:3000]\\)\")",
+      "Bash(curl -s http://localhost:3000/admin)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/admin)",
+      "Bash(curl -s http://localhost:3000/api/ads)",
+      "Bash(curl -s http://localhost:3000/api/usage)",
+      "Bash(curl -s http://localhost:3000/api/admin/users)",
+      "Bash(curl -s http://localhost:3000/api/admin/affiliates)",
+      "Bash(curl -s http://localhost:3000/api/admin/payments)",
+      "Bash(curl -s http://localhost:3000/api/admin/gift -X POST -H \"Content-Type: application/json\" -d '{\"\"email\"\":\"\"test@test.com\"\"}')",
+      "Bash(curl -s http://localhost:3000/api/stripe/checkout -X POST -H \"Content-Type: application/json\" -d '{}')",
+      "Bash(curl -s -X POST http://localhost:3000/api/convert -F \"type=pdf-to-word\" -F \"file=@test_rapport.pdf;type=application/pdf\")"
+    ]
+  }
+}
