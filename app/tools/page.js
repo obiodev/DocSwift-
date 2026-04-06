@@ -11,6 +11,7 @@ const tools = [
   { id: "merge-pdf",    icon: "🔗", name: "Fusionner PDFs", desc: "Combiner plusieurs PDFs en un seul fichier", accept: ".pdf",       type: "merge-pdf",    multi: true  },
   { id: "split-pdf",    icon: "✂️", name: "Diviser PDF",    desc: "Extraire une page spécifique de votre PDF", accept: ".pdf",       type: "split-pdf",    multi: false },
   { id: "image-to-pdf", icon: "🖼️", name: "Image → PDF",   desc: "Convertir des images JPG/PNG en PDF",        accept: "image/*",    type: "image-to-pdf", multi: true  },
+  { id: "create-cv",    icon: "📄", name: "Créer un CV",   desc: "Générez un CV professionnel en PDF",         accept: "",           type: "create-cv",    multi: false, external: "/cv" },
 ];
 
 const FREE_LIMIT = 5;
@@ -379,7 +380,7 @@ function ToolsInner() {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: 1, border: "1px solid #1E2733", borderRadius: 16, overflow: "hidden", background: "#1E2733" }}>
               {tools.map(tool => (
                 <div key={tool.id}
-                  onClick={() => { setActiveTool(tool); reset(); }}
+                  onClick={() => { if (tool.external) { router.push(tool.external); return; } setActiveTool(tool); reset(); }}
                   style={{ background: "#0D1117", padding: 28, cursor: "pointer", position: "relative", transition: "background .15s" }}
                   onMouseEnter={e => e.currentTarget.style.background = "#131922"}
                   onMouseLeave={e => e.currentTarget.style.background = "#0D1117"}>

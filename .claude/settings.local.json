@@ -28,7 +28,13 @@
       "Bash(curl -s http://localhost:3000/api/admin/payments)",
       "Bash(curl -s http://localhost:3000/api/admin/gift -X POST -H \"Content-Type: application/json\" -d '{\"\"email\"\":\"\"test@test.com\"\"}')",
       "Bash(curl -s http://localhost:3000/api/stripe/checkout -X POST -H \"Content-Type: application/json\" -d '{}')",
-      "Bash(curl -s -X POST http://localhost:3000/api/convert -F \"type=pdf-to-word\" -F \"file=@test_rapport.pdf;type=application/pdf\")"
+      "Bash(curl -s -X POST http://localhost:3000/api/convert -F \"type=pdf-to-word\" -F \"file=@test_rapport.pdf;type=application/pdf\")",
+      "Bash(nslookup getdocswift.com 8.8.8.8)",
+      "Bash(curl -sI https://getdocswift.com)",
+      "Bash(curl -sk https://getdocswift.com)",
+      "Bash(curl -v http://getdocswift.com)",
+      "Bash(nslookup -type=TXT _railway-verify.getdocswift.com 8.8.8.8)",
+      "Bash(curl -sk https://docswift-production.up.railway.app)"
     ]
   }
 }
