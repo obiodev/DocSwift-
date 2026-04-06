@@ -1,6 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useSession, signIn } from "next-auth/react";
 
 const CSS = `
   @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -315,11 +316,72 @@ function StepStyle({ color, setColor }) {
   );
 }
 
+const AD_BONUS    = 3;
+const AD_DURATION = 30;
+const FREE_LIMIT  = 5;
+
+function AdModal({ onComplete, onClose }) {
+  const [seconds, setSeconds] = useState(AD_DURATION);
+  const [done,    setDone]    = useState(false);
+  const [adHtml,  setAdHtml]  = useState(null);
+  const zoneRef = useRef(null);
+
+  useEffect(() => {
+    fetch("/api/ads").then(r=>r.json()).then(d=>setAdHtml(d.rewardedAdHtml||"")).catch(()=>setAdHtml(""));
+  }, []);
+  useEffect(() => {
+    if (!adHtml || !zoneRef.current) return;
+    const el = zoneRef.current;
+    el.innerHTML = adHtml;
+    el.querySelectorAll("script").forEach(orig => {
+      const s = document.createElement("script");
+      if (orig.src){s.src=orig.src;s.async=true;}else{s.textContent=orig.textContent;}
+      orig.replaceWith(s);
+    });
+  }, [adHtml]);
+  useEffect(() => {
+    if (seconds<=0){setDone(true);return;}
+    const t = setTimeout(()=>setSeconds(s=>s-1),1000);
+    return ()=>clearTimeout(t);
+  }, [seconds]);
+
+  return (
+    <div style={{ position:"fixed",inset:0,background:"rgba(0,0,0,.85)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",padding:16 }}>
+      <div style={{ background:"#0D1117",border:"1px solid #1E2733",borderRadius:24,padding:"36px 32px",maxWidth:480,width:"100%",textAlign:"center" }}>
+        <div style={{ fontSize:44,marginBottom:14 }}>📺</div>
+        <h3 style={{ fontSize:22,fontWeight:800,marginBottom:8,color:"#F0F4FF" }}>Limite atteinte</h3>
+        <p style={{ color:"#8892AA",fontSize:14,marginBottom:24,lineHeight:1.6 }}>
+          Regardez cette publicité pour débloquer <strong style={{ color:"#10B981" }}>+{AD_BONUS} utilisations</strong> et générer votre CV.
+        </p>
+        <div style={{ background:"#131922",border:"1px dashed #1E2733",borderRadius:14,minHeight:160,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:20,position:"relative",overflow:"hidden" }}>
+          {adHtml===null ? <span style={{ color:"#4B5563",fontSize:13 }}>Chargement...</span>
+            : adHtml==="" ? <div style={{ textAlign:"center",color:"#4B5563" }}><div style={{ fontSize:30,marginBottom:8 }}>🎬</div><div style={{ fontSize:13 }}>Zone publicitaire</div></div>
+            : <div ref={zoneRef} style={{ width:"100%" }} />}
+          <div style={{ position:"absolute",top:10,right:10,background:"rgba(0,0,0,.7)",color:"#fff",borderRadius:8,padding:"4px 10px",fontSize:13,fontWeight:700 }}>
+            {done?"✓":`${seconds}s`}
+          </div>
+        </div>
+        <div style={{ display:"flex",gap:10 }}>
+          {done
+            ? <button onClick={onComplete} style={{ flex:1,background:"#10B981",color:"#fff",border:"none",padding:13,borderRadius:10,fontSize:15,fontWeight:700,cursor:"pointer" }}>Générer mon CV →</button>
+            : <button disabled style={{ flex:1,background:"#1E3A5F",color:"#60A5FA",border:"none",padding:13,borderRadius:10,fontSize:15,cursor:"not-allowed" }}>Patientez {seconds}s...</button>
+          }
+          <button onClick={onClose} style={{ background:"none",border:"1px solid #1E2733",color:"#6B7A99",padding:"13px 16px",borderRadius:10,cursor:"pointer" }}>✕</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Page ──────────────────────────────────────────────────────────────
 export default function CVPage() {
   const router   = useRouter();
+  const { data: session } = useSession();
   const [step,    setStep]   = useState(0);
   const [loading, setLoading]= useState(false);
+  const [showAd,  setShowAd] = useState(false);
+  const [bonusUses, setBonusUses] = useState(0);
+  const [usage,   setUsage]  = useState({ used:0, limit:FREE_LIMIT, isPro:false, remaining:FREE_LIMIT });
   const [infos,   setInfos]  = useState({ name:"",title:"",email:"",phone:"",address:"",website:"",summary:"" });
   const [exps,    setExps]   = useState([{ position:"",company:"",startDate:"",endDate:"",description:"" }]);
   const [edus,    setEdus]   = useState([{ degree:"",school:"",startDate:"",endDate:"" }]);
@@ -329,8 +391,32 @@ export default function CVPage() {
 
   const setInfo = (k,v) => setInfos(i=>({...i,[k]:v}));
 
-  const generate = async () => {
-    if (!infos.name.trim()) { alert("Veuillez entrer votre nom."); setStep(0); return; }
+  useEffect(() => {
+    fetch("/api/usage").then(r=>r.json()).then(d=>setUsage(d)).catch(()=>{});
+    const key = "docswift_bonus_" + new Date().toISOString().slice(0,10);
+    setBonusUses(parseInt(localStorage.getItem(key)??"0"));
+  }, []);
+
+  const effectiveRemaining = usage.isPro ? Infinity : Math.max(0,(usage.remaining??0)+bonusUses);
+
+  const handleAdComplete = () => {
+    const key  = "docswift_bonus_" + new Date().toISOString().slice(0,10);
+    const next = parseInt(localStorage.getItem(key)??"0") + AD_BONUS;
+    localStorage.setItem(key, String(next));
+    setBonusUses(next);
+    setShowAd(false);
+    // retry generation after ad
+    doGenerate();
+  };
+
+  const goUpgrade = async () => {
+    if (!session) { signIn(); return; }
+    const res  = await fetch("/api/stripe/checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({affiliateCode:localStorage.getItem("docswift_ref")})});
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+  };
+
+  const doGenerate = async () => {
     setLoading(true);
     try {
       const res = await fetch("/api/cv",{
@@ -345,13 +431,34 @@ export default function CVPage() {
           accentColor: color,
         }),
       });
+      if (res.status===429) {
+        setShowAd(true);
+        setLoading(false);
+        return;
+      }
       if (!res.ok) throw new Error("Erreur génération");
+      // Track locally
+      if (!usage.isPro) {
+        const key = "docswift_used_"+new Date().toISOString().slice(0,10);
+        localStorage.setItem(key, String(parseInt(localStorage.getItem(key)??"0")+1));
+        if (bonusUses>0) {
+          const bk = "docswift_bonus_"+new Date().toISOString().slice(0,10);
+          localStorage.setItem(bk, String(bonusUses-1));
+          setBonusUses(b=>Math.max(0,b-1));
+        }
+        fetch("/api/usage").then(r=>r.json()).then(d=>setUsage(d)).catch(()=>{});
+      }
       const blob = await res.blob();
       const url  = URL.createObjectURL(blob);
       const a    = Object.assign(document.createElement("a"),{ href:url, download:`${infos.name.replace(/\s+/g,"_")}_CV.pdf` });
       document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     } catch { alert("Erreur lors de la génération. Réessayez."); }
     finally { setLoading(false); }
+  };
+
+  const generate = () => {
+    if (!infos.name.trim()) { alert("Veuillez entrer votre nom."); setStep(0); return; }
+    doGenerate();
   };
 
   const stepLabels = STEPS.map((s,i) => ({
@@ -369,7 +476,20 @@ export default function CVPage() {
         <div style={{ fontWeight:900,fontSize:20,letterSpacing:-1,cursor:"pointer" }} onClick={()=>router.push("/")}>
           Doc<span style={{ color:"#3B82F6" }}>Swift</span>
         </div>
-        <div style={{ display:"flex",alignItems:"center",gap:16 }}>
+        <div style={{ display:"flex",alignItems:"center",gap:12 }}>
+          {!usage.isPro && (
+            <div style={{ display:"flex",alignItems:"center",gap:8 }}>
+              <div style={{ width:80,height:5,background:"#1E2733",borderRadius:99,overflow:"hidden" }}>
+                <div style={{ height:"100%",width:`${Math.min(100,(usage.used/(FREE_LIMIT+bonusUses))*100)}%`,background:effectiveRemaining===0?"#EF4444":"#14B8A6",borderRadius:99,transition:"width .4s" }} />
+              </div>
+              <span style={{ fontSize:12,color:"#6B7A99",whiteSpace:"nowrap" }}>
+                {effectiveRemaining===0?"Limite atteinte":`${effectiveRemaining} restante${effectiveRemaining!==1?"s":""}`}
+              </span>
+            </div>
+          )}
+          {usage.isPro && (
+            <span style={{ background:"rgba(16,185,129,.12)",color:"#10B981",fontSize:12,fontWeight:700,padding:"4px 12px",borderRadius:20,border:"1px solid rgba(16,185,129,.25)" }}>✓ PRO</span>
+          )}
           <button onClick={()=>router.push("/tools")} style={{ background:"none",border:"1px solid #1E2733",color:"#8892AA",padding:"7px 14px",borderRadius:8,fontSize:13,cursor:"pointer" }}>
             ← Retour aux outils
           </button>
@@ -471,6 +591,7 @@ export default function CVPage() {
           </p>
         </div>
       </div>
+      {showAd && <AdModal onComplete={handleAdComplete} onClose={()=>setShowAd(false)} />}
     </div>
   );
 }

@@ -1,5 +1,14 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions }      from "@/lib/auth";
+import { getUsageToday, incrementUsage, isPro, FREE_LIMIT } from "@/lib/supabase";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+
+function getIdentifier(request, session) {
+  if (session?.user?.email) return session.user.email;
+  const forwarded = request.headers.get("x-forwarded-for");
+  return (forwarded ? forwarded.split(",")[0] : "anonymous").trim();
+}
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 function hexToRgb(hex) {
@@ -28,6 +37,17 @@ function splitLines(text, font, size, maxWidth) {
 }
 
 export async function POST(request) {
+  const session    = await getServerSession(authOptions);
+  const pro        = session?.user?.email ? await isPro(session.user.email) : false;
+  const identifier = getIdentifier(request, session);
+
+  if (!pro) {
+    const used = await getUsageToday(identifier);
+    if (used >= FREE_LIMIT) {
+      return NextResponse.json({ error: "LIMIT_REACHED" }, { status: 429 });
+    }
+  }
+
   const data = await request.json();
   const {
     name = "", title = "", email = "", phone = "", address = "", website = "",
@@ -183,6 +203,9 @@ export async function POST(request) {
   // ── Footer ──
   page.drawLine({ start: { x: 40, y: 30 }, end: { x: width - 40, y: 30 }, thickness: 0.5, color: lightGray });
   page.drawText("Créé avec DocSwift — getdocswift.com", { x: 40, y: 16, size: 7, font: regFont, color: gray });
+
+  // Consume one usage for free users
+  if (!pro) await incrementUsage(identifier);
 
   const pdfBytes = await doc.save();
   return new NextResponse(Buffer.from(pdfBytes), {
