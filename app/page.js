@@ -2,217 +2,221 @@
 import { useSession, signIn } from "next-auth/react";
 import { useRouter }          from "next/navigation";
 
-// ─── Tool catalogue ────────────────────────────────────────────────────────
-const tools = [
-  {
-    icon: "📝", title: "PDF → Word", href: "/tools?tool=pdf-to-word",
-    tag: "Le plus utilisé", tagColor: "#10B981",
-    desc: "Convertissez n'importe quel PDF en document Word entièrement éditable en quelques secondes.",
-    details: [
-      "Détection automatique des titres H1 / H2 / H3",
-      "Préservation du gras, de l'italique et des polices",
-      "Fusionne les paragraphes intelligemment",
-      "Supporte les PDFs multi-pages",
-    ],
-  },
-  {
-    icon: "🔄", title: "Word → PDF", href: "/tools?tool=word-to-pdf",
-    desc: "Transformez vos fichiers .docx en PDF pixel-perfect, prêts à être partagés ou imprimés.",
-    details: [
-      "Compatible .docx et .doc",
-      "Mise en page préservée à 100%",
-      "PDF universel, lisible partout",
-      "Traitement côté serveur sécurisé",
-    ],
-  },
-  {
-    icon: "🗜️", title: "Compresser PDF", href: "/tools?tool=compress-pdf",
-    tag: "Gain jusqu'à 80%", tagColor: "#F59E0B",
-    desc: "Réduisez drastiquement le poids de vos PDFs sans perte visible de qualité.",
-    details: [
-      "Compression intelligente des images",
-      "Idéal pour l'envoi par email",
-      "Fichier de sortie optimisé pour le web",
-      "Aucune limite de pages",
-    ],
-  },
-  {
-    icon: "🔗", title: "Fusionner PDFs", href: "/tools?tool=merge-pdf",
-    desc: "Combinez plusieurs fichiers PDF en un seul document en quelques clics.",
-    details: [
-      "Ajout de fichiers illimité",
-      "Glisser-déposer pour réorganiser",
-      "Conserve la qualité originale",
-      "Parfait pour rapports et dossiers",
-    ],
-  },
-  {
-    icon: "✂️", title: "Diviser PDF", href: "/tools?tool=split-pdf",
-    desc: "Extrayez précisément la ou les pages dont vous avez besoin depuis un document PDF.",
-    details: [
-      "Extraction page par page",
-      "Sélection précise de la page",
-      "PDF de sortie propre et léger",
-      "Idéal pour extraire des contrats",
-    ],
-  },
-  {
-    icon: "🖼️", title: "Image → PDF", href: "/tools?tool=image-to-pdf",
-    desc: "Convertissez vos photos JPG ou PNG en un document PDF propre et professionnel.",
-    details: [
-      "Supporte JPG, PNG, WEBP",
-      "Plusieurs images en un seul PDF",
-      "Format A4 automatique",
-      "Qualité haute résolution préservée",
-    ],
-  },
-  {
-    icon: "📄", title: "Créer un CV", href: "/cv",
-    tag: "Nouveau ✨", tagColor: "#8B5CF6",
-    desc: "Générez un CV professionnel en PDF en remplissant un formulaire simple et intuitif.",
-    details: [
-      "Formulaire étape par étape guidé",
-      "Choix de la couleur et du style",
-      "Sections : expériences, formation, compétences, langues",
-      "Téléchargement PDF immédiat",
-    ],
-  },
+const CSS = `
+  @keyframes blob1 {
+    0%,100%{transform:translate(0,0) scale(1)}
+    33%{transform:translate(40px,-60px) scale(1.1)}
+    66%{transform:translate(-30px,30px) scale(0.9)}
+  }
+  @keyframes blob2 {
+    0%,100%{transform:translate(0,0) scale(1)}
+    33%{transform:translate(-50px,70px) scale(1.05)}
+    66%{transform:translate(30px,-40px) scale(0.95)}
+  }
+  @keyframes fadeUp {
+    from{opacity:0;transform:translateY(24px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+  @keyframes pulse-dot {
+    0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.6)}
+    50%{box-shadow:0 0 0 6px rgba(16,185,129,0)}
+  }
+  .hero-text{animation:fadeUp .9s ease both}
+  .hero-sub{animation:fadeUp .9s .15s ease both;opacity:0}
+  .hero-ctas{animation:fadeUp .9s .3s ease both;opacity:0}
+  .hero-trust{animation:fadeUp .9s .45s ease both;opacity:0}
+  .pulse-dot{animation:pulse-dot 2s infinite}
+  .btn-primary{transition:all .2s ease}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(59,130,246,.45)}
+  .btn-secondary{transition:all .2s ease}
+  .btn-secondary:hover{border-color:#3B82F6!important;color:#F0F4FF!important}
+  .tool-card{transition:all .22s cubic-bezier(.4,0,.2,1)}
+  .tool-card:hover{transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,.4)}
+  .testi-card{transition:all .22s ease}
+  .testi-card:hover{transform:translateY(-4px);border-color:rgba(59,130,246,.35)!important}
+  .nav-link{transition:color .15s}
+  .nav-link:hover{color:#F0F4FF!important}
+  .gradient-text{
+    background:linear-gradient(135deg,#FFFFFF 0%,#93C5FD 45%,#818CF8 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .stat-card:hover{border-color:rgba(59,130,246,.25)!important;background:#0D1520!important}
+  .stat-card{transition:all .2s}
+  @media(max-width:768px){
+    .nav-links{display:none!important}
+    .tools-grid{grid-template-columns:1fr 1fr!important}
+    .hero-h1{font-size:42px!important}
+    .pricing-grid{grid-template-columns:1fr!important}
+    .testi-grid{grid-template-columns:1fr!important}
+    .stats-bar{grid-template-columns:1fr 1fr!important}
+    .steps-grid{grid-template-columns:1fr 1fr!important}
+  }
+`;
+
+const TOOLS = [
+  {icon:"📝",name:"PDF → Word",   desc:"Convertissez tout PDF en document Word entièrement éditable.",href:"/tools?tool=pdf-to-word", color:"#3B82F6",glow:"rgba(59,130,246,.18)", tag:"Le plus utilisé",tagC:"#10B981"},
+  {icon:"🔄",name:"Word → PDF",   desc:"Transformez vos .docx en PDF pixel-perfect en un clic.",      href:"/tools?tool=word-to-pdf", color:"#6366F1",glow:"rgba(99,102,241,.15)"},
+  {icon:"🗜️",name:"Compresser PDF",desc:"Réduisez le poids de vos PDFs jusqu'à 80% sans perte visible.",href:"/tools?tool=compress-pdf",color:"#F59E0B",glow:"rgba(245,158,11,.15)",tag:"Gain max 80%",tagC:"#F59E0B"},
+  {icon:"🔗",name:"Fusionner PDFs",desc:"Combinez plusieurs PDFs en un seul document propre.",          href:"/tools?tool=merge-pdf",   color:"#10B981",glow:"rgba(16,185,129,.15)"},
+  {icon:"✂️",name:"Diviser PDF",   desc:"Extrayez précisément la ou les pages dont vous avez besoin.",  href:"/tools?tool=split-pdf",   color:"#EC4899",glow:"rgba(236,72,153,.15)"},
+  {icon:"🖼️",name:"Image → PDF",  desc:"Convertissez vos photos JPG/PNG en PDF professionnel.",        href:"/tools?tool=image-to-pdf",color:"#8B5CF6",glow:"rgba(139,92,246,.15)"},
+  {icon:"📄",name:"Créer un CV",   desc:"Générez un CV pro en PDF en remplissant un formulaire guidé.", href:"/cv",                      color:"#14B8A6",glow:"rgba(20,184,166,.15)",tag:"Nouveau ✨",tagC:"#14B8A6"},
 ];
 
-const S = {
-  page:    { minHeight: "100vh", background: "#07090F", color: "#F0F4FF", fontFamily: "sans-serif" },
-  nav:     { position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, padding: "18px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(7,9,15,.95)", borderBottom: "1px solid #1E2733" },
-  logo:    { fontWeight: 800, fontSize: 22, letterSpacing: -1, cursor: "pointer" },
-  navLinks:{ display: "flex", gap: 24, alignItems: "center" },
-  navLink: { color: "#8892AA", textDecoration: "none", fontSize: 14 },
-  btnPrimary: { background: "#3B82F6", color: "#fff", padding: "9px 22px", borderRadius: 8, fontSize: 14, textDecoration: "none", fontWeight: 600, border: "none", cursor: "pointer" },
-  hero:    { textAlign: "center", padding: "140px 24px 80px" },
-  badge:   { display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(59,130,246,.1)", border: "1px solid rgba(59,130,246,.25)", color: "#60A5FA", padding: "6px 16px", borderRadius: 40, fontSize: 13, marginBottom: 32 },
-  dot:     { width: 6, height: 6, background: "#10B981", borderRadius: "50%", display: "inline-block" },
-  h1:      { fontSize: "clamp(36px,6vw,72px)", fontWeight: 800, letterSpacing: -2, lineHeight: 1.05, marginBottom: 20 },
-  sub:     { color: "#8892AA", fontSize: 18, maxWidth: 520, margin: "0 auto 48px", lineHeight: 1.6 },
-  heroActions: { display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" },
-  btnLg:   { padding: "14px 32px", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: "pointer", border: "none" },
-  section: { maxWidth: 1200, margin: "0 auto", padding: "80px 24px" },
-  sectionTitle: { textAlign: "center", fontSize: 36, fontWeight: 800, letterSpacing: -1, marginBottom: 12 },
-  sectionSub:   { textAlign: "center", color: "#6B7A99", marginBottom: 56, fontSize: 16, maxWidth: 540, margin: "0 auto 56px" },
-  pricingGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 24, maxWidth: 780, margin: "0 auto" },
-  pricingCard: { borderRadius: 20, padding: "36px 32px", position: "relative" },
-  planName:    { fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", marginBottom: 8 },
-  price:       { fontSize: 52, fontWeight: 900, letterSpacing: -2, lineHeight: 1 },
-  pricePer:    { color: "#6B7A99", fontSize: 14, marginTop: 4, marginBottom: 24 },
-  featureList: { listStyle: "none", padding: 0, margin: "0 0 32px", display: "flex", flexDirection: "column", gap: 12 },
-  featureItem: { display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: "#C0CBE0" },
-  footer: { borderTop: "1px solid #1E2733", padding: "24px 40px", display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: 1200, margin: "0 auto" },
-};
+const STATS = [
+  {value:"120 000+",label:"Documents traités"},
+  {value:"15 000+", label:"Utilisateurs actifs"},
+  {value:"< 10s",   label:"Temps moyen"},
+  {value:"4.9 ★",   label:"Satisfaction"},
+];
+
+const TESTIMONIALS = [
+  {name:"Sophie M.",role:"Assistante RH, Paris",  text:"J'utilise DocSwift tous les jours pour convertir les CV des candidats. En 10 secondes c'est fait — bluffant.",stars:5,av:"S",grad:"135deg,#3B82F6,#6366F1"},
+  {name:"Thomas R.",role:"Consultant freelance",   text:"Le compresseur PDF est incroyable. J'ai réduit un rapport de 45 Mo à 6 Mo sans aucune perte de qualité visible.",stars:5,av:"T",grad:"135deg,#F59E0B,#EF4444"},
+  {name:"Amina K.", role:"Étudiante en master",    text:"J'ai créé mon CV en 5 minutes avec le générateur. Rendu super professionnel, téléchargé directement en PDF.",stars:5,av:"A",grad:"135deg,#10B981,#14B8A6"},
+];
+
+const STEPS = [
+  {n:"01",icon:"📂",title:"Choisissez un outil",   desc:"Sélectionnez parmi nos 7 outils l'action dont vous avez besoin."},
+  {n:"02",icon:"⬆️",title:"Déposez votre fichier", desc:"Glissez-déposez votre document ou cliquez pour le sélectionner."},
+  {n:"03",icon:"⚡",title:"Traitement express",    desc:"Votre fichier est traité côté serveur en quelques secondes."},
+  {n:"04",icon:"⬇️",title:"Téléchargez",           desc:"Récupérez votre document transformé, immédiatement prêt à l'emploi."},
+];
 
 export default function Home() {
   const { data: session } = useSession();
   const router = useRouter();
 
-  const handleGetStarted = () => router.push("/tools");
-  const handleUpgrade    = async () => {
+  const go = (path) => router.push(path);
+
+  const handleUpgrade = async () => {
     if (!session) { signIn(); return; }
-    const res  = await fetch("/api/stripe/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ affiliateCode: localStorage.getItem("docswift_ref") }) });
+    const res  = await fetch("/api/stripe/checkout", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ affiliateCode: typeof window !== "undefined" ? localStorage.getItem("docswift_ref") : null }) });
     const data = await res.json();
     if (data.url) window.location.href = data.url;
   };
 
   return (
-    <div style={S.page}>
+    <div style={{ minHeight:"100vh", background:"#07090F", color:"#F0F4FF", fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif", overflowX:"hidden" }}>
+      <style>{CSS}</style>
 
       {/* ── NAV ── */}
-      <nav style={S.nav}>
-        <div style={S.logo} onClick={() => router.push("/")}>
-          Doc<span style={{ color: "#3B82F6" }}>Swift</span>
+      <nav style={{ position:"fixed",top:0,left:0,right:0,zIndex:200,padding:"16px 40px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(7,9,15,.88)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(30,39,51,.9)" }}>
+        <div style={{ fontWeight:900,fontSize:22,letterSpacing:-1,cursor:"pointer" }} onClick={() => go("/")}>
+          Doc<span style={{ color:"#3B82F6" }}>Swift</span>
         </div>
-        <div style={S.navLinks}>
-          <a href="#tools"   style={S.navLink}>Outils</a>
-          <a href="#pricing" style={S.navLink}>Tarifs</a>
-          <a href="/tools"   style={S.navLink}>Accès direct</a>
-          {session ? (
-            <button onClick={() => router.push("/tools")} style={S.btnPrimary}>Mes outils</button>
-          ) : (
-            <button onClick={() => signIn()} style={S.btnPrimary}>Connexion</button>
-          )}
+        <div className="nav-links" style={{ display:"flex",gap:28,alignItems:"center" }}>
+          <a href="#tools"   className="nav-link" style={{ color:"#8892AA",textDecoration:"none",fontSize:14 }}>Outils</a>
+          <a href="#how"     className="nav-link" style={{ color:"#8892AA",textDecoration:"none",fontSize:14 }}>Comment ça marche</a>
+          <a href="#pricing" className="nav-link" style={{ color:"#8892AA",textDecoration:"none",fontSize:14 }}>Tarifs</a>
+          {session
+            ? <button className="btn-primary" onClick={() => go("/tools")} style={{ background:"#3B82F6",color:"#fff",padding:"9px 22px",borderRadius:8,fontSize:14,fontWeight:700,border:"none",cursor:"pointer" }}>Mes outils</button>
+            : <button className="btn-primary" onClick={() => signIn()}     style={{ background:"#3B82F6",color:"#fff",padding:"9px 22px",borderRadius:8,fontSize:14,fontWeight:700,border:"none",cursor:"pointer" }}>Connexion</button>
+          }
         </div>
       </nav>
 
       {/* ── HERO ── */}
-      <div style={S.hero}>
-        <div style={S.badge}>
-          <span style={S.dot} />
-          7 outils PDF & documents — gratuits pour commencer
+      <div style={{ position:"relative",overflow:"hidden",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center",padding:"130px 24px 80px" }}>
+        {/* Blobs */}
+        <div style={{ position:"absolute",top:"18%",left:"12%",width:560,height:560,borderRadius:"50%",background:"radial-gradient(circle,rgba(59,130,246,.1) 0%,transparent 65%)",animation:"blob1 9s ease-in-out infinite",pointerEvents:"none" }} />
+        <div style={{ position:"absolute",top:"35%",right:"8%", width:440,height:440,borderRadius:"50%",background:"radial-gradient(circle,rgba(99,102,241,.09) 0%,transparent 65%)",animation:"blob2 11s ease-in-out infinite",pointerEvents:"none" }} />
+        <div style={{ position:"absolute",bottom:"15%",left:"40%",width:320,height:320,borderRadius:"50%",background:"radial-gradient(circle,rgba(20,184,166,.07) 0%,transparent 65%)",animation:"blob1 13s ease-in-out infinite 2s",pointerEvents:"none" }} />
+
+        <div style={{ position:"relative",zIndex:1,maxWidth:820 }}>
+          {/* Badge */}
+          <div style={{ display:"inline-flex",alignItems:"center",gap:8,background:"rgba(59,130,246,.08)",border:"1px solid rgba(59,130,246,.22)",color:"#93C5FD",padding:"6px 18px",borderRadius:40,fontSize:13,fontWeight:600,marginBottom:32 }}>
+            <span className="pulse-dot" style={{ width:7,height:7,background:"#10B981",borderRadius:"50%",display:"inline-block" }} />
+            7 outils PDF · Gratuit · Sans inscription
+          </div>
+
+          <h1 className="hero-text hero-h1" style={{ fontSize:"clamp(44px,7.5vw,86px)",fontWeight:900,letterSpacing:-3,lineHeight:1.01,marginBottom:24 }}>
+            <span className="gradient-text">Vos documents,</span><br />
+            transformés en secondes.
+          </h1>
+
+          <p className="hero-sub" style={{ color:"#8892AA",fontSize:19,maxWidth:520,margin:"0 auto 48px",lineHeight:1.7 }}>
+            Convertissez, compressez, fusionnez vos PDFs et créez votre CV professionnel. Rapide, gratuit, sécurisé.
+          </p>
+
+          <div className="hero-ctas" style={{ display:"flex",gap:16,justifyContent:"center",flexWrap:"wrap" }}>
+            <button className="btn-primary" onClick={() => go("/tools")} style={{ background:"linear-gradient(135deg,#3B82F6,#2563EB)",color:"#fff",padding:"16px 38px",borderRadius:14,fontSize:17,fontWeight:800,border:"none",cursor:"pointer",letterSpacing:-.3 }}>
+              Commencer gratuitement →
+            </button>
+            <button className="btn-secondary" onClick={() => document.getElementById("tools")?.scrollIntoView({behavior:"smooth"})}
+              style={{ background:"rgba(30,39,51,.6)",color:"#C0CBE0",padding:"16px 28px",borderRadius:14,fontSize:16,cursor:"pointer",border:"1px solid #1E2733",backdropFilter:"blur(10px)" }}>
+              Voir les outils
+            </button>
+          </div>
+
+          <p className="hero-trust" style={{ marginTop:28,color:"#4B5563",fontSize:13 }}>
+            ✓ Sans inscription &nbsp;·&nbsp; ✓ Données sécurisées &nbsp;·&nbsp; ✓ Fichiers supprimés après traitement
+          </p>
         </div>
-        <h1 style={S.h1}>
-          Tous vos documents,<br />
-          <span style={{ color: "#6B7A99" }}>traités en quelques secondes.</span>
-        </h1>
-        <p style={S.sub}>
-          Convertissez, compressez, fusionnez vos PDFs et créez votre CV professionnel.
-          Gratuit jusqu'à 5 utilisations par jour, illimité en Pro.
-        </p>
-        <div style={S.heroActions}>
-          <button onClick={handleGetStarted} style={{ ...S.btnLg, background: "#3B82F6", color: "#fff" }}>
-            Commencer gratuitement →
-          </button>
-          <button onClick={() => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })}
-            style={{ ...S.btnLg, background: "transparent", color: "#8892AA", border: "1px solid #1E2733" }}>
-            Voir les tarifs
-          </button>
-        </div>
-        <div style={{ marginTop: 56, color: "#4B5563", fontSize: 13 }}>
-          ✓ Aucune inscription requise &nbsp;·&nbsp; ✓ Traitement sécurisé &nbsp;·&nbsp; ✓ Fichiers supprimés après conversion
+      </div>
+
+      {/* ── STATS BAR ── */}
+      <div style={{ borderTop:"1px solid #1E2733",borderBottom:"1px solid #1E2733",padding:"32px 24px",background:"rgba(13,17,23,.9)" }}>
+        <div className="stats-bar" style={{ maxWidth:920,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:24,textAlign:"center" }}>
+          {STATS.map(s => (
+            <div key={s.label} className="stat-card" style={{ padding:"16px 12px",borderRadius:14,border:"1px solid transparent",cursor:"default" }}>
+              <div style={{ fontSize:30,fontWeight:900,color:"#F0F4FF",letterSpacing:-1 }}>{s.value}</div>
+              <div style={{ fontSize:13,color:"#6B7A99",marginTop:5 }}>{s.label}</div>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* ── TOOLS ── */}
-      <div id="tools" style={{ background: "#070B12", padding: "80px 0", borderTop: "1px solid #1E2733", borderBottom: "1px solid #1E2733" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
-          <h2 style={S.sectionTitle}>Tous nos outils</h2>
-          <p style={{ ...S.sectionSub, marginBottom: 56 }}>7 outils essentiels, disponibles sans compte, conçus pour vous faire gagner du temps.</p>
+      <div id="tools" style={{ padding:"100px 24px",background:"#07090F" }}>
+        <div style={{ maxWidth:1200,margin:"0 auto" }}>
+          <div style={{ textAlign:"center",marginBottom:64 }}>
+            <div style={{ display:"inline-block",background:"rgba(59,130,246,.08)",border:"1px solid rgba(59,130,246,.15)",color:"#93C5FD",padding:"5px 16px",borderRadius:20,fontSize:11,fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",marginBottom:18 }}>
+              Outils disponibles
+            </div>
+            <h2 style={{ fontSize:"clamp(28px,4vw,50px)",fontWeight:900,letterSpacing:-1.5,marginBottom:14 }}>
+              Tout ce dont vous avez besoin
+            </h2>
+            <p style={{ color:"#6B7A99",fontSize:16,maxWidth:480,margin:"0 auto" }}>
+              7 outils essentiels, disponibles sans compte et sans aucune installation.
+            </p>
+          </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 20 }}>
-            {tools.map(t => (
-              <div key={t.title}
-                onClick={() => router.push(t.href)}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = "#3B82F6"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E2733"; e.currentTarget.style.transform = "translateY(0)"; }}
-                style={{ background: "#0D1117", border: "1px solid #1E2733", borderRadius: 18, padding: 28, cursor: "pointer", transition: "all .2s", position: "relative" }}>
+          <div className="tools-grid" style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(310px,1fr))",gap:20 }}>
+            {TOOLS.map(t => (
+              <div key={t.name} className="tool-card" onClick={() => go(t.href)}
+                style={{ background:"#0D1117",border:"1px solid #1E2733",borderRadius:22,padding:28,cursor:"pointer",position:"relative",overflow:"hidden" }}>
+
+                {/* Glow top-right */}
+                <div style={{ position:"absolute",top:0,right:0,width:130,height:130,background:`radial-gradient(circle at top right,${t.glow},transparent 70%)`,pointerEvents:"none" }} />
 
                 {/* Tag */}
                 {t.tag && (
-                  <div style={{ position: "absolute", top: 18, right: 18, background: `${t.tagColor}20`, color: t.tagColor, fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20, border: `1px solid ${t.tagColor}40` }}>
+                  <span style={{ position:"absolute",top:18,right:18,background:`${t.tagC}18`,color:t.tagC,fontSize:11,fontWeight:700,padding:"3px 10px",borderRadius:20,border:`1px solid ${t.tagC}35` }}>
                     {t.tag}
-                  </div>
+                  </span>
                 )}
 
-                {/* Icon + Title */}
-                <div style={{ fontSize: 36, marginBottom: 14 }}>{t.icon}</div>
-                <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 8 }}>{t.title}</div>
-                <div style={{ color: "#8892AA", fontSize: 13, lineHeight: 1.6, marginBottom: 20 }}>{t.desc}</div>
+                {/* Icon box */}
+                <div style={{ width:50,height:50,borderRadius:14,background:`${t.color}18`,border:`1px solid ${t.color}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,marginBottom:18 }}>
+                  {t.icon}
+                </div>
 
-                {/* Feature list */}
-                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: 8 }}>
-                  {t.details.map(d => (
-                    <li key={d} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 12, color: "#6B7A99" }}>
-                      <span style={{ color: "#3B82F6", marginTop: 1, flexShrink: 0 }}>✓</span>
-                      {d}
-                    </li>
-                  ))}
-                </ul>
+                <div style={{ fontWeight:800,fontSize:17,marginBottom:8,color:"#F0F4FF" }}>{t.name}</div>
+                <div style={{ color:"#6B7A99",fontSize:13,lineHeight:1.65,marginBottom:20 }}>{t.desc}</div>
 
-                {/* CTA */}
-                <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#3B82F6", fontSize: 13, fontWeight: 700 }}>
+                <div style={{ display:"flex",alignItems:"center",gap:6,color:t.color,fontSize:13,fontWeight:700 }}>
                   Utiliser cet outil <span>→</span>
                 </div>
               </div>
             ))}
           </div>
 
-          <div style={{ textAlign: "center", marginTop: 40 }}>
-            <button onClick={handleGetStarted}
-              style={{ background: "#3B82F6", color: "#fff", border: "none", padding: "13px 32px", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
+          <div style={{ textAlign:"center",marginTop:48 }}>
+            <button className="btn-primary" onClick={() => go("/tools")}
+              style={{ background:"linear-gradient(135deg,#3B82F6,#2563EB)",color:"#fff",border:"none",padding:"15px 38px",borderRadius:14,fontSize:16,fontWeight:700,cursor:"pointer" }}>
               Accéder à tous les outils →
             </button>
           </div>
@@ -220,79 +224,160 @@ export default function Home() {
       </div>
 
       {/* ── HOW IT WORKS ── */}
-      <div style={{ ...S.section, paddingTop: 80 }}>
-        <h2 style={S.sectionTitle}>Simple comme bonjour</h2>
-        <p style={{ ...S.sectionSub, marginBottom: 56 }}>Pas d'inscription, pas de logiciel à installer. Tout se passe dans votre navigateur.</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 32, maxWidth: 900, margin: "0 auto" }}>
-          {[
-            { step: "1", icon: "📂", title: "Choisissez un outil", desc: "Sélectionnez l'action souhaitée parmi nos 7 outils disponibles." },
-            { step: "2", icon: "⬆️", title: "Déposez votre fichier", desc: "Glissez-déposez votre document ou cliquez pour le sélectionner." },
-            { step: "3", icon: "⚡", title: "Traitement instantané", desc: "Votre fichier est traité en quelques secondes côté serveur." },
-            { step: "4", icon: "⬇️", title: "Téléchargez", desc: "Récupérez votre fichier converti, compressé ou généré." },
-          ].map(s => (
-            <div key={s.step} style={{ textAlign: "center" }}>
-              <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(59,130,246,.15)", border: "1px solid rgba(59,130,246,.3)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 20, fontWeight: 800, color: "#3B82F6" }}>{s.step}</div>
-              <div style={{ fontSize: 28, marginBottom: 10 }}>{s.icon}</div>
-              <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 8 }}>{s.title}</div>
-              <div style={{ color: "#6B7A99", fontSize: 13, lineHeight: 1.6 }}>{s.desc}</div>
-            </div>
-          ))}
+      <div id="how" style={{ padding:"100px 24px",background:"#070B13",borderTop:"1px solid #1E2733",borderBottom:"1px solid #1E2733" }}>
+        <div style={{ maxWidth:1000,margin:"0 auto" }}>
+          <div style={{ textAlign:"center",marginBottom:64 }}>
+            <h2 style={{ fontSize:"clamp(28px,4vw,48px)",fontWeight:900,letterSpacing:-1.5,marginBottom:14 }}>
+              Simple comme bonjour
+            </h2>
+            <p style={{ color:"#6B7A99",fontSize:16 }}>
+              Aucune inscription, aucun logiciel. Tout se passe dans votre navigateur.
+            </p>
+          </div>
+
+          <div className="steps-grid" style={{ display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:32,position:"relative" }}>
+            {/* Connecting line */}
+            <div style={{ position:"absolute",top:28,left:"12%",right:"12%",height:1,background:"linear-gradient(90deg,transparent,#1E2733 20%,#1E2733 80%,transparent)",zIndex:0 }} />
+
+            {STEPS.map((s,i) => (
+              <div key={s.n} style={{ textAlign:"center",position:"relative",zIndex:1 }}>
+                <div style={{ display:"inline-flex",alignItems:"center",justifyContent:"center",width:56,height:56,borderRadius:16,background:"#0D1117",border:"1px solid rgba(59,130,246,.3)",fontSize:11,fontWeight:900,color:"#93C5FD",letterSpacing:1,marginBottom:18,boxShadow:"0 0 20px rgba(59,130,246,.1)" }}>
+                  {s.n}
+                </div>
+                <div style={{ fontSize:30,marginBottom:12 }}>{s.icon}</div>
+                <div style={{ fontWeight:700,fontSize:15,marginBottom:8 }}>{s.title}</div>
+                <div style={{ color:"#6B7A99",fontSize:13,lineHeight:1.65 }}>{s.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── TESTIMONIALS ── */}
+      <div style={{ padding:"100px 24px",background:"#07090F" }}>
+        <div style={{ maxWidth:1100,margin:"0 auto" }}>
+          <div style={{ textAlign:"center",marginBottom:60 }}>
+            <h2 style={{ fontSize:"clamp(28px,4vw,48px)",fontWeight:900,letterSpacing:-1.5,marginBottom:14 }}>
+              Ils font confiance à DocSwift
+            </h2>
+            <p style={{ color:"#6B7A99",fontSize:16 }}>
+              Des milliers d'utilisateurs convertissent leurs fichiers chaque jour.
+            </p>
+          </div>
+
+          <div className="testi-grid" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:20 }}>
+            {TESTIMONIALS.map(t => (
+              <div key={t.name} className="testi-card" style={{ background:"#0D1117",border:"1px solid #1E2733",borderRadius:22,padding:28 }}>
+                <div style={{ display:"flex",gap:2,marginBottom:16 }}>
+                  {Array.from({length:t.stars}).map((_,i) => <span key={i} style={{ color:"#F59E0B",fontSize:16 }}>★</span>)}
+                </div>
+                <p style={{ color:"#C0CBE0",fontSize:14,lineHeight:1.75,marginBottom:22 }}>"{t.text}"</p>
+                <div style={{ display:"flex",alignItems:"center",gap:12 }}>
+                  <div style={{ width:40,height:40,borderRadius:"50%",background:`linear-gradient(${t.grad})`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:16,color:"#fff",flexShrink:0 }}>
+                    {t.av}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight:700,fontSize:14,color:"#F0F4FF" }}>{t.name}</div>
+                    <div style={{ fontSize:12,color:"#6B7A99" }}>{t.role}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* ── PRICING ── */}
-      <div id="pricing" style={{ background: "#070B12", padding: "80px 24px", borderTop: "1px solid #1E2733" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <h2 style={S.sectionTitle}>Tarifs simples et transparents</h2>
-          <p style={{ ...S.sectionSub, marginBottom: 48 }}>Pas de surprise. Passez au Pro quand vous en avez besoin.</p>
+      <div id="pricing" style={{ padding:"100px 24px",background:"#070B13",borderTop:"1px solid #1E2733" }}>
+        <div style={{ maxWidth:820,margin:"0 auto" }}>
+          <div style={{ textAlign:"center",marginBottom:60 }}>
+            <h2 style={{ fontSize:"clamp(28px,4vw,48px)",fontWeight:900,letterSpacing:-1.5,marginBottom:14 }}>
+              Tarifs simples et transparents
+            </h2>
+            <p style={{ color:"#6B7A99",fontSize:16 }}>
+              Commencez gratuitement. Passez au Pro quand vous en avez besoin.
+            </p>
+          </div>
 
-          <div style={S.pricingGrid}>
+          <div className="pricing-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:24 }}>
             {/* FREE */}
-            <div style={{ ...S.pricingCard, background: "#0D1117", border: "1px solid #1E2733" }}>
-              <div style={{ ...S.planName, color: "#6B7A99" }}>Gratuit</div>
-              <div style={S.price}>0€</div>
-              <div style={S.pricePer}>pour toujours</div>
-              <ul style={S.featureList}>
-                {["✓  5 utilisations par jour", "✓  Tous les 7 outils inclus", "✓  Fichiers jusqu'à 5 MB", "✓  Publicités affichées", "◎  +3 via pub vidéo"].map(f =>
-                  <li key={f} style={S.featureItem}>{f}</li>)}
+            <div style={{ background:"#0D1117",border:"1px solid #1E2733",borderRadius:24,padding:"36px 32px" }}>
+              <div style={{ fontSize:12,fontWeight:800,color:"#6B7A99",letterSpacing:1.5,textTransform:"uppercase",marginBottom:10 }}>Gratuit</div>
+              <div style={{ fontSize:54,fontWeight:900,letterSpacing:-2,color:"#F0F4FF",lineHeight:1 }}>0€</div>
+              <div style={{ color:"#4B5563",fontSize:14,marginBottom:28,marginTop:4 }}>pour toujours</div>
+              <ul style={{ listStyle:"none",padding:0,margin:"0 0 32px",display:"flex",flexDirection:"column",gap:13 }}>
+                {["5 conversions par jour","Tous les 7 outils","Fichiers jusqu'à 5 MB","Publicités affichées","+3 via pub vidéo"].map(f => (
+                  <li key={f} style={{ display:"flex",alignItems:"center",gap:10,fontSize:14,color:"#8892AA" }}>
+                    <span style={{ color:"#4B5563",flexShrink:0,fontSize:16 }}>✓</span>{f}
+                  </li>
+                ))}
               </ul>
-              <button onClick={handleGetStarted}
-                style={{ width: "100%", padding: 13, borderRadius: 10, border: "1px solid #1E2733", background: "transparent", color: "#F0F4FF", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
+              <button onClick={() => go("/tools")} style={{ width:"100%",padding:"13px",borderRadius:12,border:"1px solid #1E2733",background:"transparent",color:"#F0F4FF",fontSize:15,fontWeight:600,cursor:"pointer" }}>
                 Commencer gratuitement
               </button>
             </div>
 
             {/* PRO */}
-            <div style={{ ...S.pricingCard, background: "linear-gradient(135deg,#1E3A5F,#0D1F3C)", border: "2px solid #3B82F6" }}>
-              <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: "#3B82F6", color: "#fff", fontSize: 12, fontWeight: 700, padding: "4px 16px", borderRadius: 20, whiteSpace: "nowrap" }}>
+            <div style={{ background:"linear-gradient(145deg,#0D1F3C,#132240)",border:"2px solid #3B82F6",borderRadius:24,padding:"36px 32px",position:"relative" }}>
+              <div style={{ position:"absolute",top:-15,left:"50%",transform:"translateX(-50%)",background:"linear-gradient(135deg,#3B82F6,#2563EB)",color:"#fff",fontSize:11,fontWeight:800,padding:"5px 18px",borderRadius:20,whiteSpace:"nowrap",letterSpacing:.5 }}>
                 LE PLUS POPULAIRE
               </div>
-              <div style={{ ...S.planName, color: "#60A5FA" }}>Pro</div>
-              <div style={{ ...S.price, color: "#fff" }}>9,99€</div>
-              <div style={{ ...S.pricePer, color: "#60A5FA" }}>par mois · sans engagement</div>
-              <ul style={S.featureList}>
-                {["✓  Utilisations illimitées", "✓  Tous les 7 outils inclus", "✓  Fichiers jusqu'à 50 MB", "✓  Aucune publicité", "✓  Traitement prioritaire", "✓  Support par email"].map(f =>
-                  <li key={f} style={{ ...S.featureItem, color: "#D1E8FF" }}>{f}</li>)}
+              <div style={{ fontSize:12,fontWeight:800,color:"#60A5FA",letterSpacing:1.5,textTransform:"uppercase",marginBottom:10 }}>Pro</div>
+              <div style={{ fontSize:54,fontWeight:900,letterSpacing:-2,color:"#fff",lineHeight:1 }}>9,99€</div>
+              <div style={{ color:"#60A5FA",fontSize:14,marginBottom:28,marginTop:4 }}>par mois · sans engagement</div>
+              <ul style={{ listStyle:"none",padding:0,margin:"0 0 32px",display:"flex",flexDirection:"column",gap:13 }}>
+                {["Conversions illimitées","Tous les 7 outils","Fichiers jusqu'à 50 MB","Zéro publicité","Traitement prioritaire","Support par email"].map(f => (
+                  <li key={f} style={{ display:"flex",alignItems:"center",gap:10,fontSize:14,color:"#D1E8FF" }}>
+                    <span style={{ color:"#3B82F6",flexShrink:0,fontSize:16 }}>✓</span>{f}
+                  </li>
+                ))}
               </ul>
-              <button onClick={handleUpgrade}
-                style={{ width: "100%", padding: 13, borderRadius: 10, border: "none", background: "#3B82F6", color: "#fff", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
+              <button className="btn-primary" onClick={handleUpgrade}
+                style={{ width:"100%",padding:"14px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#3B82F6,#2563EB)",color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer" }}>
                 {session ? "Passer au Pro →" : "S'inscrire et passer au Pro →"}
               </button>
             </div>
           </div>
 
-          <p style={{ textAlign: "center", color: "#4B5563", fontSize: 13, marginTop: 28 }}>
-            Paiement sécurisé par Stripe · Annulation à tout moment
+          <p style={{ textAlign:"center",color:"#4B5563",fontSize:13,marginTop:24 }}>
+            Paiement sécurisé par Stripe · Annulation à tout moment · Sans carte pour le plan gratuit
           </p>
         </div>
       </div>
 
+      {/* ── FINAL CTA ── */}
+      <div style={{ padding:"100px 24px",background:"#07090F",textAlign:"center" }}>
+        <div style={{ maxWidth:600,margin:"0 auto" }}>
+          <div style={{ fontSize:56,marginBottom:20 }}>🚀</div>
+          <h2 style={{ fontSize:"clamp(28px,4vw,48px)",fontWeight:900,letterSpacing:-1.5,marginBottom:16 }}>
+            Prêt à gagner du temps ?
+          </h2>
+          <p style={{ color:"#6B7A99",fontSize:17,marginBottom:40,lineHeight:1.7 }}>
+            Rejoignez 15 000+ utilisateurs qui traitent leurs documents avec DocSwift chaque jour.
+          </p>
+          <button className="btn-primary" onClick={() => go("/tools")}
+            style={{ background:"linear-gradient(135deg,#3B82F6,#2563EB)",color:"#fff",border:"none",padding:"18px 48px",borderRadius:16,fontSize:18,fontWeight:800,cursor:"pointer" }}>
+            Essayer maintenant — c'est gratuit →
+          </button>
+        </div>
+      </div>
+
       {/* ── FOOTER ── */}
-      <footer style={S.footer}>
-        <span style={{ fontSize: 13, color: "#4B5563" }}>© 2026 DocSwift. Tous droits réservés.</span>
-        <div style={{ display: "flex", gap: 20 }}>
-          <a href="/privacy" style={{ fontSize: 13, color: "#4B5563", textDecoration: "none" }}>Confidentialité</a>
-          <a href="/terms"   style={{ fontSize: 13, color: "#4B5563", textDecoration: "none" }}>CGU</a>
+      <footer style={{ borderTop:"1px solid #1E2733",padding:"32px 40px" }}>
+        <div style={{ maxWidth:1200,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:20 }}>
+          <div>
+            <div style={{ fontWeight:900,fontSize:18,letterSpacing:-0.5,marginBottom:4 }}>
+              Doc<span style={{ color:"#3B82F6" }}>Swift</span>
+            </div>
+            <div style={{ color:"#4B5563",fontSize:12 }}>© 2026 DocSwift. Tous droits réservés.</div>
+          </div>
+          <div style={{ display:"flex",gap:24,flexWrap:"wrap" }}>
+            <a href="/tools"   style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>Outils</a>
+            <a href="/cv"      style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>Créer un CV</a>
+            <a href="#pricing" style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>Tarifs</a>
+            <a href="/privacy" style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>Confidentialité</a>
+            <a href="/terms"   style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>CGU</a>
+          </div>
         </div>
       </footer>
     </div>
