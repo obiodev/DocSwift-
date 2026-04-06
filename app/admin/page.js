@@ -588,12 +588,119 @@ function AdsTab() {
 // ─────────────────────────────────────────────────────────────────────────────
 // ── MAIN ADMIN PAGE ──────────────────────────────────────────────────────────
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// ── SETTINGS TAB ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+function SettingsTab() {
+  const [cfg,     setCfg]     = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving,  setSaving]  = useState(false);
+  const [toast,   setToast]   = useState(null);
+
+  const showToast = (msg,ok=true) => { setToast({msg,ok}); setTimeout(()=>setToast(null),3000); };
+
+  useEffect(()=>{
+    fetch("/api/admin/settings").then(r=>r.json()).then(d=>{setCfg(d);setLoading(false);}).catch(()=>setLoading(false));
+  },[]);
+
+  const save = async () => {
+    setSaving(true);
+    const r = await fetch("/api/admin/settings",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(cfg)});
+    setSaving(false);
+    showToast(r.ok?"Paramètres enregistrés !":"Erreur lors de la sauvegarde",r.ok);
+  };
+
+  if (loading||!cfg) return <Spinner />;
+
+  const isPromo = cfg.promo_enabled==="true";
+  const savings = ((parseFloat(cfg.normal_price||9.99)-parseFloat(cfg.promo_price||4.99))*parseInt(cfg.promo_months||3)).toFixed(2);
+
+  return (
+    <div className="fade-in">
+      {toast && <Toast msg={toast.msg} ok={toast.ok} />}
+
+      {/* Pricing */}
+      <div style={{ ...S.card,marginBottom:20 }}>
+        <div style={{ fontWeight:700,fontSize:16,marginBottom:4,color:"#F0F4FF" }}>💰 Tarification</div>
+        <div style={{ color:"#6B7A99",fontSize:13,marginBottom:20 }}>
+          Configurez les prix affichés sur la landing page. N'oubliez pas de mettre à jour le prix dans Stripe en parallèle.
+        </div>
+
+        {/* Promo toggle */}
+        <div style={{ ...S.card,background:"#0A0E17",marginBottom:16,display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:12 }}>
+          <div>
+            <div style={{ fontWeight:700,fontSize:14,color:"#F0F4FF",marginBottom:3 }}>🔥 Offre de lancement active</div>
+            <div style={{ fontSize:12,color:"#6B7A99" }}>Affiche le prix promo sur la page d'accueil</div>
+          </div>
+          <button onClick={()=>setCfg(c=>({...c,promo_enabled:c.promo_enabled==="true"?"false":"true"}))}
+            style={{ background:isPromo?"rgba(16,185,129,.12)":"rgba(239,68,68,.08)",border:`1px solid ${isPromo?"rgba(16,185,129,.3)":"rgba(239,68,68,.25)"}`,color:isPromo?"#10B981":"#FCA5A5",padding:"8px 20px",borderRadius:10,fontSize:14,fontWeight:700,cursor:"pointer",minWidth:80,textAlign:"center" }}>
+            {isPromo?"ON ✓":"OFF"}
+          </button>
+        </div>
+
+        <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:14 }}>
+          <div>
+            <label style={{ display:"block",fontSize:12,color:"#6B7A99",marginBottom:6,fontWeight:600 }}>Prix promo (€/mois)</label>
+            <input type="number" step="0.01" value={cfg.promo_price} onChange={e=>setCfg(c=>({...c,promo_price:e.target.value}))}
+              style={S.input} />
+          </div>
+          <div>
+            <label style={{ display:"block",fontSize:12,color:"#6B7A99",marginBottom:6,fontWeight:600 }}>Durée promo (mois)</label>
+            <input type="number" min="1" value={cfg.promo_months} onChange={e=>setCfg(c=>({...c,promo_months:e.target.value}))}
+              style={S.input} />
+          </div>
+          <div>
+            <label style={{ display:"block",fontSize:12,color:"#6B7A99",marginBottom:6,fontWeight:600 }}>Prix normal (€/mois)</label>
+            <input type="number" step="0.01" value={cfg.normal_price} onChange={e=>setCfg(c=>({...c,normal_price:e.target.value}))}
+              style={S.input} />
+          </div>
+        </div>
+
+        {isPromo && (
+          <div style={{ marginTop:14,background:"rgba(16,185,129,.06)",border:"1px solid rgba(16,185,129,.15)",borderRadius:10,padding:"10px 16px" }}>
+            <span style={{ color:"#10B981",fontSize:13 }}>
+              ✓ Aperçu : <strong>{cfg.promo_price}€/mois</strong> pendant {cfg.promo_months} mois · puis <strong>{cfg.normal_price}€/mois</strong> · Économie : <strong>{savings}€</strong>
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Free limit */}
+      <div style={{ ...S.card,marginBottom:20 }}>
+        <div style={{ fontWeight:700,fontSize:16,marginBottom:4,color:"#F0F4FF" }}>⚡ Quota gratuit</div>
+        <div style={{ color:"#6B7A99",fontSize:13,marginBottom:16 }}>Nombre de conversions gratuites par utilisateur par jour.</div>
+        <div style={{ maxWidth:200 }}>
+          <label style={{ display:"block",fontSize:12,color:"#6B7A99",marginBottom:6,fontWeight:600 }}>Conversions / jour</label>
+          <input type="number" min="1" max="50" value={cfg.free_limit} onChange={e=>setCfg(c=>({...c,free_limit:e.target.value}))}
+            style={S.input} />
+        </div>
+        <div style={{ marginTop:10,fontSize:12,color:"#4B5563" }}>
+          ⚠️ Ce paramètre est indicatif côté front. Pour l'appliquer côté serveur, mettez aussi à jour la constante FREE_LIMIT dans <code style={{ color:"#60A5FA" }}>lib/supabase.js</code>.
+        </div>
+      </div>
+
+      {/* Stripe reminder */}
+      <div style={{ ...S.card,marginBottom:24,background:"rgba(59,130,246,.05)",border:"1px solid rgba(59,130,246,.15)",padding:"16px 20px" }}>
+        <div style={{ fontWeight:700,fontSize:14,color:"#93C5FD",marginBottom:8 }}>💳 Rappel Stripe</div>
+        <p style={{ color:"#6B7A99",fontSize:13,lineHeight:1.7,margin:0 }}>
+          Pour appliquer le prix promo réellement lors du paiement, configurez un <strong style={{ color:"#93C5FD" }}>coupon Stripe</strong> ou un <strong style={{ color:"#93C5FD" }}>prix trial</strong> dans le dashboard Stripe et mettez à jour la variable <code style={{ color:"#60A5FA" }}>STRIPE_PRICE_ID</code> dans Railway.
+        </p>
+      </div>
+
+      <button className="btn-action" onClick={save} disabled={saving} style={{ ...S.btn(),padding:"12px 28px",fontSize:14,opacity:saving?.6:1 }}>
+        {saving?"Enregistrement...":"💾 Enregistrer les paramètres"}
+      </button>
+    </div>
+  );
+}
+
 const TABS = [
   { id:"overview",   label:"📊 Vue d'ensemble" },
   { id:"users",      label:"👥 Utilisateurs"   },
   { id:"payments",   label:"💳 Paiements"      },
   { id:"affiliates", label:"🤝 Affiliés"       },
   { id:"ads",        label:"📺 Publicités"     },
+  { id:"settings",   label:"⚙️ Paramètres"     },
 ];
 
 export default function AdminPage() {
@@ -667,6 +774,7 @@ export default function AdminPage() {
         {tab==="payments"   && <PaymentsTab />}
         {tab==="affiliates" && <AffiliatesTab />}
         {tab==="ads"        && <AdsTab />}
+        {tab==="settings"   && <SettingsTab />}
       </div>
     </div>
   );

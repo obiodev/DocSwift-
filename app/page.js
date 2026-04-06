@@ -1,6 +1,7 @@
 "use client";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter }          from "next/navigation";
+import { useState, useEffect } from "react";
 
 const CSS = `
   @keyframes blob1 {
@@ -88,6 +89,16 @@ const STEPS = [
 export default function Home() {
   const { data: session } = useSession();
   const router = useRouter();
+  const [pricing, setPricing] = useState({ promo_enabled:"true", promo_price:"4.99", promo_months:"3", normal_price:"9.99" });
+
+  useEffect(() => {
+    fetch("/api/settings").then(r=>r.json()).then(d=>setPricing(d)).catch(()=>{});
+  }, []);
+
+  const isPromo     = pricing.promo_enabled === "true";
+  const promoPrice  = pricing.promo_price   ?? "4.99";
+  const promoMonths = pricing.promo_months  ?? "3";
+  const normalPrice = pricing.normal_price  ?? "9.99";
 
   const go = (path) => router.push(path);
 
@@ -320,11 +331,28 @@ export default function Home() {
             {/* PRO */}
             <div style={{ background:"linear-gradient(145deg,#0D1F3C,#132240)",border:"2px solid #3B82F6",borderRadius:24,padding:"36px 32px",position:"relative" }}>
               <div style={{ position:"absolute",top:-15,left:"50%",transform:"translateX(-50%)",background:"linear-gradient(135deg,#3B82F6,#2563EB)",color:"#fff",fontSize:11,fontWeight:800,padding:"5px 18px",borderRadius:20,whiteSpace:"nowrap",letterSpacing:.5 }}>
-                LE PLUS POPULAIRE
+                {isPromo ? `🔥 OFFRE DE LANCEMENT` : "LE PLUS POPULAIRE"}
               </div>
               <div style={{ fontSize:12,fontWeight:800,color:"#60A5FA",letterSpacing:1.5,textTransform:"uppercase",marginBottom:10 }}>Pro</div>
-              <div style={{ fontSize:54,fontWeight:900,letterSpacing:-2,color:"#fff",lineHeight:1 }}>9,99€</div>
-              <div style={{ color:"#60A5FA",fontSize:14,marginBottom:28,marginTop:4 }}>par mois · sans engagement</div>
+              {isPromo ? (
+                <>
+                  <div style={{ display:"flex",alignItems:"flex-end",gap:10 }}>
+                    <div style={{ fontSize:54,fontWeight:900,letterSpacing:-2,color:"#fff",lineHeight:1 }}>{promoPrice}€</div>
+                    <div style={{ fontSize:18,color:"#4B6A8A",textDecoration:"line-through",marginBottom:8 }}>{normalPrice}€</div>
+                  </div>
+                  <div style={{ color:"#60A5FA",fontSize:14,marginBottom:8,marginTop:4 }}>
+                    /mois pendant {promoMonths} mois · puis {normalPrice}€/mois
+                  </div>
+                  <div style={{ background:"rgba(16,185,129,.12)",border:"1px solid rgba(16,185,129,.25)",color:"#10B981",fontSize:12,fontWeight:700,padding:"5px 12px",borderRadius:8,display:"inline-block",marginBottom:20 }}>
+                    Économisez {((parseFloat(normalPrice)-parseFloat(promoPrice))*parseInt(promoMonths)).toFixed(2)}€ les {promoMonths} premiers mois
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontSize:54,fontWeight:900,letterSpacing:-2,color:"#fff",lineHeight:1 }}>{normalPrice}€</div>
+                  <div style={{ color:"#60A5FA",fontSize:14,marginBottom:28,marginTop:4 }}>par mois · sans engagement</div>
+                </>
+              )}
               <ul style={{ listStyle:"none",padding:0,margin:"0 0 32px",display:"flex",flexDirection:"column",gap:13 }}>
                 {["Conversions illimitées","Tous les 7 outils","Fichiers jusqu'à 50 MB","Zéro publicité","Traitement prioritaire","Support par email"].map(f => (
                   <li key={f} style={{ display:"flex",alignItems:"center",gap:10,fontSize:14,color:"#D1E8FF" }}>
