@@ -847,7 +847,7 @@ export default function CVPage() {
           {!usage.isPro && (
             <div style={{ display:"flex",alignItems:"center",gap:8 }}>
               <div style={{ width:80,height:5,background:"#1E2733",borderRadius:99,overflow:"hidden" }}>
-                <div style={{ height:"100%",width:`${Math.min(100,(usage.used/(FREE_LIMIT+bonusUses))*100)}%`,background:effectiveRemaining===0?"#EF4444":"#14B8A6",borderRadius:99,transition:"width .4s" }} />
+                <div style={{ height:"100%",width:`${Math.min(100,(usage.used/((usage.limit??FREE_LIMIT)+bonusUses))*100)}%`,background:effectiveRemaining===0?"#EF4444":"#14B8A6",borderRadius:99,transition:"width .4s" }} />
               </div>
               <span style={{ fontSize:12,color:"#6B7A99",whiteSpace:"nowrap" }}>
                 {effectiveRemaining===0?"Limite atteinte":`${effectiveRemaining} restante${effectiveRemaining!==1?"s":""}`}

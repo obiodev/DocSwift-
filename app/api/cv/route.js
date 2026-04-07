@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions }      from "@/lib/auth";
-import { getUsageToday, incrementUsage, isPro, FREE_LIMIT } from "@/lib/supabase";
+import { getUsageToday, incrementUsage, isPro, getFreeLimit } from "@/lib/supabase";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 
 function getIdentifier(request, session) {
@@ -638,8 +638,8 @@ export async function POST(request) {
   const identifier = getIdentifier(request, session);
 
   if (!pro) {
-    const used = await getUsageToday(identifier);
-    if (used >= FREE_LIMIT) {
+    const [used, freeLimit] = await Promise.all([getUsageToday(identifier), getFreeLimit()]);
+    if (used >= freeLimit) {
       return NextResponse.json({ error:"LIMIT_REACHED" }, { status:429 });
     }
   }

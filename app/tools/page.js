@@ -227,7 +227,8 @@ function ToolsInner() {
     document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
   };
 
-  const usagePct  = usage.isPro ? 0 : Math.min(100,(usage.used/(FREE_LIMIT+bonusUses))*100);
+  const dynLimit  = (usage.limit ?? FREE_LIMIT) + bonusUses;
+  const usagePct  = usage.isPro ? 0 : Math.min(100,(usage.used/dynLimit)*100);
   const activeTc  = activeTool?.color ?? "#3B82F6";
 
   return (
@@ -247,7 +248,7 @@ function ToolsInner() {
                 <div style={{ height:"100%",width:`${usagePct}%`,background:usagePct>=100?"#EF4444":"#3B82F6",borderRadius:99,transition:"width .4s" }} />
               </div>
               <span style={{ fontSize:12,color:"#6B7A99",whiteSpace:"nowrap" }}>
-                {usage.used}/{FREE_LIMIT+bonusUses} aujourd'hui
+                {usage.used}/{dynLimit} aujourd'hui
               </span>
             </div>
           )}
@@ -279,7 +280,7 @@ function ToolsInner() {
         {/* Limit banner */}
         {!usage.isPro && effectiveRemaining===0 && (
           <div className="fade-in" style={{ background:"rgba(239,68,68,.08)",border:"1px solid rgba(239,68,68,.25)",borderRadius:14,padding:"16px 22px",marginBottom:24,display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:12 }}>
-            <span style={{ color:"#FCA5A5",fontSize:14 }}>🚫 Limite quotidienne atteinte ({FREE_LIMIT+bonusUses}/{FREE_LIMIT+bonusUses})</span>
+            <span style={{ color:"#FCA5A5",fontSize:14 }}>🚫 Limite quotidienne atteinte ({dynLimit}/{dynLimit})</span>
             <div style={{ display:"flex",gap:10 }}>
               <button onClick={()=>setShowAd(true)} style={{ background:"rgba(239,68,68,.15)",color:"#FCA5A5",border:"1px solid rgba(239,68,68,.35)",padding:"7px 14px",borderRadius:8,fontSize:13,fontWeight:600,cursor:"pointer" }}>
                 📺 +{AD_BONUS} via pub

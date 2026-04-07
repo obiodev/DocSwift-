@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
+// Cache public settings for 5 minutes — reduces DB calls on every page load
+export const revalidate = 300;
+
 const DEFAULTS = {
   promo_enabled: "true",
   promo_price:   "4.99",

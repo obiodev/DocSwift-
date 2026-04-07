@@ -2,7 +2,7 @@ import { NextResponse }     from "next/server";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { getServerSession } from "next-auth";
 import { authOptions }      from "@/lib/auth";
-import { getUsageToday, incrementUsage, isPro, FREE_LIMIT } from "@/lib/supabase";
+import { getUsageToday, incrementUsage, isPro, getFreeLimit } from "@/lib/supabase";
 import { pdfToDocx }        from "@/lib/pdfToDocx";
 
 
@@ -16,10 +16,10 @@ export async function POST(request) {
     if (!pro) {
       const identifier = session?.user?.email
         ?? (request.headers.get("x-forwarded-for") ?? "anonymous").split(",")[0].trim();
-      const used = await getUsageToday(identifier);
-      if (used >= FREE_LIMIT) {
+      const [used, freeLimit] = await Promise.all([getUsageToday(identifier), getFreeLimit()]);
+      if (used >= freeLimit) {
         return NextResponse.json(
-          { error: "LIMIT_REACHED", message: "Daily limit of 5 reached. Upgrade to Pro or watch an ad." },
+          { error: "LIMIT_REACHED", message: `Daily limit of ${freeLimit} reached. Upgrade to Pro or watch an ad.` },
           { status: 429 }
         );
       }

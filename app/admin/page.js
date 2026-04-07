@@ -675,7 +675,7 @@ function SettingsTab() {
             style={S.input} />
         </div>
         <div style={{ marginTop:10,fontSize:12,color:"#4B5563" }}>
-          ⚠️ Ce paramètre est indicatif côté front. Pour l'appliquer côté serveur, mettez aussi à jour la constante FREE_LIMIT dans <code style={{ color:"#60A5FA" }}>lib/supabase.js</code>.
+          ✅ Cette valeur est appliquée dynamiquement côté serveur (mise en cache 5 min) — aucune redéployement nécessaire.
         </div>
       </div>
 

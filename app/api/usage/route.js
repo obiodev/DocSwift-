@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions }      from "@/lib/auth";
-import { getUsageToday, incrementUsage, isPro, FREE_LIMIT } from "@/lib/supabase";
+import { getUsageToday, incrementUsage, isPro, FREE_LIMIT, getFreeLimit } from "@/lib/supabase";
 
 // Helper: get the caller's identifier (email or IP)
 function getIdentifier(request, session) {
@@ -15,8 +15,9 @@ export async function GET(request) {
   const session    = await getServerSession(authOptions);
   const pro        = session?.user?.email ? await isPro(session.user.email) : false;
   const identifier = getIdentifier(request, session);
-  const used       = pro ? 0 : await getUsageToday(identifier);
-  const limit      = FREE_LIMIT;
+  const [used, limit] = pro
+    ? [0, FREE_LIMIT]
+    : await Promise.all([getUsageToday(identifier), getFreeLimit()]);
 
   return NextResponse.json({
     used,
@@ -36,9 +37,9 @@ export async function POST(request) {
   }
 
   const identifier = getIdentifier(request, session);
-  const used       = await getUsageToday(identifier);
+  const [used, limit] = await Promise.all([getUsageToday(identifier), getFreeLimit()]);
 
-  if (used >= FREE_LIMIT) {
+  if (used >= limit) {
     return NextResponse.json(
       { error: "Daily limit reached", remaining: 0 },
       { status: 429 }
@@ -49,6 +50,6 @@ export async function POST(request) {
   return NextResponse.json({
     ok: true,
     used:      newCount,
-    remaining: Math.max(0, FREE_LIMIT - newCount),
+    remaining: Math.max(0, limit - newCount),
   });
 }

@@ -7,13 +7,24 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata = {
   title: "DocSwift — Tous les outils PDF dont vous avez besoin",
-  description: "Convertissez, compressez, signez, fusionnez et divisez vos PDFs. Gratuit jusqu'à 5 conversions/jour, illimité en Pro.",
-  keywords: "convertir PDF, PDF en Word, compresser PDF, fusionner PDF, outils PDF",
+  description: "Convertissez, compressez, fusionnez et divisez vos PDFs. Créez votre CV professionnel en PDF. Gratuit jusqu'à 5 conversions/jour, illimité en Pro.",
+  keywords: "convertir PDF, PDF en Word, compresser PDF, fusionner PDF, diviser PDF, créer CV PDF, outils PDF gratuit",
+  robots: { index: true, follow: true },
   openGraph: {
     title: "DocSwift — Tous les outils PDF dont vous avez besoin",
-    description: "Convertissez, compressez, signez, fusionnez et divisez vos PDFs.",
+    description: "Convertissez, compressez, fusionnez et divisez vos PDFs. Créez votre CV professionnel. Gratuit et sans inscription.",
     siteName: "DocSwift",
+    url: "https://getdocswift.com",
     type: "website",
+    locale: "fr_FR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DocSwift — Tous les outils PDF dont vous avez besoin",
+    description: "Convertissez, compressez, fusionnez vos PDFs. Créez votre CV en PDF. Gratuit.",
+  },
+  alternates: {
+    canonical: "https://getdocswift.com",
   },
 };
 
