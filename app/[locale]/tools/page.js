@@ -19,7 +19,15 @@ const CSS = `
   .fade-in { animation:fadeIn .3s ease both }
   .spinner { animation:spin 1s linear infinite }
   @media(max-width:768px){
-    .tools-grid { grid-template-columns: 1fr 1fr !important }
+    .tools-grid{grid-template-columns:1fr 1fr!important}
+    .nav-wrap{padding:10px 16px!important}
+    .usage-bar-label{display:none!important}
+    .nav-user-name{display:none!important}
+    .nav-user-img{display:none!important}
+  }
+  @media(max-width:480px){
+    .tools-grid{grid-template-columns:1fr!important}
+    .drop-inner{padding:28px 20px!important}
   }
 `;
 
@@ -239,17 +247,17 @@ function ToolsInner() {
       <style>{CSS}</style>
 
       {/* ── NAV ── */}
-      <nav style={{ position:"fixed",top:0,left:0,right:0,zIndex:100,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(7,9,15,.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid #1E2733" }}>
+      <nav className="nav-wrap" style={{ position:"fixed",top:0,left:0,right:0,zIndex:100,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(7,9,15,.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid #1E2733" }}>
         <div style={{ fontWeight:900,fontSize:20,letterSpacing:-1,cursor:"pointer" }} onClick={()=>router.push(`${localePrefix}/`)}>
           Doc<span style={{ color:"#3B82F6" }}>Swift</span>
         </div>
         <div style={{ display:"flex",alignItems:"center",gap:14 }}>
           {!usage.isPro && (
             <div style={{ display:"flex",alignItems:"center",gap:9 }}>
-              <div style={{ width:100,height:5,background:"#1E2733",borderRadius:99,overflow:"hidden" }}>
+              <div style={{ width:80,height:5,background:"#1E2733",borderRadius:99,overflow:"hidden" }}>
                 <div style={{ height:"100%",width:`${usagePct}%`,background:usagePct>=100?"#EF4444":"#3B82F6",borderRadius:99,transition:"width .4s" }} />
               </div>
-              <span style={{ fontSize:12,color:"#6B7A99",whiteSpace:"nowrap" }}>
+              <span className="usage-bar-label" style={{ fontSize:12,color:"#6B7A99",whiteSpace:"nowrap" }}>
                 {usage.used}/{dynLimit} {t('tools.today')}
               </span>
             </div>
@@ -262,8 +270,8 @@ function ToolsInner() {
           <LanguageSwitcher />
           {session ? (
             <div style={{ display:"flex",alignItems:"center",gap:10 }}>
-              {session.user?.image && <img src={session.user.image} alt="" width={28} height={28} style={{ borderRadius:"50%" }} />}
-              <span style={{ fontSize:13,color:"#8892AA" }}>{session.user?.name??session.user?.email}</span>
+              {session.user?.image && <img className="nav-user-img" src={session.user.image} alt="" width={28} height={28} style={{ borderRadius:"50%" }} />}
+              <span className="nav-user-name" style={{ fontSize:13,color:"#8892AA" }}>{session.user?.name??session.user?.email}</span>
               {!usage.isPro && (
                 <button onClick={goUpgrade} style={{ background:"#3B82F6",color:"#fff",border:"none",padding:"7px 16px",borderRadius:8,fontSize:13,fontWeight:600,cursor:"pointer" }}>
                   {t('tools.upgradePro')}
@@ -353,6 +361,7 @@ function ToolsInner() {
                   onDragOver={(e)=>{e.preventDefault();setDragOver(true);}}
                   onDragLeave={()=>setDragOver(false)}
                   onClick={()=>document.getElementById("fileInput").click()}
+                  className="drop-zone drop-inner"
                   style={{ border:`2px dashed ${dragOver?"#3B82F6":"#1E2733"}`,borderRadius:18,padding:"52px 40px",textAlign:"center",background:dragOver?"rgba(59,130,246,.05)":"#0D1117",cursor:"pointer",marginBottom:18 }}>
                   <input id="fileInput" type="file" style={{ display:"none" }} accept={activeTool.accept} multiple={MULTI_TOOLS.has(activeTool.type)} onChange={handleFileChange} />
                   {files.length ? (

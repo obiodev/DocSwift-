@@ -49,12 +49,22 @@ const CSS = `
   .stat-card{transition:all .2s}
   @media(max-width:768px){
     .nav-links{display:none!important}
+    .nav-wrap{padding:12px 16px!important}
     .tools-grid{grid-template-columns:1fr 1fr!important}
-    .hero-h1{font-size:42px!important}
+    .hero-h1{font-size:38px!important}
     .pricing-grid{grid-template-columns:1fr!important}
     .testi-grid{grid-template-columns:1fr!important}
     .stats-bar{grid-template-columns:1fr 1fr!important}
     .steps-grid{grid-template-columns:1fr 1fr!important}
+    .steps-connector{display:none!important}
+    .hero-ctas{flex-direction:column!important;align-items:stretch!important;max-width:340px!important;margin:0 auto!important}
+    .footer-inner{padding:24px 16px!important;flex-direction:column!important;align-items:flex-start!important;gap:16px!important}
+  }
+  @media(max-width:480px){
+    .tools-grid{grid-template-columns:1fr!important}
+    .steps-grid{grid-template-columns:1fr!important}
+    .hero-h1{font-size:32px!important}
+    .stats-bar{grid-template-columns:1fr 1fr!important}
   }
 `;
 
@@ -122,7 +132,7 @@ export default function Home() {
       <style>{CSS}</style>
 
       {/* ── NAV ── */}
-      <nav style={{ position:"fixed",top:0,left:0,right:0,zIndex:200,padding:"16px 40px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(7,9,15,.88)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(30,39,51,.9)" }}>
+      <nav className="nav-wrap" style={{ position:"fixed",top:0,left:0,right:0,zIndex:200,padding:"16px 40px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(7,9,15,.88)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(30,39,51,.9)" }}>
         <div style={{ fontWeight:900,fontSize:22,letterSpacing:-1,cursor:"pointer" }} onClick={() => go("/")}>
           Doc<span style={{ color:"#3B82F6" }}>Swift</span>
         </div>
@@ -251,7 +261,7 @@ export default function Home() {
           </div>
 
           <div className="steps-grid" style={{ display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:32,position:"relative" }}>
-            <div style={{ position:"absolute",top:28,left:"12%",right:"12%",height:1,background:"linear-gradient(90deg,transparent,#1E2733 20%,#1E2733 80%,transparent)",zIndex:0 }} />
+            <div className="steps-connector" style={{ position:"absolute",top:28,left:"12%",right:"12%",height:1,background:"linear-gradient(90deg,transparent,#1E2733 20%,#1E2733 80%,transparent)",zIndex:0 }} />
             {STEPS.map((s) => (
               <div key={s.n} style={{ textAlign:"center",position:"relative",zIndex:1 }}>
                 <div style={{ display:"inline-flex",alignItems:"center",justifyContent:"center",width:56,height:56,borderRadius:16,background:"#0D1117",border:"1px solid rgba(59,130,246,.3)",fontSize:11,fontWeight:900,color:"#93C5FD",letterSpacing:1,marginBottom:18,boxShadow:"0 0 20px rgba(59,130,246,.1)" }}>
@@ -394,7 +404,7 @@ export default function Home() {
 
       {/* ── FOOTER ── */}
       <footer style={{ borderTop:"1px solid #1E2733",padding:"32px 40px" }}>
-        <div style={{ maxWidth:1200,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:20 }}>
+        <div className="footer-inner" style={{ maxWidth:1200,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:20 }}>
           <div>
             <div style={{ fontWeight:900,fontSize:18,letterSpacing:-0.5,marginBottom:4 }}>
               Doc<span style={{ color:"#3B82F6" }}>Swift</span>

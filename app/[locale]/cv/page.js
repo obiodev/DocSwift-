@@ -25,6 +25,13 @@ const CSS = `
     .cv-layout{flex-direction:column!important}
     .cv-form-panel{flex:none!important;width:100%!important;max-height:none!important;position:relative!important;top:auto!important}
     .cv-preview-panel{display:none!important}
+    .cv-nav-wrap{padding:10px 16px!important}
+    .cv-form-panel{padding:20px 16px 60px!important}
+    .cv-usage-bar{display:none!important}
+    .cv-back-btn span{display:none!important}
+  }
+  @media(max-width:480px){
+    .cv-nav-wrap{padding:8px 12px!important}
   }
 `;
 
@@ -858,13 +865,13 @@ export default function CVPage() {
       <style>{CSS}</style>
 
       {/* Nav */}
-      <nav style={{ position:"fixed",top:0,left:0,right:0,zIndex:100,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(7,9,15,.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid #1E2733" }}>
+      <nav className="cv-nav-wrap" style={{ position:"fixed",top:0,left:0,right:0,zIndex:100,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(7,9,15,.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid #1E2733" }}>
         <div style={{ fontWeight:900,fontSize:20,letterSpacing:-1,cursor:"pointer" }} onClick={()=>router.push(`${localePrefix}/`)}>
           Doc<span style={{ color:"#3B82F6" }}>Swift</span>
         </div>
         <div style={{ display:"flex",alignItems:"center",gap:12 }}>
           {!usage.isPro && (
-            <div style={{ display:"flex",alignItems:"center",gap:8 }}>
+            <div className="cv-usage-bar" style={{ display:"flex",alignItems:"center",gap:8 }}>
               <div style={{ width:80,height:5,background:"#1E2733",borderRadius:99,overflow:"hidden" }}>
                 <div style={{ height:"100%",width:`${Math.min(100,(usage.used/((usage.limit??FREE_LIMIT)+bonusUses))*100)}%`,background:effectiveRemaining===0?"#EF4444":"#14B8A6",borderRadius:99,transition:"width .4s" }} />
               </div>
@@ -877,8 +884,8 @@ export default function CVPage() {
             <span style={{ background:"rgba(16,185,129,.12)",color:"#10B981",fontSize:12,fontWeight:700,padding:"4px 12px",borderRadius:20,border:"1px solid rgba(16,185,129,.25)" }}>✓ PRO</span>
           )}
           <LanguageSwitcher />
-          <button onClick={()=>router.push(`${localePrefix}/tools`)} style={{ background:"none",border:"1px solid #1E2733",color:"#8892AA",padding:"7px 14px",borderRadius:8,fontSize:13,cursor:"pointer" }}>
-            {tNav('backToTools')}
+          <button className="cv-back-btn" onClick={()=>router.push(`${localePrefix}/tools`)} style={{ background:"none",border:"1px solid #1E2733",color:"#8892AA",padding:"7px 14px",borderRadius:8,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",gap:5,whiteSpace:"nowrap" }}>
+            ← <span>{tNav('backToTools')}</span>
           </button>
           {infos.name && (
             <button onClick={generate} disabled={loading} style={{ background:loading?"#1E3A5F":"linear-gradient(135deg,#10B981,#059669)",color:"#fff",border:"none",padding:"8px 18px",borderRadius:8,fontSize:13,fontWeight:700,cursor:loading?"not-allowed":"pointer" }}>
@@ -892,7 +899,7 @@ export default function CVPage() {
       <div className="cv-layout" style={{ display:"flex",gap:0,paddingTop:58,height:"100vh" }}>
 
         {/* ── LEFT: Form panel ── */}
-        <div className="cv-form-panel" style={{ flex:"0 0 520px",overflowY:"auto",padding:"32px 32px 60px",borderRight:"1px solid #1E2733",background:"#07090F" }}>
+        <div className="cv-form-panel" style={{ flex:"0 0 520px",overflowY:"auto",padding:"32px 32px 60px",borderRight:"1px solid #1E2733",background:"#07090F",boxSizing:"border-box" }}>
 
           <div style={{ marginBottom:28 }}>
             <div style={{ display:"flex",alignItems:"center",gap:12,marginBottom:6 }}>
