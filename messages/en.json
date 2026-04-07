@@ -1,0 +1,308 @@
+{
+  "nav": {
+    "tools": "Tools",
+    "howItWorks": "How it works",
+    "pricing": "Pricing",
+    "login": "Sign in",
+    "myTools": "My tools",
+    "back": "← Back",
+    "backToTools": "← Back to tools",
+    "downloadPdf": "⬇️ Download PDF",
+    "generating": "Generating..."
+  },
+  "landing": {
+    "badge": "7 PDF tools · Free · No sign-up required",
+    "hero": {
+      "title1": "Your documents,",
+      "title2": "transformed in seconds.",
+      "subtitle": "Convert, compress, merge your PDFs and build your professional resume. Fast, free, and secure.",
+      "ctaStart": "Get started for free →",
+      "ctaTools": "Explore tools",
+      "trust": "✓ No sign-up   ·   ✓ Secure data   ·   ✓ Files deleted after processing"
+    },
+    "stats": {
+      "docs": "Documents processed",
+      "users": "Active users",
+      "time": "Average time",
+      "rating": "Satisfaction"
+    },
+    "tools": {
+      "sectionBadge": "Available tools",
+      "title": "Everything you need",
+      "subtitle": "7 essential tools, available without an account and without any installation.",
+      "useBtn": "Use this tool →",
+      "allTools": "Access all tools →",
+      "pdfToWord": {
+        "name": "PDF → Word",
+        "desc": "Convert any PDF to a fully editable Word document.",
+        "tag": "Most used"
+      },
+      "wordToPdf": {
+        "name": "Word → PDF",
+        "desc": "Turn your .docx files into pixel-perfect PDFs in one click."
+      },
+      "compressPdf": {
+        "name": "Compress PDF",
+        "desc": "Reduce your PDF file size by up to 80% without visible quality loss.",
+        "tag": "Up to 80% off"
+      },
+      "mergePdf": {
+        "name": "Merge PDFs",
+        "desc": "Combine multiple PDFs into a single clean document."
+      },
+      "splitPdf": {
+        "name": "Split PDF",
+        "desc": "Extract exactly the page or pages you need."
+      },
+      "imageToPdf": {
+        "name": "Image → PDF",
+        "desc": "Convert your JPG/PNG photos into a professional PDF."
+      },
+      "createCv": {
+        "name": "Create a Resume",
+        "desc": "Generate a professional PDF resume by filling out a guided form.",
+        "tag": "New ✨"
+      }
+    },
+    "how": {
+      "title": "Simple as can be",
+      "subtitle": "No sign-up, no software. Everything happens in your browser.",
+      "step1Title": "Choose a tool",
+      "step1Desc": "Select from our 7 tools the action you need.",
+      "step2Title": "Drop your file",
+      "step2Desc": "Drag and drop your document or click to select it.",
+      "step3Title": "Express processing",
+      "step3Desc": "Your file is processed server-side in a matter of seconds.",
+      "step4Title": "Download",
+      "step4Desc": "Get your transformed document, immediately ready to use."
+    },
+    "testimonials": {
+      "title": "Trusted by DocSwift users",
+      "subtitle": "Thousands of users convert their files every day.",
+      "t1Text": "I use DocSwift every day to convert candidate CVs. Done in 10 seconds — amazing.",
+      "t1Name": "Sophie M.",
+      "t1Role": "HR Assistant, Paris",
+      "t2Text": "The PDF compressor is incredible. I reduced a 45 MB report to 6 MB with no visible quality loss.",
+      "t2Name": "Thomas R.",
+      "t2Role": "Freelance Consultant",
+      "t3Text": "I built my resume in 5 minutes with the generator. Super professional result, downloaded directly as a PDF.",
+      "t3Name": "Amina K.",
+      "t3Role": "Master's student"
+    },
+    "pricing": {
+      "title": "Simple, transparent pricing",
+      "subtitle": "Start for free. Go Pro when you need it.",
+      "freePlan": "Free",
+      "forever": "forever",
+      "freeFeatures": ["5 conversions per day", "All 7 tools", "Files up to 5 MB", "Ads displayed", "+3 via rewarded video"],
+      "startFree": "Get started for free",
+      "proLabel": "Pro",
+      "launchOffer": "🔥 LAUNCH OFFER",
+      "mostPopular": "MOST POPULAR",
+      "perMonthFor": "/month for {months} months · then {price}€/month",
+      "saveAmount": "Save {amount}€ for the first {months} months",
+      "perMonth": "per month · no commitment",
+      "proFeatures": ["Unlimited conversions", "All 7 tools", "Files up to 50 MB", "Zero ads", "Priority processing", "Email support"],
+      "upgradeSession": "Go Pro →",
+      "upgradeGuest": "Sign up and go Pro →",
+      "securePayment": "Secure payment by Stripe · Cancel anytime · No card required for free plan"
+    },
+    "cta": {
+      "title": "Ready to save time?",
+      "subtitle": "Join 15,000+ users who process their documents with DocSwift every day.",
+      "btn": "Try it now — it's free →"
+    },
+    "footer": {
+      "copyright": "© 2026 DocSwift. All rights reserved.",
+      "tools": "Tools",
+      "createCv": "Create a Resume",
+      "pricing": "Pricing",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    }
+  },
+  "tools": {
+    "title": "PDF & Document Tools",
+    "usageInfoPro": "✨ Unlimited conversions — Pro account active.",
+    "usageInfoFree": "{remaining} conversion{plural} remaining today.",
+    "useBtn": "Use →",
+    "today": "today",
+    "limitBanner": {
+      "reached": "🚫 Daily limit reached ({used}/{limit})",
+      "watchAd": "📺 +{bonus} via ad",
+      "goPro": "✨ Go Pro — €9.99/month"
+    },
+    "adModal": {
+      "title": "Watch an ad",
+      "desc": "Watch this ad to the end to unlock {bonus} additional conversions today.",
+      "loading": "Loading...",
+      "adZone": "Ad zone",
+      "wait": "Wait {seconds}s...",
+      "claim": "Claim my +{bonus} conversions →"
+    },
+    "dropzone": {
+      "dropMulti": "Drop your files here",
+      "dropSingle": "Drop your file here",
+      "browse": "or click to browse",
+      "formats": "Accepted formats: {accept} · Max {max} MB",
+      "addMore": "Click to add more files"
+    },
+    "splitPageLabel": "Page number to extract",
+    "convertBtn": "Convert now →",
+    "converting": "Converting...",
+    "success": {
+      "title": "Conversion successful!",
+      "desc": "Your file is ready to download.",
+      "download": "⬇️ Download {filename}",
+      "another": "Convert another file"
+    },
+    "adBanner": {
+      "text": "Advertisement — Go Pro to remove ads",
+      "remove": "Remove ads →"
+    },
+    "proBadge": "✓ PRO — Unlimited",
+    "upgradePro": "Go Pro",
+    "pdfToWord": { "name": "PDF → Word", "desc": "Convert a PDF to editable Word" },
+    "wordToPdf": { "name": "Word → PDF", "desc": "Convert a .docx to PDF" },
+    "compressPdf": { "name": "Compress", "desc": "Reduce file size by up to 80%" },
+    "mergePdf": { "name": "Merge", "desc": "Combine multiple PDFs into one" },
+    "splitPdf": { "name": "Split", "desc": "Extract a specific page" },
+    "imageToPdf": { "name": "Image → PDF", "desc": "Convert images to PDF" },
+    "createCv": { "name": "Create Resume", "desc": "Professional PDF resume" }
+  },
+  "cv": {
+    "title": "Build my Resume",
+    "subtitle": "Live preview on the right",
+    "steps": {
+      "infos": "Info",
+      "experience": "Experience",
+      "formation": "Education",
+      "skills": "Skills",
+      "extras": "Extras",
+      "style": "Style"
+    },
+    "preview": {
+      "title": "Live preview",
+      "subtitle": "Updates with every change"
+    },
+    "generate": "⬇️ Download my PDF Resume",
+    "generating": "Generating...",
+    "generateNow": "Generate now with current info",
+    "limitReached": "Limit reached",
+    "adModal": {
+      "title": "Limit reached",
+      "desc": "Watch this ad to unlock {bonus} uses and generate your resume.",
+      "generateBtn": "Generate my Resume →"
+    },
+    "fields": {
+      "photo": "Photo (optional)",
+      "photoHint": "Click to add a photo.\nJPG, PNG formats accepted.",
+      "photoRemove": "Remove",
+      "name": "First & Last Name *",
+      "title": "Desired position",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "website": "Website / LinkedIn",
+      "summary": "Summary / Profile",
+      "summaryPlaceholder": "Passionate developer with 5 years of experience...",
+      "position": "Position *",
+      "company": "Company",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "description": "Description",
+      "degree": "Degree *",
+      "school": "School / University",
+      "skills": "Technical & soft skills",
+      "addSkill": "+ Add a skill",
+      "skillPlaceholder": "e.g. React",
+      "languages": "Languages",
+      "addLanguage": "+ Add a language",
+      "langPlaceholder": "English",
+      "levelPlaceholder": "Level",
+      "languageLevels": ["Native", "Fluent (C1/C2)", "Advanced (B2)", "Intermediate (B1)", "Beginner (A1/A2)"],
+      "addExp": "+ Add experience",
+      "addEdu": "+ Add education",
+      "projects": "Projects",
+      "projectName": "Project name *",
+      "technologies": "Technologies",
+      "projectUrl": "Link (URL)",
+      "addProject": "+ Add a project",
+      "certifications": "Certifications",
+      "certTitle": "Title *",
+      "certOrg": "Organization",
+      "certYear": "Year",
+      "addCert": "+ Add a certification",
+      "interests": "Interests",
+      "interestsHint": "Separate interests with commas.",
+      "interestsPlaceholder": "Photography, Hiking, Open Source, Cooking...",
+      "template": "Resume template",
+      "templateHint": "Choose the layout of your resume.",
+      "color": "Accent color",
+      "colorHint": "Used for the header and accents of your resume.",
+      "customColor": "Custom color"
+    },
+    "templates": {
+      "classique": "Classic",
+      "classiqueDesc": "Colored header + structured sections",
+      "moderne": "Modern",
+      "moderneDesc": "Colored sidebar + main content",
+      "minimaliste": "Minimalist",
+      "minimalisteDesc": "Clean design, clear typography"
+    },
+    "pdfSections": {
+      "profile": "Profile",
+      "experience": "Experience",
+      "education": "Education",
+      "skills": "Skills",
+      "languages": "Languages",
+      "projects": "Projects",
+      "certifications": "Certifications",
+      "interests": "Interests"
+    },
+    "yourName": "Your Name",
+    "createdWith": "Created with DocSwift — getdocswift.com",
+    "validationName": "Please enter your name.",
+    "errorGenerate": "Error generating resume. Please try again."
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "legalBadge": "Legal",
+    "intro": "By using DocSwift, you agree to these terms. Please take the time to read them carefully.",
+    "lastUpdate": "Last updated: {date}",
+    "applicableSince": "Applicable since: {date}",
+    "summary": {
+      "title": "✓ In summary",
+      "items": [
+        "Your files are processed and deleted immediately, never stored.",
+        "Free plan: 5 conversions/day · Pro plan: unlimited from €4.99/month.",
+        "Your resumes and documents belong 100% to you.",
+        "Cancel your subscription at any time, no fees.",
+        "Personal data limited to email (if Google sign-in) and IP address."
+      ]
+    },
+    "footer": {
+      "question": "Questions about these terms?",
+      "contact": "Contact us"
+    },
+    "back": "← Back"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "desc": "The page you're looking for doesn't exist or has been moved.",
+    "homeBtn": "Back to home",
+    "toolsBtn": "View tools"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "desc": "Something went wrong. Try again or return to the home page.",
+    "retry": "Try again",
+    "homeBtn": "Back to home"
+  },
+  "common": {
+    "loading": "Loading...",
+    "back": "← Back",
+    "next": "Next →",
+    "previous": "← Previous"
+  }
+}

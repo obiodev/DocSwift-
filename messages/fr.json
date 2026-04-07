@@ -1,0 +1,308 @@
+{
+  "nav": {
+    "tools": "Outils",
+    "howItWorks": "Comment ça marche",
+    "pricing": "Tarifs",
+    "login": "Connexion",
+    "myTools": "Mes outils",
+    "back": "← Retour",
+    "backToTools": "← Retour aux outils",
+    "downloadPdf": "⬇️ Télécharger PDF",
+    "generating": "Génération..."
+  },
+  "landing": {
+    "badge": "7 outils PDF · Gratuit · Sans inscription",
+    "hero": {
+      "title1": "Vos documents,",
+      "title2": "transformés en secondes.",
+      "subtitle": "Convertissez, compressez, fusionnez vos PDFs et créez votre CV professionnel. Rapide, gratuit, sécurisé.",
+      "ctaStart": "Commencer gratuitement →",
+      "ctaTools": "Voir les outils",
+      "trust": "✓ Sans inscription   ·   ✓ Données sécurisées   ·   ✓ Fichiers supprimés après traitement"
+    },
+    "stats": {
+      "docs": "Documents traités",
+      "users": "Utilisateurs actifs",
+      "time": "Temps moyen",
+      "rating": "Satisfaction"
+    },
+    "tools": {
+      "sectionBadge": "Outils disponibles",
+      "title": "Tout ce dont vous avez besoin",
+      "subtitle": "7 outils essentiels, disponibles sans compte et sans aucune installation.",
+      "useBtn": "Utiliser cet outil →",
+      "allTools": "Accéder à tous les outils →",
+      "pdfToWord": {
+        "name": "PDF → Word",
+        "desc": "Convertissez tout PDF en document Word entièrement éditable.",
+        "tag": "Le plus utilisé"
+      },
+      "wordToPdf": {
+        "name": "Word → PDF",
+        "desc": "Transformez vos .docx en PDF pixel-perfect en un clic."
+      },
+      "compressPdf": {
+        "name": "Compresser PDF",
+        "desc": "Réduisez le poids de vos PDFs jusqu'à 80% sans perte visible.",
+        "tag": "Gain max 80%"
+      },
+      "mergePdf": {
+        "name": "Fusionner PDFs",
+        "desc": "Combinez plusieurs PDFs en un seul document propre."
+      },
+      "splitPdf": {
+        "name": "Diviser PDF",
+        "desc": "Extrayez précisément la ou les pages dont vous avez besoin."
+      },
+      "imageToPdf": {
+        "name": "Image → PDF",
+        "desc": "Convertissez vos photos JPG/PNG en PDF professionnel."
+      },
+      "createCv": {
+        "name": "Créer un CV",
+        "desc": "Générez un CV pro en PDF en remplissant un formulaire guidé.",
+        "tag": "Nouveau ✨"
+      }
+    },
+    "how": {
+      "title": "Simple comme bonjour",
+      "subtitle": "Aucune inscription, aucun logiciel. Tout se passe dans votre navigateur.",
+      "step1Title": "Choisissez un outil",
+      "step1Desc": "Sélectionnez parmi nos 7 outils l'action dont vous avez besoin.",
+      "step2Title": "Déposez votre fichier",
+      "step2Desc": "Glissez-déposez votre document ou cliquez pour le sélectionner.",
+      "step3Title": "Traitement express",
+      "step3Desc": "Votre fichier est traité côté serveur en quelques secondes.",
+      "step4Title": "Téléchargez",
+      "step4Desc": "Récupérez votre document transformé, immédiatement prêt à l'emploi."
+    },
+    "testimonials": {
+      "title": "Ils font confiance à DocSwift",
+      "subtitle": "Des milliers d'utilisateurs convertissent leurs fichiers chaque jour.",
+      "t1Text": "J'utilise DocSwift tous les jours pour convertir les CV des candidats. En 10 secondes c'est fait — bluffant.",
+      "t1Name": "Sophie M.",
+      "t1Role": "Assistante RH, Paris",
+      "t2Text": "Le compresseur PDF est incroyable. J'ai réduit un rapport de 45 Mo à 6 Mo sans aucune perte de qualité visible.",
+      "t2Name": "Thomas R.",
+      "t2Role": "Consultant freelance",
+      "t3Text": "J'ai créé mon CV en 5 minutes avec le générateur. Rendu super professionnel, téléchargé directement en PDF.",
+      "t3Name": "Amina K.",
+      "t3Role": "Étudiante en master"
+    },
+    "pricing": {
+      "title": "Tarifs simples et transparents",
+      "subtitle": "Commencez gratuitement. Passez au Pro quand vous en avez besoin.",
+      "freePlan": "Gratuit",
+      "forever": "pour toujours",
+      "freeFeatures": ["5 conversions par jour", "Tous les 7 outils", "Fichiers jusqu'à 5 MB", "Publicités affichées", "+3 via pub vidéo"],
+      "startFree": "Commencer gratuitement",
+      "proLabel": "Pro",
+      "launchOffer": "🔥 OFFRE DE LANCEMENT",
+      "mostPopular": "LE PLUS POPULAIRE",
+      "perMonthFor": "/mois pendant {months} mois · puis {price}€/mois",
+      "saveAmount": "Économisez {amount}€ les {months} premiers mois",
+      "perMonth": "par mois · sans engagement",
+      "proFeatures": ["Conversions illimitées", "Tous les 7 outils", "Fichiers jusqu'à 50 MB", "Zéro publicité", "Traitement prioritaire", "Support par email"],
+      "upgradeSession": "Passer au Pro →",
+      "upgradeGuest": "S'inscrire et passer au Pro →",
+      "securePayment": "Paiement sécurisé par Stripe · Annulation à tout moment · Sans carte pour le plan gratuit"
+    },
+    "cta": {
+      "title": "Prêt à gagner du temps ?",
+      "subtitle": "Rejoignez 15 000+ utilisateurs qui traitent leurs documents avec DocSwift chaque jour.",
+      "btn": "Essayer maintenant — c'est gratuit →"
+    },
+    "footer": {
+      "copyright": "© 2026 DocSwift. Tous droits réservés.",
+      "tools": "Outils",
+      "createCv": "Créer un CV",
+      "pricing": "Tarifs",
+      "privacy": "Confidentialité",
+      "terms": "CGU"
+    }
+  },
+  "tools": {
+    "title": "Outils PDF & Documents",
+    "usageInfoPro": "✨ Conversions illimitées — compte Pro actif.",
+    "usageInfoFree": "{remaining} conversion{plural} restante{pluralE} aujourd'hui.",
+    "useBtn": "Utiliser →",
+    "today": "aujourd'hui",
+    "limitBanner": {
+      "reached": "🚫 Limite quotidienne atteinte ({used}/{limit})",
+      "watchAd": "📺 +{bonus} via pub",
+      "goPro": "✨ Passer Pro — 9,99€/mois"
+    },
+    "adModal": {
+      "title": "Regardez une publicité",
+      "desc": "Regardez cette publicité jusqu'à la fin pour débloquer {bonus} conversions supplémentaires aujourd'hui.",
+      "loading": "Chargement...",
+      "adZone": "Zone publicitaire",
+      "wait": "Patientez {seconds}s...",
+      "claim": "Récupérer mes +{bonus} conversions →"
+    },
+    "dropzone": {
+      "dropMulti": "Déposez vos fichiers ici",
+      "dropSingle": "Déposez votre fichier ici",
+      "browse": "ou cliquez pour parcourir",
+      "formats": "Formats acceptés : {accept} · Max {max} MB",
+      "addMore": "Cliquez pour ajouter d'autres fichiers"
+    },
+    "splitPageLabel": "Numéro de page à extraire",
+    "convertBtn": "Convertir maintenant →",
+    "converting": "Conversion en cours...",
+    "success": {
+      "title": "Conversion réussie !",
+      "desc": "Votre fichier est prêt au téléchargement.",
+      "download": "⬇️ Télécharger {filename}",
+      "another": "Convertir un autre fichier"
+    },
+    "adBanner": {
+      "text": "Publicité — Passez Pro pour les supprimer",
+      "remove": "Supprimer les pubs →"
+    },
+    "proBadge": "✓ PRO — Illimité",
+    "upgradePro": "Passer Pro",
+    "pdfToWord": { "name": "PDF → Word", "desc": "Convertir un PDF en Word éditable" },
+    "wordToPdf": { "name": "Word → PDF", "desc": "Transformer un .docx en PDF" },
+    "compressPdf": { "name": "Compresser", "desc": "Réduire le poids jusqu'à 80%" },
+    "mergePdf": { "name": "Fusionner", "desc": "Combiner plusieurs PDFs en un seul" },
+    "splitPdf": { "name": "Diviser", "desc": "Extraire une page spécifique" },
+    "imageToPdf": { "name": "Image → PDF", "desc": "Convertir des images en PDF" },
+    "createCv": { "name": "Créer un CV", "desc": "CV professionnel en PDF" }
+  },
+  "cv": {
+    "title": "Créer mon CV",
+    "subtitle": "Aperçu en direct sur la droite",
+    "steps": {
+      "infos": "Infos",
+      "experience": "Expérience",
+      "formation": "Formation",
+      "skills": "Compétences",
+      "extras": "Extras",
+      "style": "Style"
+    },
+    "preview": {
+      "title": "Aperçu en direct",
+      "subtitle": "Se met à jour à chaque modification"
+    },
+    "generate": "⬇️ Télécharger mon CV PDF",
+    "generating": "Génération...",
+    "generateNow": "Générer maintenant avec les infos actuelles",
+    "limitReached": "Limite atteinte",
+    "adModal": {
+      "title": "Limite atteinte",
+      "desc": "Regardez cette publicité pour débloquer {bonus} utilisations et générer votre CV.",
+      "generateBtn": "Générer mon CV →"
+    },
+    "fields": {
+      "photo": "Photo (optionnel)",
+      "photoHint": "Cliquez pour ajouter une photo.\nFormats JPG, PNG acceptés.",
+      "photoRemove": "Supprimer",
+      "name": "Prénom & Nom *",
+      "title": "Poste visé",
+      "email": "Email",
+      "phone": "Téléphone",
+      "address": "Adresse",
+      "website": "Site web / LinkedIn",
+      "summary": "Résumé / Profil",
+      "summaryPlaceholder": "Développeur passionné avec 5 ans d'expérience...",
+      "position": "Poste *",
+      "company": "Entreprise",
+      "startDate": "Date début",
+      "endDate": "Date fin",
+      "description": "Description",
+      "degree": "Diplôme *",
+      "school": "École / Université",
+      "skills": "Compétences techniques & soft skills",
+      "addSkill": "+ Ajouter une compétence",
+      "skillPlaceholder": "Ex: React",
+      "languages": "Langues",
+      "addLanguage": "+ Ajouter une langue",
+      "langPlaceholder": "Français",
+      "levelPlaceholder": "Niveau",
+      "languageLevels": ["Natif", "Courant (C1/C2)", "Avancé (B2)", "Intermédiaire (B1)", "Débutant (A1/A2)"],
+      "addExp": "+ Ajouter une expérience",
+      "addEdu": "+ Ajouter une formation",
+      "projects": "Projets",
+      "projectName": "Nom du projet *",
+      "technologies": "Technologies",
+      "projectUrl": "Lien (URL)",
+      "addProject": "+ Ajouter un projet",
+      "certifications": "Certifications",
+      "certTitle": "Titre *",
+      "certOrg": "Organisme",
+      "certYear": "Année",
+      "addCert": "+ Ajouter une certification",
+      "interests": "Centres d'intérêt",
+      "interestsHint": "Séparez les centres d'intérêt par des virgules.",
+      "interestsPlaceholder": "Photographie, Randonnée, Open Source, Cuisine...",
+      "template": "Modèle de CV",
+      "templateHint": "Choisissez la mise en page de votre CV.",
+      "color": "Couleur principale",
+      "colorHint": "Utilisée pour l'en-tête et les accents de votre CV.",
+      "customColor": "Couleur personnalisée"
+    },
+    "templates": {
+      "classique": "Classique",
+      "classiqueDesc": "En-tête coloré + sections structurées",
+      "moderne": "Moderne",
+      "moderneDesc": "Colonne latérale colorée + contenu principal",
+      "minimaliste": "Minimaliste",
+      "minimalisteDesc": "Design épuré, typographie claire"
+    },
+    "pdfSections": {
+      "profile": "Profil",
+      "experience": "Expériences",
+      "education": "Formation",
+      "skills": "Compétences",
+      "languages": "Langues",
+      "projects": "Projets",
+      "certifications": "Certifications",
+      "interests": "Centres d'intérêt"
+    },
+    "yourName": "Votre Nom",
+    "createdWith": "Créé avec DocSwift — getdocswift.com",
+    "validationName": "Veuillez entrer votre nom.",
+    "errorGenerate": "Erreur lors de la génération. Réessayez."
+  },
+  "terms": {
+    "title": "Conditions Générales d'Utilisation",
+    "legalBadge": "Légal",
+    "intro": "En utilisant DocSwift, vous acceptez les présentes conditions. Prenez le temps de les lire attentivement.",
+    "lastUpdate": "Dernière mise à jour : {date}",
+    "applicableSince": "Applicable depuis : {date}",
+    "summary": {
+      "title": "✓ En résumé",
+      "items": [
+        "Vos fichiers sont traités et supprimés immédiatement, jamais stockés.",
+        "Plan gratuit : 5 conversions/jour · Plan Pro : illimité à partir de 4,99€/mois.",
+        "Vos CV et documents vous appartiennent à 100%.",
+        "Annulation de l'abonnement à tout moment, sans frais.",
+        "Données personnelles limitées à l'email (si connexion Google) et l'IP."
+      ]
+    },
+    "footer": {
+      "question": "Des questions sur ces conditions ?",
+      "contact": "Nous contacter"
+    },
+    "back": "← Retour"
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "desc": "La page que vous cherchez n'existe pas ou a été déplacée.",
+    "homeBtn": "Retour à l'accueil",
+    "toolsBtn": "Voir les outils"
+  },
+  "error": {
+    "title": "Une erreur est survenue",
+    "desc": "Quelque chose s'est mal passé. Réessayez ou revenez à l'accueil.",
+    "retry": "Réessayer",
+    "homeBtn": "Retour à l'accueil"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "back": "← Retour",
+    "next": "Suivant →",
+    "previous": "← Précédent"
+  }
+}

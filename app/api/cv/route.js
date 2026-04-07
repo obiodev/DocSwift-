@@ -59,6 +59,7 @@ async function buildClassique(doc, data) {
     name="", title="", email="", phone="", address="", website="",
     summary="", experiences=[], educations=[], skills=[], languages=[],
     projects=[], certifications=[], interests="", accentColor="#2563EB", photoImage,
+    labels={},
   } = data;
 
   const page = doc.addPage([595, 842]);
@@ -95,7 +96,7 @@ async function buildClassique(doc, data) {
 
   // ── Name ──
   const nameSize = Math.min(28, 560/Math.max(name.length,1)*1.8);
-  page.drawText(name || "Votre Nom", {
+  page.drawText(name || data.labels?.yourName || "Votre Nom", {
     x:40, y:height-52,
     size:Math.min(nameSize,28), font:boldFont, color:white,
   });
@@ -121,7 +122,7 @@ async function buildClassique(doc, data) {
 
   // ── Summary ──
   if (summary) {
-    drawSection("Profil");
+    drawSection(labels.profile || "Profil");
     for (const line of splitLines(summary, regFont, 10, width-80)) {
       if (y < 60) break;
       page.drawText(line, { x:40, y, size:10, font:regFont, color:dark });
@@ -132,7 +133,7 @@ async function buildClassique(doc, data) {
 
   // ── Experience ──
   if (experiences.filter(e=>e.company||e.position).length>0) {
-    drawSection("Expériences professionnelles");
+    drawSection(labels.experience || "Expériences professionnelles");
     for (const exp of experiences) {
       if (!exp.company && !exp.position) continue;
       if (y < 80) break;
@@ -153,7 +154,7 @@ async function buildClassique(doc, data) {
 
   // ── Education ──
   if (educations.filter(e=>e.school||e.degree).length>0) {
-    drawSection("Formation");
+    drawSection(labels.education || "Formation");
     for (const edu of educations) {
       if (!edu.school && !edu.degree) continue;
       if (y < 60) break;
@@ -167,7 +168,7 @@ async function buildClassique(doc, data) {
   // ── Skills ──
   const validSkills = skills.filter(Boolean);
   if (validSkills.length>0) {
-    drawSection("Compétences");
+    drawSection(labels.skills || "Compétences");
     let xOff = 40;
     for (const skill of validSkills) {
       if (y < 60) break;
@@ -183,7 +184,7 @@ async function buildClassique(doc, data) {
   // ── Languages ──
   const validLangs = languages.filter(l=>l.lang);
   if (validLangs.length>0) {
-    drawSection("Langues");
+    drawSection(labels.languages || "Langues");
     for (const l of validLangs) {
       if (y < 60) break;
       const label = l.level ? `${l.lang}  —  ${l.level}` : l.lang;
@@ -196,7 +197,7 @@ async function buildClassique(doc, data) {
   // ── Projects ──
   const validProjs = projects.filter(p=>p.name);
   if (validProjs.length>0) {
-    drawSection("Projets");
+    drawSection(labels.projects || "Projets");
     for (const p of validProjs) {
       if (y < 60) break;
       page.drawText(p.name, { x:40, y, size:11, font:boldFont, color:dark });
@@ -223,7 +224,7 @@ async function buildClassique(doc, data) {
   // ── Certifications ──
   const validCerts = certifications.filter(c=>c.title);
   if (validCerts.length>0) {
-    drawSection("Certifications");
+    drawSection(labels.certifications || "Certifications");
     for (const c of validCerts) {
       if (y < 60) break;
       const label = [c.title, c.org ? `— ${c.org}` : "", c.year ? `(${c.year})` : ""].filter(Boolean).join("  ");
@@ -235,7 +236,7 @@ async function buildClassique(doc, data) {
 
   // ── Interests ──
   if (interests && interests.trim()) {
-    drawSection("Centres d'intérêt");
+    drawSection(labels.interests || "Centres d'intérêt");
     const tags = interests.split(",").map(s=>s.trim()).filter(Boolean);
     let xOff = 40;
     for (const tag of tags) {
@@ -251,7 +252,7 @@ async function buildClassique(doc, data) {
 
   // ── Footer ──
   page.drawLine({ start:{x:40,y:30}, end:{x:width-40,y:30}, thickness:0.5, color:lightGray });
-  page.drawText("Créé avec DocSwift — getdocswift.com", { x:40, y:16, size:7, font:regFont, color:gray });
+  page.drawText((labels.createdWith || "Créé avec DocSwift — getdocswift.com"), { x:40, y:16, size:7, font:regFont, color:gray });
 }
 
 // ─── Template: Moderne ─────────────────────────────────────────────────────
@@ -260,6 +261,7 @@ async function buildModerne(doc, data) {
     name="", title="", email="", phone="", address="", website="",
     summary="", experiences=[], educations=[], skills=[], languages=[],
     projects=[], certifications=[], interests="", accentColor="#2563EB", photoImage,
+    labels={},
   } = data;
 
   const page = doc.addPage([595, 842]);
@@ -446,7 +448,7 @@ async function buildModerne(doc, data) {
 
   // ── Footer ──
   page.drawLine({ start:{x:contentX,y:30}, end:{x:width-30,y:30}, thickness:0.5, color:lightGray });
-  page.drawText("Créé avec DocSwift — getdocswift.com", { x:contentX, y:16, size:7, font:regFont, color:gray });
+  page.drawText((labels.createdWith || "Créé avec DocSwift — getdocswift.com"), { x:contentX, y:16, size:7, font:regFont, color:gray });
 }
 
 // ─── Template: Minimaliste ─────────────────────────────────────────────────
@@ -455,6 +457,7 @@ async function buildMinimaliste(doc, data) {
     name="", title="", email="", phone="", address="", website="",
     summary="", experiences=[], educations=[], skills=[], languages=[],
     projects=[], certifications=[], interests="", accentColor="#2563EB", photoImage,
+    labels={},
   } = data;
 
   const page = doc.addPage([595, 842]);
@@ -505,7 +508,7 @@ async function buildMinimaliste(doc, data) {
 
   // ── Summary ──
   if (summary) {
-    drawSection("Profil");
+    drawSection(labels.profile || "Profil");
     for (const line of splitLines(summary, regFont, 10, width-80)) {
       if (y < 60) break;
       page.drawText(line, { x:40, y, size:10, font:regFont, color:dark });
@@ -516,7 +519,7 @@ async function buildMinimaliste(doc, data) {
 
   // ── Experience ──
   if (experiences.filter(e=>e.company||e.position).length>0) {
-    drawSection("Expériences");
+    drawSection(labels.experience || "Expériences");
     for (const exp of experiences) {
       if (!exp.company && !exp.position) continue;
       if (y < 80) break;
@@ -537,7 +540,7 @@ async function buildMinimaliste(doc, data) {
 
   // ── Education ──
   if (educations.filter(e=>e.school||e.degree).length>0) {
-    drawSection("Formation");
+    drawSection(labels.education || "Formation");
     for (const edu of educations) {
       if (!edu.school && !edu.degree) continue;
       if (y < 60) break;
@@ -551,7 +554,7 @@ async function buildMinimaliste(doc, data) {
   // ── Skills ──
   const validSkills = skills.filter(Boolean);
   if (validSkills.length>0) {
-    drawSection("Compétences");
+    drawSection(labels.skills || "Compétences");
     let xOff = 40;
     for (const skill of validSkills) {
       if (y < 60) break;
@@ -567,7 +570,7 @@ async function buildMinimaliste(doc, data) {
   // ── Languages ──
   const validLangs = languages.filter(l=>l.lang);
   if (validLangs.length>0) {
-    drawSection("Langues");
+    drawSection(labels.languages || "Langues");
     for (const l of validLangs) {
       if (y < 60) break;
       const label = l.level ? `${l.lang}  —  ${l.level}` : l.lang;
@@ -580,7 +583,7 @@ async function buildMinimaliste(doc, data) {
   // ── Projects ──
   const validProjs = projects.filter(p=>p.name);
   if (validProjs.length>0) {
-    drawSection("Projets");
+    drawSection(labels.projects || "Projets");
     for (const p of validProjs) {
       if (y < 60) break;
       page.drawText(p.name, { x:40, y, size:11, font:boldFont, color:dark });
@@ -600,7 +603,7 @@ async function buildMinimaliste(doc, data) {
   // ── Certifications ──
   const validCerts = certifications.filter(c=>c.title);
   if (validCerts.length>0) {
-    drawSection("Certifications");
+    drawSection(labels.certifications || "Certifications");
     for (const c of validCerts) {
       if (y < 60) break;
       const parts = [c.title]; if(c.org) parts.push(`— ${c.org}`); if(c.year) parts.push(`(${c.year})`);
@@ -612,7 +615,7 @@ async function buildMinimaliste(doc, data) {
 
   // ── Interests ──
   if (interests && interests.trim()) {
-    drawSection("Centres d'intérêt");
+    drawSection(labels.interests || "Centres d'intérêt");
     const tags = interests.split(",").map(s=>s.trim()).filter(Boolean);
     let xOff = 40;
     for (const tag of tags) {
@@ -628,7 +631,7 @@ async function buildMinimaliste(doc, data) {
 
   // ── Footer ──
   page.drawLine({ start:{x:40,y:30}, end:{x:width-40,y:30}, thickness:0.5, color:lightGray });
-  page.drawText("Créé avec DocSwift — getdocswift.com", { x:40, y:16, size:7, font:regFont, color:gray });
+  page.drawText((labels.createdWith || "Créé avec DocSwift — getdocswift.com"), { x:40, y:16, size:7, font:regFont, color:gray });
 }
 
 // ─── POST Handler ───────────────────────────────────────────────────────────
@@ -658,7 +661,21 @@ export async function POST(request) {
     accentColor="#2563EB",
     template="classique",
     photo=null,
+    sectionLabels=null,
   } = body;
+
+  // Use provided section labels (i18n) or fall back to French defaults
+  const labels = {
+    profile:        sectionLabels?.profile        || "Profil",
+    experience:     sectionLabels?.experience     || "Expériences professionnelles",
+    education:      sectionLabels?.education      || "Formation",
+    skills:         sectionLabels?.skills         || "Compétences",
+    languages:      sectionLabels?.languages      || "Langues",
+    projects:       sectionLabels?.projects       || "Projets",
+    certifications: sectionLabels?.certifications || "Certifications",
+    interests:      sectionLabels?.interests      || "Centres d'intérêt",
+    createdWith:    sectionLabels?.createdWith    || (labels.createdWith || "Créé avec DocSwift — getdocswift.com"),
+  };
 
   const doc = await PDFDocument.create();
 
@@ -668,7 +685,7 @@ export async function POST(request) {
   const tplData = {
     name, title, email, phone, address, website, summary,
     experiences, educations, skills, languages,
-    projects, certifications, interests, accentColor, photoImage,
+    projects, certifications, interests, accentColor, photoImage, labels,
   };
 
   if (template === "moderne") {

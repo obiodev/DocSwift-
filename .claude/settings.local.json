@@ -34,7 +34,15 @@
       "Bash(curl -sk https://getdocswift.com)",
       "Bash(curl -v http://getdocswift.com)",
       "Bash(nslookup -type=TXT _railway-verify.getdocswift.com 8.8.8.8)",
-      "Bash(curl -sk https://docswift-production.up.railway.app)"
+      "Bash(curl -sk https://docswift-production.up.railway.app)",
+      "Bash(node --check app/api/cv/route.js)",
+      "Bash(node --check app/cv/page.js)",
+      "Bash(mkdir -p /c/Users/oouen/Documents/docswift/app/[locale]/tools)",
+      "Bash(mkdir -p /c/Users/oouen/Documents/docswift/app/[locale]/cv)",
+      "Bash(mkdir -p /c/Users/oouen/Documents/docswift/app/[locale]/admin)",
+      "Bash(mkdir -p /c/Users/oouen/Documents/docswift/app/[locale]/terms)",
+      "Bash(ls /c/Users/oouen/Documents/docswift/app/[locale]/)",
+      "Bash(timeout 15 npx next build)"
     ]
   }
 }
