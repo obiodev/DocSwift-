@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["qpdf"]
+aptPkgs = ["qpdf"]
 
 [phases.install]
 cmds = ["npm install --production=false"]
