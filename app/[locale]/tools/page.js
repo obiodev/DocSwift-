@@ -35,6 +35,7 @@ const FREE_LIMIT  = 5;
 const AD_BONUS    = 3;
 const AD_DURATION = 30;
 const MULTI_TOOLS = new Set(["merge-pdf","image-to-pdf"]);
+const PREMIUM_TOOLS = new Set(["protect-pdf","unlock-pdf","compress-image"]);
 
 function AdModal({ onComplete, onClose }) {
   const t = useTranslations('tools');
@@ -121,16 +122,21 @@ function ToolsInner() {
     { id:"split-pdf",    icon:"✂️", nameKey:"tools.splitPdf.name",   descKey:"tools.splitPdf.desc",   accept:".pdf",       type:"split-pdf",    multi:false, color:"#EC4899", glow:"rgba(236,72,153,.12)"  },
     { id:"image-to-pdf", icon:"🖼️",nameKey:"tools.imageToPdf.name",  descKey:"tools.imageToPdf.desc",  accept:"image/*",    type:"image-to-pdf", multi:true,  color:"#8B5CF6", glow:"rgba(139,92,246,.12)"  },
     { id:"create-cv",    icon:"📄", nameKey:"tools.createCv.name",   descKey:"tools.createCv.desc",   accept:"",           type:"create-cv",    multi:false, color:"#14B8A6", glow:"rgba(20,184,166,.12)", external:`${localePrefix}/cv` },
+    { id:"protect-pdf",  icon:"🔒", nameKey:"tools.protectPdf.name", descKey:"tools.protectPdf.desc", accept:".pdf",       type:"protect-pdf",  multi:false, color:"#F97316", glow:"rgba(249,115,22,.12)", premium:true },
+    { id:"unlock-pdf",   icon:"🔓", nameKey:"tools.unlockPdf.name",  descKey:"tools.unlockPdf.desc",  accept:".pdf",       type:"unlock-pdf",   multi:false, color:"#EF4444", glow:"rgba(239,68,68,.12)",  premium:true },
+    { id:"compress-image",icon:"📷",nameKey:"tools.compressImage.name",descKey:"tools.compressImage.desc",accept:"image/*", type:"compress-image",multi:false, color:"#06B6D4", glow:"rgba(6,182,212,.12)",  premium:true },
   ];
 
   const [activeTool,   setActiveTool]   = useState(null);
   const [files,        setFiles]        = useState([]);
   const [splitPage,    setSplitPage]    = useState("1");
+  const [password,     setPassword]     = useState("");
+  const [quality,      setQuality]      = useState(75);
   const [loading,      setLoading]      = useState(false);
   const [result,       setResult]       = useState(null);
   const [error,        setError]        = useState(null);
   const [dragOver,     setDragOver]     = useState(false);
-  const [usage,        setUsage]        = useState({ used:0, limit:FREE_LIMIT, isPro:false, remaining:FREE_LIMIT });
+  const [usage,        setUsage]        = useState({ used:0, limit:FREE_LIMIT, isPro:false, isPremium:false, remaining:FREE_LIMIT });
   const [showAd,       setShowAd]       = useState(false);
   const [bonusUses,    setBonusUses]    = useState(0);
   const [bannerAdHtml, setBannerAdHtml] = useState("");
@@ -181,7 +187,7 @@ function ToolsInner() {
   };
   const handleDrop       = (e) => { e.preventDefault(); setDragOver(false); addFiles(e.dataTransfer.files); };
   const handleFileChange = (e) => addFiles(e.target.files);
-  const reset            = ()  => { setFiles([]); setResult(null); setError(null); };
+  const reset            = ()  => { setFiles([]); setResult(null); setError(null); setPassword(""); setQuality(75); };
 
   const handleAdComplete = () => {
     const key  = "docswift_bonus_" + new Date().toISOString().slice(0,10);
@@ -200,6 +206,7 @@ function ToolsInner() {
 
   const handleConvert = async () => {
     if (!files.length) return;
+    if (activeTool.type==="protect-pdf" && !password) { setError(t('tools.passwordLabel') + " required"); return; }
     if (!usage.isPro && effectiveRemaining <= 0) { setShowAd(true); return; }
     setLoading(true); setError(null);
     try {
@@ -209,10 +216,13 @@ function ToolsInner() {
       else {
         fd.append("file", files[0]);
         if (activeTool.type==="split-pdf") fd.append("page", splitPage||"1");
+        if (activeTool.type==="protect-pdf" || activeTool.type==="unlock-pdf") fd.append("password", password);
+        if (activeTool.type==="compress-image") fd.append("quality", String(quality));
       }
       const response = await fetch("/api/convert",{method:"POST",body:fd});
       const data     = await response.json();
       if (response.status===429||data.error==="LIMIT_REACHED") { setShowAd(true); setLoading(false); return; }
+      if (data.error==="PREMIUM_REQUIRED") { setError(t('tools.premiumRequired')); setLoading(false); return; }
       if (data.error) { setError(data.error); setLoading(false); return; }
       if (!usage.isPro) {
         const key = "docswift_used_"+new Date().toISOString().slice(0,10);
@@ -324,19 +334,34 @@ function ToolsInner() {
             </div>
 
             <div className="tools-grid" style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:16 }}>
-              {TOOLS.map(tool => (
-                <div key={tool.id} className="tool-card"
-                  onClick={()=>{ if(tool.external){router.push(tool.external);return;} setActiveTool(tool);reset(); }}
-                  style={{ background:"#0D1117",border:"1px solid #1E2733",borderRadius:18,padding:24,cursor:"pointer",position:"relative",overflow:"hidden" }}>
-                  <div style={{ position:"absolute",top:0,right:0,width:80,height:80,background:`radial-gradient(circle at top right,${tool.glow},transparent 70%)`,pointerEvents:"none" }} />
-                  <div style={{ width:44,height:44,borderRadius:12,background:`${tool.color}18`,border:`1px solid ${tool.color}28`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,marginBottom:14 }}>
-                    {tool.icon}
+              {TOOLS.map(tool => {
+                const isPremTool = tool.premium;
+                const locked = isPremTool && !usage.isPremium;
+                return (
+                  <div key={tool.id} className="tool-card"
+                    onClick={()=>{
+                      if (tool.external) { router.push(tool.external); return; }
+                      if (locked) { setError(t('tools.premiumRequired')); return; }
+                      setActiveTool(tool); reset();
+                    }}
+                    style={{ background:"#0D1117",border:`1px solid ${isPremTool?"rgba(249,115,22,.25)":"#1E2733"}`,borderRadius:18,padding:24,cursor:"pointer",position:"relative",overflow:"hidden",opacity:locked?.75:1 }}>
+                    <div style={{ position:"absolute",top:0,right:0,width:80,height:80,background:`radial-gradient(circle at top right,${tool.glow},transparent 70%)`,pointerEvents:"none" }} />
+                    {isPremTool && (
+                      <span style={{ position:"absolute",top:12,right:12,background:"rgba(249,115,22,.12)",color:"#F97316",fontSize:10,fontWeight:800,padding:"3px 8px",borderRadius:12,border:"1px solid rgba(249,115,22,.3)" }}>
+                        {t('tools.premiumBadge')}
+                      </span>
+                    )}
+                    <div style={{ width:44,height:44,borderRadius:12,background:`${tool.color}18`,border:`1px solid ${tool.color}28`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,marginBottom:14 }}>
+                      {locked ? "🔒" : tool.icon}
+                    </div>
+                    <div style={{ fontWeight:700,fontSize:15,marginBottom:5,color:"#F0F4FF" }}>{t(tool.nameKey)}</div>
+                    <div style={{ color:"#6B7A99",fontSize:13,lineHeight:1.5 }}>{t(tool.descKey)}</div>
+                    <div style={{ marginTop:14,fontSize:12,fontWeight:600,color:locked?"#F97316":tool.color }}>
+                      {locked ? t('tools.upgradePremium') : t('tools.useBtn')}
+                    </div>
                   </div>
-                  <div style={{ fontWeight:700,fontSize:15,marginBottom:5,color:"#F0F4FF" }}>{t(tool.nameKey)}</div>
-                  <div style={{ color:"#6B7A99",fontSize:13,lineHeight:1.5 }}>{t(tool.descKey)}</div>
-                  <div style={{ marginTop:14,fontSize:12,fontWeight:600,color:tool.color }}>{t('tools.useBtn')}</div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
@@ -394,6 +419,26 @@ function ToolsInner() {
                     <label style={{ display:"block",color:"#8892AA",fontSize:13,marginBottom:6 }}>{t('tools.splitPageLabel')}</label>
                     <input type="number" min="1" value={splitPage} onChange={e=>setSplitPage(e.target.value)}
                       style={{ width:"100%",background:"#0D1117",border:"1px solid #1E2733",color:"#F0F4FF",padding:"11px 14px",borderRadius:10,fontSize:15,boxSizing:"border-box" }} />
+                  </div>
+                )}
+
+                {(activeTool.type==="protect-pdf" || activeTool.type==="unlock-pdf") && (
+                  <div style={{ marginBottom:18 }}>
+                    <label style={{ display:"block",color:"#8892AA",fontSize:13,marginBottom:6 }}>{t('tools.passwordLabel')}</label>
+                    <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder={t('tools.passwordPlaceholder')}
+                      style={{ width:"100%",background:"#0D1117",border:"1px solid #1E2733",color:"#F0F4FF",padding:"11px 14px",borderRadius:10,fontSize:15,boxSizing:"border-box" }} />
+                  </div>
+                )}
+
+                {activeTool.type==="compress-image" && (
+                  <div style={{ marginBottom:18 }}>
+                    <label style={{ display:"block",color:"#8892AA",fontSize:13,marginBottom:6 }}>{t('tools.qualityLabel')}: {quality}%</label>
+                    <input type="range" min="10" max="100" value={quality} onChange={e=>setQuality(Number(e.target.value))}
+                      style={{ width:"100%",accentColor:"#06B6D4" }} />
+                    <div style={{ display:"flex",justifyContent:"space-between",fontSize:11,color:"#4B5563",marginTop:4 }}>
+                      <span>10% — Max compression</span>
+                      <span>100% — Best quality</span>
+                    </div>
                   </div>
                 )}
               </>

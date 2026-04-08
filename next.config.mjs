@@ -5,7 +5,7 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.js');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Heavy server-only packages — never bundled into client JS
-  serverExternalPackages: ["mammoth", "docx", "pdfjs-dist"],
+  serverExternalPackages: ["mammoth", "docx", "pdfjs-dist", "sharp"],
 
   // Security & performance
   poweredByHeader: false,

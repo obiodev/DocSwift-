@@ -1,2 +1,5 @@
+[phases.setup]
+nixPkgs = ["qpdf"]
+
 [phases.install]
 cmds = ["npm install --production=false"]

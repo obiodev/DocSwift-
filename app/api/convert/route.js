@@ -2,8 +2,14 @@ import { NextResponse }     from "next/server";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { getServerSession } from "next-auth";
 import { authOptions }      from "@/lib/auth";
-import { getUsageToday, incrementUsage, isPro, getFreeLimit } from "@/lib/supabase";
+import { getUsageToday, incrementUsage, isPro, getPlan, getFreeLimit } from "@/lib/supabase";
 import { pdfToDocx }        from "@/lib/pdfToDocx";
+import { execFileSync }     from "child_process";
+import { writeFileSync, readFileSync, unlinkSync, mkdtempSync, rmdirSync } from "fs";
+import { join }             from "path";
+import { tmpdir }           from "os";
+
+const PREMIUM_TOOLS = new Set(["protect-pdf", "compress-image", "unlock-pdf"]);
 
 
 // ─── POST handler ──────────────────────────────────────────────────────────
@@ -29,6 +35,17 @@ export async function POST(request) {
 
     const formData = await request.formData();
     const type = formData.get("type");
+
+    // ── Premium gate ──────────────────────────────────────────────────────
+    if (PREMIUM_TOOLS.has(type)) {
+      const plan = session?.user?.email ? await getPlan(session.user.email) : "free";
+      if (plan !== "premium") {
+        return NextResponse.json(
+          { error: "PREMIUM_REQUIRED", message: "This tool requires a Premium subscription." },
+          { status: 403 }
+        );
+      }
+    }
 
     // ── PDF → Word ─────────────────────────────────────────────────────────
     if (type === "pdf-to-word") {
@@ -183,6 +200,86 @@ export async function POST(request) {
         file: Buffer.from(pdfBytes).toString("base64"),
         filename: "images.pdf",
         mimeType: "application/pdf",
+      });
+    }
+
+    // ── Protect PDF (qpdf encryption) ────────────────────────────────────
+    if (type === "protect-pdf") {
+      const file = formData.get("file");
+      const password = formData.get("password");
+      if (!password) return NextResponse.json({ error: "Password is required" }, { status: 400 });
+
+      const bytes = Buffer.from(await file.arrayBuffer());
+      const dir = mkdtempSync(join(tmpdir(), "ds-"));
+      const inPath = join(dir, "in.pdf");
+      const outPath = join(dir, "out.pdf");
+      try {
+        writeFileSync(inPath, bytes);
+        execFileSync("qpdf", ["--encrypt", password, password, "256", "--", inPath, outPath]);
+        const result = readFileSync(outPath);
+        return NextResponse.json({
+          file: result.toString("base64"),
+          filename: "protected_" + file.name,
+          mimeType: "application/pdf",
+        });
+      } catch (e) {
+        return NextResponse.json({ error: "Encryption failed: " + e.message }, { status: 422 });
+      } finally {
+        try { unlinkSync(inPath); } catch {}
+        try { unlinkSync(outPath); } catch {}
+        try { rmdirSync(dir); } catch {}
+      }
+    }
+
+    // ── Unlock PDF (qpdf decryption) ──────────────────────────────────────
+    if (type === "unlock-pdf") {
+      const file = formData.get("file");
+      const password = formData.get("password") || "";
+
+      const bytes = Buffer.from(await file.arrayBuffer());
+      const dir = mkdtempSync(join(tmpdir(), "ds-"));
+      const inPath = join(dir, "in.pdf");
+      const outPath = join(dir, "out.pdf");
+      try {
+        writeFileSync(inPath, bytes);
+        execFileSync("qpdf", ["--password=" + password, "--decrypt", inPath, outPath]);
+        const result = readFileSync(outPath);
+        return NextResponse.json({
+          file: result.toString("base64"),
+          filename: "unlocked_" + file.name,
+          mimeType: "application/pdf",
+        });
+      } catch {
+        return NextResponse.json({ error: "Decryption failed — wrong password or unsupported encryption." }, { status: 422 });
+      } finally {
+        try { unlinkSync(inPath); } catch {}
+        try { unlinkSync(outPath); } catch {}
+        try { rmdirSync(dir); } catch {}
+      }
+    }
+
+    // ── Compress Image (sharp) ─────────────────────────────────────────────
+    if (type === "compress-image") {
+      const file = formData.get("file");
+      const quality = Math.min(100, Math.max(1, parseInt(formData.get("quality") || "75")));
+      const bytes = Buffer.from(await file.arrayBuffer());
+
+      const sharp = (await import("sharp")).default;
+      const mime = file.type;
+      let result, outMime, ext;
+
+      if (mime === "image/png") {
+        result = await sharp(bytes).png({ quality, compressionLevel: 9 }).toBuffer();
+        outMime = "image/png"; ext = ".png";
+      } else {
+        result = await sharp(bytes).jpeg({ quality, mozjpeg: true }).toBuffer();
+        outMime = "image/jpeg"; ext = ".jpg";
+      }
+
+      return NextResponse.json({
+        file: result.toString("base64"),
+        filename: "compressed_" + file.name.replace(/\.\w+$/, ext),
+        mimeType: outMime,
       });
     }
 

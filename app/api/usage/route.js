@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions }      from "@/lib/auth";
-import { getUsageToday, incrementUsage, isPro, FREE_LIMIT, getFreeLimit } from "@/lib/supabase";
+import { getUsageToday, incrementUsage, isPro, getPlan, FREE_LIMIT, getFreeLimit } from "@/lib/supabase";
 
 // Helper: get the caller's identifier (email or IP)
 function getIdentifier(request, session) {
@@ -13,7 +13,8 @@ function getIdentifier(request, session) {
 // GET /api/usage — returns { used, limit, isPro, remaining }
 export async function GET(request) {
   const session    = await getServerSession(authOptions);
-  const pro        = session?.user?.email ? await isPro(session.user.email) : false;
+  const plan       = session?.user?.email ? await getPlan(session.user.email) : "free";
+  const pro        = plan === "pro" || plan === "premium";
   const identifier = getIdentifier(request, session);
   const [used, limit] = pro
     ? [0, FREE_LIMIT]
@@ -23,6 +24,8 @@ export async function GET(request) {
     used,
     limit,
     isPro: pro,
+    isPremium: plan === "premium",
+    plan,
     remaining: pro ? Infinity : Math.max(0, limit - used),
   });
 }

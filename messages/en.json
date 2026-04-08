@@ -11,7 +11,7 @@
     "generating": "Generating..."
   },
   "landing": {
-    "badge": "7 PDF tools · Free · No sign-up required",
+    "badge": "10 PDF tools · Free · No sign-up required",
     "hero": {
       "title1": "Your documents,",
       "title2": "transformed in seconds.",
@@ -62,6 +62,20 @@
         "name": "Create a Resume",
         "desc": "Generate a professional PDF resume by filling out a guided form.",
         "tag": "New ✨"
+      },
+      "protectPdf": {
+        "name": "Protect PDF",
+        "desc": "Add a password to protect your sensitive documents.",
+        "tag": "Premium ✦"
+      },
+      "unlockPdf": {
+        "name": "Unlock PDF",
+        "desc": "Remove the password from a PDF you have access to."
+      },
+      "compressImage": {
+        "name": "Compress Image",
+        "desc": "Reduce JPG/PNG image size by up to 90%.",
+        "tag": "Premium ✦"
       }
     },
     "how": {
@@ -105,6 +119,13 @@
       "proFeatures": ["Unlimited conversions", "All 7 tools", "Files up to 50 MB", "Zero ads", "Priority processing", "Email support"],
       "upgradeSession": "Go Pro →",
       "upgradeGuest": "Sign up and go Pro →",
+      "premiumLabel": "Premium",
+      "premiumBadge": "✦ MOST COMPLETE",
+      "premiumPrice": "19.99",
+      "premiumPerMonth": "per month · no commitment",
+      "premiumFeatures": ["All Pro features included", "Password-protect PDFs", "Unlock encrypted PDFs", "Advanced image compressor", "Upcoming premium tools", "Priority 24/7 support"],
+      "upgradePremiumSession": "Go Premium →",
+      "upgradePremiumGuest": "Sign up and go Premium →",
       "securePayment": "Secure payment by Stripe · Cancel anytime · No card required for free plan"
     },
     "cta": {
@@ -168,7 +189,18 @@
     "mergePdf": { "name": "Merge", "desc": "Combine multiple PDFs into one" },
     "splitPdf": { "name": "Split", "desc": "Extract a specific page" },
     "imageToPdf": { "name": "Image → PDF", "desc": "Convert images to PDF" },
-    "createCv": { "name": "Create Resume", "desc": "Professional PDF resume" }
+    "createCv": { "name": "Create Resume", "desc": "Professional PDF resume" },
+    "protectPdf": { "name": "Protect PDF", "desc": "Add a password to your PDF" },
+    "unlockPdf": { "name": "Unlock PDF", "desc": "Remove the password from a PDF" },
+    "compressImage": { "name": "Compress Image", "desc": "Reduce JPG/PNG image file size" },
+    "premiumBadge": "✦ PREMIUM",
+    "premiumRequired": "This tool requires a Premium subscription.",
+    "upgradePremium": "Go Premium",
+    "premiumBadgeNav": "✦ PREMIUM — Unlimited",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter a password...",
+    "qualityLabel": "Compression quality",
+    "errorConvert": "Conversion error. Please retry."
   },
   "cv": {
     "title": "Build my Resume",

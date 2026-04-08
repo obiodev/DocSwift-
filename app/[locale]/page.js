@@ -102,6 +102,9 @@ export default function Home() {
     {icon:"✂️", nameKey:"landing.tools.splitPdf.name",   descKey:"landing.tools.splitPdf.desc",   href:"/tools?tool=split-pdf",   color:"#EC4899", glow:"rgba(236,72,153,.15)"},
     {icon:"🖼️",nameKey:"landing.tools.imageToPdf.name",  descKey:"landing.tools.imageToPdf.desc",  href:"/tools?tool=image-to-pdf",color:"#8B5CF6", glow:"rgba(139,92,246,.15)"},
     {icon:"📄", nameKey:"landing.tools.createCv.name",   descKey:"landing.tools.createCv.desc",   href:"/cv",                     color:"#14B8A6", glow:"rgba(20,184,166,.15)", tagKey:"landing.tools.createCv.tag", tagC:"#14B8A6"},
+    {icon:"🔒", nameKey:"landing.tools.protectPdf.name",descKey:"landing.tools.protectPdf.desc",href:"/tools?tool=protect-pdf", color:"#F97316", glow:"rgba(249,115,22,.15)", tagKey:"landing.tools.protectPdf.tag", tagC:"#F97316"},
+    {icon:"🔓", nameKey:"landing.tools.unlockPdf.name", descKey:"landing.tools.unlockPdf.desc", href:"/tools?tool=unlock-pdf",  color:"#EF4444", glow:"rgba(239,68,68,.15)"},
+    {icon:"📷", nameKey:"landing.tools.compressImage.name",descKey:"landing.tools.compressImage.desc",href:"/tools?tool=compress-image",color:"#06B6D4",glow:"rgba(6,182,212,.15)", tagKey:"landing.tools.compressImage.tag", tagC:"#06B6D4"},
   ];
 
   const STATS = [
@@ -124,8 +127,9 @@ export default function Home() {
     {n:"04", icon:"⬇️", titleKey:"landing.how.step4Title", descKey:"landing.how.step4Desc"},
   ];
 
-  const FREE_FEATURES = t.raw('landing.pricing.freeFeatures');
-  const PRO_FEATURES  = t.raw('landing.pricing.proFeatures');
+  const FREE_FEATURES    = t.raw('landing.pricing.freeFeatures');
+  const PRO_FEATURES     = t.raw('landing.pricing.proFeatures');
+  const PREMIUM_FEATURES = t.raw('landing.pricing.premiumFeatures');
 
   return (
     <div style={{ minHeight:"100vh", background:"#07090F", color:"#F0F4FF", fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif", overflowX:"hidden" }}>
@@ -322,59 +326,80 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="pricing-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:24 }}>
+          <div className="pricing-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:20 }}>
             {/* FREE */}
-            <div style={{ background:"#0D1117",border:"1px solid #1E2733",borderRadius:24,padding:"36px 32px" }}>
+            <div style={{ background:"#0D1117",border:"1px solid #1E2733",borderRadius:24,padding:"36px 28px" }}>
               <div style={{ fontSize:12,fontWeight:800,color:"#6B7A99",letterSpacing:1.5,textTransform:"uppercase",marginBottom:10 }}>{t('landing.pricing.freePlan')}</div>
-              <div style={{ fontSize:54,fontWeight:900,letterSpacing:-2,color:"#F0F4FF",lineHeight:1 }}>0€</div>
+              <div style={{ fontSize:48,fontWeight:900,letterSpacing:-2,color:"#F0F4FF",lineHeight:1 }}>0€</div>
               <div style={{ color:"#4B5563",fontSize:14,marginBottom:28,marginTop:4 }}>{t('landing.pricing.forever')}</div>
-              <ul style={{ listStyle:"none",padding:0,margin:"0 0 32px",display:"flex",flexDirection:"column",gap:13 }}>
+              <ul style={{ listStyle:"none",padding:0,margin:"0 0 32px",display:"flex",flexDirection:"column",gap:12 }}>
                 {(Array.isArray(FREE_FEATURES) ? FREE_FEATURES : []).map((f, i) => (
-                  <li key={i} style={{ display:"flex",alignItems:"center",gap:10,fontSize:14,color:"#8892AA" }}>
-                    <span style={{ color:"#4B5563",flexShrink:0,fontSize:16 }}>✓</span>{f}
+                  <li key={i} style={{ display:"flex",alignItems:"center",gap:10,fontSize:13,color:"#8892AA" }}>
+                    <span style={{ color:"#4B5563",flexShrink:0,fontSize:15 }}>✓</span>{f}
                   </li>
                 ))}
               </ul>
-              <button onClick={() => go("/tools")} style={{ width:"100%",padding:"13px",borderRadius:12,border:"1px solid #1E2733",background:"transparent",color:"#F0F4FF",fontSize:15,fontWeight:600,cursor:"pointer" }}>
+              <button onClick={() => go("/tools")} style={{ width:"100%",padding:"13px",borderRadius:12,border:"1px solid #1E2733",background:"transparent",color:"#F0F4FF",fontSize:14,fontWeight:600,cursor:"pointer" }}>
                 {t('landing.pricing.startFree')}
               </button>
             </div>
 
             {/* PRO */}
-            <div style={{ background:"linear-gradient(145deg,#0D1F3C,#132240)",border:"2px solid #3B82F6",borderRadius:24,padding:"36px 32px",position:"relative" }}>
-              <div style={{ position:"absolute",top:-15,left:"50%",transform:"translateX(-50%)",background:"linear-gradient(135deg,#3B82F6,#2563EB)",color:"#fff",fontSize:11,fontWeight:800,padding:"5px 18px",borderRadius:20,whiteSpace:"nowrap",letterSpacing:.5 }}>
+            <div style={{ background:"linear-gradient(145deg,#0D1F3C,#132240)",border:"2px solid #3B82F6",borderRadius:24,padding:"36px 28px",position:"relative" }}>
+              <div style={{ position:"absolute",top:-15,left:"50%",transform:"translateX(-50%)",background:"linear-gradient(135deg,#3B82F6,#2563EB)",color:"#fff",fontSize:11,fontWeight:800,padding:"5px 16px",borderRadius:20,whiteSpace:"nowrap",letterSpacing:.5 }}>
                 {isPromo ? t('landing.pricing.launchOffer') : t('landing.pricing.mostPopular')}
               </div>
               <div style={{ fontSize:12,fontWeight:800,color:"#60A5FA",letterSpacing:1.5,textTransform:"uppercase",marginBottom:10 }}>{t('landing.pricing.proLabel')}</div>
               {isPromo ? (
                 <>
-                  <div style={{ display:"flex",alignItems:"flex-end",gap:10 }}>
-                    <div style={{ fontSize:54,fontWeight:900,letterSpacing:-2,color:"#fff",lineHeight:1 }}>{promoPrice}€</div>
-                    <div style={{ fontSize:18,color:"#4B6A8A",textDecoration:"line-through",marginBottom:8 }}>{normalPrice}€</div>
+                  <div style={{ display:"flex",alignItems:"flex-end",gap:8 }}>
+                    <div style={{ fontSize:48,fontWeight:900,letterSpacing:-2,color:"#fff",lineHeight:1 }}>{promoPrice}€</div>
+                    <div style={{ fontSize:16,color:"#4B6A8A",textDecoration:"line-through",marginBottom:7 }}>{normalPrice}€</div>
                   </div>
-                  <div style={{ color:"#60A5FA",fontSize:14,marginBottom:8,marginTop:4 }}>
+                  <div style={{ color:"#60A5FA",fontSize:13,marginBottom:8,marginTop:4 }}>
                     {t('landing.pricing.perMonthFor', { months: promoMonths, price: normalPrice })}
                   </div>
-                  <div style={{ background:"rgba(16,185,129,.12)",border:"1px solid rgba(16,185,129,.25)",color:"#10B981",fontSize:12,fontWeight:700,padding:"5px 12px",borderRadius:8,display:"inline-block",marginBottom:20 }}>
+                  <div style={{ background:"rgba(16,185,129,.12)",border:"1px solid rgba(16,185,129,.25)",color:"#10B981",fontSize:11,fontWeight:700,padding:"4px 10px",borderRadius:8,display:"inline-block",marginBottom:18 }}>
                     {t('landing.pricing.saveAmount', { amount: ((parseFloat(normalPrice)-parseFloat(promoPrice))*parseInt(promoMonths)).toFixed(2), months: promoMonths })}
                   </div>
                 </>
               ) : (
                 <>
-                  <div style={{ fontSize:54,fontWeight:900,letterSpacing:-2,color:"#fff",lineHeight:1 }}>{normalPrice}€</div>
-                  <div style={{ color:"#60A5FA",fontSize:14,marginBottom:28,marginTop:4 }}>{t('landing.pricing.perMonth')}</div>
+                  <div style={{ fontSize:48,fontWeight:900,letterSpacing:-2,color:"#fff",lineHeight:1 }}>{normalPrice}€</div>
+                  <div style={{ color:"#60A5FA",fontSize:13,marginBottom:28,marginTop:4 }}>{t('landing.pricing.perMonth')}</div>
                 </>
               )}
-              <ul style={{ listStyle:"none",padding:0,margin:"0 0 32px",display:"flex",flexDirection:"column",gap:13 }}>
+              <ul style={{ listStyle:"none",padding:0,margin:"0 0 32px",display:"flex",flexDirection:"column",gap:12 }}>
                 {(Array.isArray(PRO_FEATURES) ? PRO_FEATURES : []).map((f, i) => (
-                  <li key={i} style={{ display:"flex",alignItems:"center",gap:10,fontSize:14,color:"#D1E8FF" }}>
-                    <span style={{ color:"#3B82F6",flexShrink:0,fontSize:16 }}>✓</span>{f}
+                  <li key={i} style={{ display:"flex",alignItems:"center",gap:10,fontSize:13,color:"#D1E8FF" }}>
+                    <span style={{ color:"#3B82F6",flexShrink:0,fontSize:15 }}>✓</span>{f}
                   </li>
                 ))}
               </ul>
               <button className="btn-primary" onClick={handleUpgrade}
-                style={{ width:"100%",padding:"14px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#3B82F6,#2563EB)",color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer" }}>
+                style={{ width:"100%",padding:"14px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#3B82F6,#2563EB)",color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer" }}>
                 {session ? t('landing.pricing.upgradeSession') : t('landing.pricing.upgradeGuest')}
+              </button>
+            </div>
+
+            {/* PREMIUM */}
+            <div style={{ background:"linear-gradient(145deg,#1A1000,#2A1800)",border:"2px solid #F97316",borderRadius:24,padding:"36px 28px",position:"relative" }}>
+              <div style={{ position:"absolute",top:-15,left:"50%",transform:"translateX(-50%)",background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",fontSize:11,fontWeight:800,padding:"5px 16px",borderRadius:20,whiteSpace:"nowrap",letterSpacing:.5 }}>
+                {t('landing.pricing.premiumBadge')}
+              </div>
+              <div style={{ fontSize:12,fontWeight:800,color:"#FB923C",letterSpacing:1.5,textTransform:"uppercase",marginBottom:10 }}>{t('landing.pricing.premiumLabel')}</div>
+              <div style={{ fontSize:48,fontWeight:900,letterSpacing:-2,color:"#fff",lineHeight:1 }}>19.99€</div>
+              <div style={{ color:"#FB923C",fontSize:13,marginBottom:28,marginTop:4 }}>{t('landing.pricing.premiumPerMonth')}</div>
+              <ul style={{ listStyle:"none",padding:0,margin:"0 0 32px",display:"flex",flexDirection:"column",gap:12 }}>
+                {(Array.isArray(PREMIUM_FEATURES) ? PREMIUM_FEATURES : []).map((f, i) => (
+                  <li key={i} style={{ display:"flex",alignItems:"center",gap:10,fontSize:13,color:"#FED7AA" }}>
+                    <span style={{ color:"#F97316",flexShrink:0,fontSize:15 }}>✓</span>{f}
+                  </li>
+                ))}
+              </ul>
+              <button className="btn-primary" onClick={handleUpgrade}
+                style={{ width:"100%",padding:"14px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer" }}>
+                {session ? t('landing.pricing.upgradePremiumSession') : t('landing.pricing.upgradePremiumGuest')}
               </button>
             </div>
           </div>
