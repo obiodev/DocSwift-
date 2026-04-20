@@ -212,6 +212,8 @@ function UsersTab() {
   const [giftEmail,   setGiftEmail]   = useState("");
   const [giftMonths,  setGiftMonths]  = useState("1");
   const [giftLoading, setGiftLoading] = useState(false);
+  const [newUser,     setNewUser]     = useState({ name:"", email:"", password:"", plan:"free" });
+  const [createLoading, setCreateLoading] = useState(false);
 
   const showToast = (msg,ok=true) => { setToast({msg,ok}); setTimeout(()=>setToast(null),3000); };
 
@@ -225,6 +227,27 @@ function UsersTab() {
     await fetch("/api/admin/users",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,status})});
     showToast(`Plan de ${email} → ${status}`);
     load();
+  };
+
+  const createUser = async () => {
+    if (!newUser.name.trim())              return showToast("Nom requis", false);
+    if (!newUser.email.includes("@"))      return showToast("Email invalide", false);
+    if (newUser.password.length < 8)       return showToast("Mot de passe trop court (8 car. min)", false);
+    setCreateLoading(true);
+    const r = await fetch("/api/admin/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: newUser.name.trim(), email: newUser.email.trim().toLowerCase(), password: newUser.password, plan: newUser.plan }),
+    });
+    const json = await r.json().catch(() => ({}));
+    setCreateLoading(false);
+    if (r.ok) {
+      showToast(`Compte créé pour ${newUser.email}`);
+      setNewUser({ name:"", email:"", password:"", plan:"free" });
+      load();
+    } else {
+      showToast(json.error ?? "Erreur lors de la création", false);
+    }
   };
 
   const giftPro = async () => {
@@ -273,6 +296,38 @@ function UsersTab() {
           </div>
           <button className="btn-action" onClick={giftPro} disabled={giftLoading} style={{ ...S.btn("#10B981"),opacity:giftLoading?.6:1 }}>
             {giftLoading?"...":"🎁 Offrir Pro"}
+          </button>
+        </div>
+      </div>
+
+      {/* Create user form */}
+      <div style={{ ...S.card,marginBottom:20 }}>
+        <div style={{ fontWeight:700,fontSize:15,marginBottom:14,color:"#F0F4FF" }}>➕ Créer un utilisateur</div>
+        <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr auto auto",gap:10,alignItems:"flex-end",flexWrap:"wrap" }}>
+          <div>
+            <label style={{ display:"block",fontSize:12,color:"#6B7A99",marginBottom:5 }}>Nom complet</label>
+            <input value={newUser.name} onChange={e=>setNewUser(u=>({...u,name:e.target.value}))} placeholder="Jean Dupont" style={S.input} />
+          </div>
+          <div>
+            <label style={{ display:"block",fontSize:12,color:"#6B7A99",marginBottom:5 }}>Email</label>
+            <input type="email" value={newUser.email} onChange={e=>setNewUser(u=>({...u,email:e.target.value}))} placeholder="jean@exemple.com" style={S.input} />
+          </div>
+          <div>
+            <label style={{ display:"block",fontSize:12,color:"#6B7A99",marginBottom:5 }}>Mot de passe (8 car. min)</label>
+            <input type="password" value={newUser.password} onChange={e=>setNewUser(u=>({...u,password:e.target.value}))} placeholder="••••••••" style={S.input} />
+          </div>
+          <div>
+            <label style={{ display:"block",fontSize:12,color:"#6B7A99",marginBottom:5 }}>Plan</label>
+            <select value={newUser.plan} onChange={e=>setNewUser(u=>({...u,plan:e.target.value}))} style={{ ...S.input,width:120 }}>
+              <option value="free">Gratuit</option>
+              <option value="starter">Starter</option>
+              <option value="pro">Pro</option>
+              <option value="business">Business</option>
+            </select>
+          </div>
+          <button className="btn-action" onClick={createUser} disabled={createLoading}
+            style={{ ...S.btn("#6366F1"),opacity:createLoading?.6:1,whiteSpace:"nowrap" }}>
+            {createLoading?"...":"👤 Créer"}
           </button>
         </div>
       </div>

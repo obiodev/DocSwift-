@@ -1,6 +1,11 @@
 import { NextResponse }  from "next/server";
 import Stripe            from "stripe";
 import { supabaseAdmin } from "@/lib/supabase";
+import {
+  sendSubscriptionConfirmEmail,
+  sendPaymentFailedEmail,
+  sendSubscriptionCancelledEmail,
+} from "@/lib/email";
 
 export async function POST(request) {
   if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
@@ -37,6 +42,12 @@ export async function POST(request) {
       const email = s.customer_email ?? s.metadata?.userEmail;
       if (s.mode === "subscription") {
         await upsertSub(s.customer, s.subscription, "pro", null, email);
+
+        // Welcome Pro email (non-blocking)
+        if (email) {
+          const { data: user } = await supabaseAdmin?.from("users").select("name").eq("email", email).maybeSingle() ?? {};
+          sendSubscriptionConfirmEmail({ email, name: user?.name ?? "" }).catch(() => {});
+        }
 
         // Track affiliate referral
         const affiliateCode = s.metadata?.affiliateCode;
@@ -81,6 +92,22 @@ export async function POST(request) {
       const s   = event.data.object;
       const cus = await stripe.customers.retrieve(s.customer);
       await upsertSub(s.customer, s.id, "free", null, cus.email);
+      // Cancellation email (non-blocking)
+      if (cus.email) {
+        const { data: user } = await supabaseAdmin?.from("users").select("name").eq("email", cus.email).maybeSingle() ?? {};
+        sendSubscriptionCancelledEmail({ email: cus.email, name: user?.name ?? "" }).catch(() => {});
+      }
+      break;
+    }
+
+    case "invoice.payment_failed": {
+      const inv = event.data.object;
+      const cus = await stripe.customers.retrieve(inv.customer);
+      if (cus.email) {
+        const { data: user } = await supabaseAdmin?.from("users").select("name").eq("email", cus.email).maybeSingle() ?? {};
+        const retryUrl = inv.hosted_invoice_url ?? undefined;
+        sendPaymentFailedEmail({ email: cus.email, name: user?.name ?? "", retryUrl }).catch(() => {});
+      }
       break;
     }
   }

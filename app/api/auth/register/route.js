@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
-import bcrypt           from "bcryptjs";
-import { supabaseAdmin } from "@/lib/supabase";
+import { NextResponse }      from "next/server";
+import bcrypt               from "bcryptjs";
+import { supabaseAdmin }    from "@/lib/supabase";
+import { sendWelcomeEmail } from "@/lib/email";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -34,6 +35,9 @@ export async function POST(request) {
       console.error("Register insert error:", insertErr);
       return NextResponse.json({ error: "Erreur lors de la création du compte." }, { status: 500 });
     }
+
+    // ── Welcome email (non-blocking) ──────────────────────────────────────
+    sendWelcomeEmail({ email: email.toLowerCase(), name: name.trim() }).catch(() => {});
 
     return NextResponse.json({ success: true });
 
