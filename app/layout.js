@@ -15,10 +15,23 @@ export const metadata = {
   },
   description: "DocSwift analyse 100 CVs en 2 minutes, extrait les clauses de vos contrats et traite tous vos PDFs. Solution B2B pour PME, cabinets RH et avocats.",
   keywords: [
-    "analyse CV IA", "tri CV automatique", "recrutement IA", "DocSwift HR",
-    "outils PDF entreprise", "PDF en Word", "compresser PDF", "fusionner PDF",
-    "extraction clauses contrat", "assistant PDF", "gestion documents PME",
-    "logiciel RH PME", "scoring CV", "matching candidats",
+    // FR — PDF tools
+    "outils PDF gratuits", "convertir PDF en Word", "compresser PDF", "fusionner PDF", "diviser PDF",
+    "PDF en ligne", "convertisseur PDF", "PDF vers Word", "PDF vers Excel", "protéger PDF",
+    // FR — CV
+    "créer CV PDF", "CV gratuit en ligne", "modèle CV", "générateur de CV", "CV professionnel",
+    // FR — HR
+    "analyse CV IA", "tri CV automatique", "recrutement IA", "scoring CV", "matching candidats",
+    "logiciel RH PME", "ATS IA", "parsing CV",
+    // EN — PDF tools
+    "free PDF tools", "convert PDF to Word", "compress PDF", "merge PDF", "split PDF",
+    "online PDF converter", "PDF to Word", "PDF to Excel",
+    // EN — CV
+    "free resume builder", "create PDF resume", "resume template", "CV generator",
+    // EN — HR
+    "AI resume analysis", "automatic CV screening", "AI recruitment", "resume scoring",
+    // AR
+    "أدوات PDF مجانية", "تحويل PDF إلى Word", "إنشاء سيرة ذاتية", "تحليل السيرة الذاتية بالذكاء الاصطناعي",
   ],
   authors: [{ name: "DocSwift", url: BASE_URL }],
   creator: "DocSwift",
