@@ -126,7 +126,24 @@
       "premiumFeatures": ["All Pro features included", "Password-protect PDFs", "Unlock encrypted PDFs", "Advanced image compressor", "Upcoming premium tools", "Priority 24/7 support"],
       "upgradePremiumSession": "Go Premium →",
       "upgradePremiumGuest": "Sign up and go Premium →",
-      "securePayment": "Secure payment by Stripe · Cancel anytime · No card required for free plan"
+      "securePayment": "Secure payment by Stripe · Cancel anytime · No card required for free plan",
+      "startStarter": "Get started with Starter →",
+      "startPro": "Get started with Pro →",
+      "startBusiness": "Contact sales →"
+    },
+    "modules": {
+      "pdf": {
+        "title": "PDF Essentials",
+        "desc": "10 PDF tools to convert, compress, merge and sign your documents every day."
+      },
+      "ai": {
+        "title": "DocSwift AI",
+        "desc": "Interact with your PDFs using AI: clause extraction, summaries and translation."
+      },
+      "hr": {
+        "title": "DocSwift HR",
+        "desc": "Analyze 100 CVs in 2 minutes with an AI matching score and instant HR recommendations."
+      }
     },
     "cta": {
       "title": "Ready to save time?",

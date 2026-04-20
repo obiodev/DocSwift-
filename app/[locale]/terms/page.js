@@ -9,9 +9,11 @@ const LAST_UPDATE = "6 avril 2026";
 const sections = [
   {
     title: "1. Présentation et éditeur",
-    content: `DocSwift est un service en ligne proposant des outils de traitement de documents PDF et de création de CV professionnel, accessible à l'adresse getdocswift.com.
+    content: `DocSwift est un service en ligne proposant des outils de traitement de documents PDF, d'analyse de CVs par intelligence artificielle et de création de CV professionnel, accessible à l'adresse getdocswift.com.
 
-Éditeur du service : DocSwift
+DocSwift est une marque appartenant à Mokoto LLC, société enregistrée aux États-Unis.
+
+Éditeur du service : Mokoto LLC (opérant sous la marque DocSwift)
 Contact : support@getdocswift.com
 Hébergement : Railway (Railway Corp., San Francisco, CA, États-Unis)`,
   },
@@ -73,7 +75,7 @@ L'utilisateur est seul responsable des fichiers qu'il soumet. Il garantit dispos
   },
   {
     title: "7. Propriété intellectuelle",
-    content: `L'ensemble des éléments constitutifs de DocSwift (interface, logo, code source, textes, outils) sont protégés par le droit de la propriété intellectuelle et sont la propriété exclusive de DocSwift.
+    content: `L'ensemble des éléments constitutifs de DocSwift (interface, logo, code source, textes, outils) sont protégés par le droit de la propriété intellectuelle et sont la propriété exclusive de Mokoto LLC, titulaire de la marque DocSwift.
 
 Toute reproduction, représentation, modification ou exploitation non autorisée de tout ou partie du service est strictement interdite.
 
@@ -131,10 +133,11 @@ Pour tout litige relatif à un contrat de consommation, l'utilisateur peut égal
     title: "12. Contact",
     content: `Pour toute question relative aux présentes CGU ou au service :
 
+Société : Mokoto LLC (marque DocSwift)
 Email : support@getdocswift.com
 Site web : getdocswift.com
 
-DocSwift s'engage à répondre à toute demande dans un délai de 5 jours ouvrés.`,
+Mokoto LLC s'engage à répondre à toute demande dans un délai de 5 jours ouvrés.`,
   },
 ];
 
