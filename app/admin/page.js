@@ -359,21 +359,40 @@ function UsersTab() {
         : <div style={{ ...S.card,padding:0,overflow:"auto" }}>
             <table style={{ width:"100%",borderCollapse:"collapse" }}>
               <thead>
-                <tr><TH>Email</TH><TH>Plan</TH><TH>Conversions auj.</TH><TH>Fin abonnement</TH><TH>Inscrit</TH><TH>Actions</TH></tr>
+                <tr><TH>Email</TH><TH>Compte</TH><TH>Plan</TH><TH>Conversions auj.</TH><TH>Fin abonnement</TH><TH>Inscrit</TH><TH>Actions</TH></tr>
               </thead>
               <tbody>
                 {filtered.map(u=>(
                   <tr key={u.email} className="row-hover" style={{ borderBottom:"1px solid #131922" }}>
-                    <TD><span style={{ fontWeight:600 }}>{u.email}</span></TD>
-                    <TD><span style={badge(u.status)}>{u.status==="pro"?"PRO ✨":"GRATUIT"}</span></TD>
+                    <TD>
+                      <span style={{ fontWeight:600 }}>{u.email}</span>
+                      {u.name && <div style={{ fontSize:11,color:"#6B7A99",marginTop:2 }}>{u.name}</div>}
+                    </TD>
+                    <TD>
+                      {u.createdAt
+                        ? <span style={{ fontSize:11,fontWeight:700,color:"#10B981",background:"rgba(16,185,129,.1)",border:"1px solid rgba(16,185,129,.2)",padding:"2px 8px",borderRadius:20 }}>
+                            {u.provider==="google"?"Google":"Email"}
+                          </span>
+                        : <span style={{ fontSize:11,fontWeight:700,color:"#F59E0B",background:"rgba(245,158,11,.1)",border:"1px solid rgba(245,158,11,.2)",padding:"2px 8px",borderRadius:20 }}>
+                            Invité
+                          </span>
+                      }
+                    </TD>
+                    <TD>
+                      <span style={badge(u.status)}>
+                        {u.status==="pro"?"PRO ✨":u.status==="business"?"BUSINESS":u.status==="starter"?"STARTER":"GRATUIT"}
+                      </span>
+                    </TD>
                     <TD style={{ color:u.usageToday>=5?"#EF4444":"#8892AA" }}>{u.usageToday??0}</TD>
                     <TD style={{ color:"#6B7A99" }}>{fmt(u.periodEnd)}</TD>
-                    <TD style={{ color:"#6B7A99" }}>{fmt(u.createdAt)}</TD>
+                    <TD style={{ color:"#6B7A99" }}>{u.createdAt ? fmt(u.createdAt) : <span style={{ color:"#4B5563" }}>—</span>}</TD>
                     <TD>
-                      {u.status==="pro"
-                        ? <button className="btn-action" onClick={()=>changePlan(u.email,"free")} style={{ ...S.btn("transparent"),color:"#FCA5A5",border:"1px solid rgba(239,68,68,.3)",fontSize:12 }}>Rétrograder</button>
-                        : <button className="btn-action" onClick={()=>changePlan(u.email,"pro")}  style={{ ...S.btn("transparent"),color:"#10B981", border:"1px solid rgba(16,185,129,.3)",fontSize:12 }}>Activer Pro</button>
-                      }
+                      <div style={{ display:"flex",gap:6,flexWrap:"wrap" }}>
+                        {u.status==="pro"||u.status==="business"
+                          ? <button className="btn-action" onClick={()=>changePlan(u.email,"free")} style={{ ...S.btn("transparent"),color:"#FCA5A5",border:"1px solid rgba(239,68,68,.3)",fontSize:12 }}>Rétrograder</button>
+                          : <button className="btn-action" onClick={()=>changePlan(u.email,"pro")}  style={{ ...S.btn("transparent"),color:"#10B981",border:"1px solid rgba(16,185,129,.3)",fontSize:12 }}>Activer Pro</button>
+                        }
+                      </div>
                     </TD>
                   </tr>
                 ))}

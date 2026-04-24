@@ -8,6 +8,8 @@ function isAdmin(email) {
   return process.env.ADMIN_EMAIL && email === process.env.ADMIN_EMAIL;
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 // GET /api/admin/users
 export async function GET(request) {
   const session = await getServerSession(authOptions);
@@ -16,34 +18,59 @@ export async function GET(request) {
 
   const today = new Date().toISOString().slice(0, 10);
 
-  const [usersRes, subsRes, usageRes] = await Promise.all([
+  const [usersRes, subsRes, usageRes, allUsageRes] = await Promise.all([
     supabaseAdmin.from("users").select("id, email, name, provider, created_at").order("created_at", { ascending: false }),
     supabaseAdmin.from("subscriptions").select("*"),
     supabaseAdmin.from("usage_logs").select("identifier, count").eq("date", today),
+    supabaseAdmin.from("usage_logs").select("identifier").neq("identifier", ""),
   ]);
 
   if (usersRes.error) console.error("[admin/users] Supabase error:", usersRes.error);
 
-  const registeredUsers = usersRes.data;
-  const subs            = subsRes.data;
-  const usageLogs       = usageRes.data;
+  const registeredUsers = usersRes.data ?? [];
+  const subs            = subsRes.data   ?? [];
+  const usageLogs       = usageRes.data  ?? [];
 
-  const subsMap  = Object.fromEntries((subs ?? []).map(s => [s.user_email, s]));
-  const usageMap = Object.fromEntries((usageLogs ?? []).map(u => [u.identifier, u.count]));
+  const subsMap  = Object.fromEntries(subs.map(s => [s.user_email, s]));
+  const usageMap = Object.fromEntries(usageLogs.map(u => [u.identifier, u.count]));
 
-  const users = (registeredUsers ?? []).map(u => {
-    const sub = subsMap[u.email];
+  // Collect all known emails (registered + subscriptions + usage_logs email identifiers)
+  const knownEmails = new Set(registeredUsers.map(u => u.email));
+
+  // Add emails from subscriptions not yet in users table
+  for (const s of subs) {
+    if (s.user_email && EMAIL_RE.test(s.user_email)) knownEmails.add(s.user_email);
+  }
+
+  // Add email identifiers from usage_logs (filter out IPs)
+  for (const u of (allUsageRes.data ?? [])) {
+    if (u.identifier && EMAIL_RE.test(u.identifier)) knownEmails.add(u.identifier);
+  }
+
+  // Build user map from registered users
+  const userMap = Object.fromEntries(registeredUsers.map(u => [u.email, u]));
+
+  // Merge all known emails into a unified list
+  const users = Array.from(knownEmails).map(email => {
+    const reg = userMap[email];
+    const sub = subsMap[email];
     return {
-      email:      u.email,
-      name:       u.name ?? "",
-      provider:   u.provider ?? "credentials",
-      status:     sub?.status ?? "free",
-      periodEnd:  sub?.current_period_end ?? null,
-      giftedBy:   sub?.gifted_by ?? null,
+      email,
+      name:       reg?.name     ?? "",
+      provider:   reg?.provider ?? "unknown",
+      status:     sub?.status   ?? "free",
+      periodEnd:  sub?.current_period_end    ?? null,
+      giftedBy:   sub?.gifted_by             ?? null,
       stripeSubId: sub?.stripe_subscription_id ?? null,
-      usageToday: usageMap[u.email] ?? 0,
-      createdAt:  u.created_at,
+      usageToday: usageMap[email] ?? 0,
+      createdAt:  reg?.created_at ?? null,
     };
+  }).sort((a, b) => {
+    // Registered users first, then by createdAt desc
+    if (a.createdAt && !b.createdAt) return -1;
+    if (!a.createdAt && b.createdAt) return 1;
+    if (a.createdAt && b.createdAt) return new Date(b.createdAt) - new Date(a.createdAt);
+    return 0;
   });
 
   const stats = {
