@@ -241,11 +241,23 @@ function ToolsInner() {
 
   const handleDownload = () => {
     if (!result) return;
-    const bytes = Uint8Array.from(atob(result.file), c=>c.charCodeAt(0));
-    const blob  = new Blob([bytes],{type:result.mimeType||"application/octet-stream"});
-    const url   = URL.createObjectURL(blob);
-    const a     = Object.assign(document.createElement("a"),{href:url,download:result.filename,style:"display:none"});
-    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    try {
+      // Efficient base64 → binary (avoids Uint8Array.from slowness on large files)
+      const binary = atob(result.file);
+      const bytes  = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      const blob = new Blob([bytes], { type: result.mimeType || "application/octet-stream" });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href = url; a.download = result.filename; a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      // Delay revoke so browser has time to start the download
+      setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 2000);
+    } catch (e) {
+      console.error("Download error:", e);
+      setError("Erreur lors du téléchargement. Réessayez.");
+    }
   };
 
   const dynLimit  = (usage.limit ?? FREE_LIMIT) + bonusUses;

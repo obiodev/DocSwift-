@@ -11,6 +11,13 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
 
+  // Allow larger file uploads and responses (PDFs can be heavy)
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "20mb",
+    },
+  },
+
   // HTTP security headers
   async headers() {
     return [

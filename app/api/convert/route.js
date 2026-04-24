@@ -1,3 +1,5 @@
+export const maxDuration = 60; // seconds — needed for large PDFs on Vercel/Railway
+
 import { NextResponse }     from "next/server";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { getServerSession } from "next-auth";
