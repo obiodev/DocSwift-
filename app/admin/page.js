@@ -273,11 +273,17 @@ function UsersTab() {
       {toast && <Toast msg={toast.msg} ok={toast.ok} />}
 
       {/* Stats */}
-      <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:14,marginBottom:24 }}>
-        <StatCard icon="👥" label="Total"          value={stats.totalUsers??0}      color="#F0F4FF" />
-        <StatCard icon="✨" label="Pro"            value={stats.proUsers??0}        color="#10B981" />
-        <StatCard icon="🆓" label="Gratuit"        value={stats.freeUsers??0}       color="#6B7A99" />
-        <StatCard icon="⚡" label="Actifs auj."   value={stats.totalUsageToday??0} color="#3B82F6" />
+      <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14,flexWrap:"wrap",gap:10 }}>
+        <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:14,flex:1 }}>
+          <StatCard icon="👥" label="Total"          value={stats.totalUsers??0}      color="#F0F4FF" />
+          <StatCard icon="✨" label="Pro"            value={stats.proUsers??0}        color="#10B981" />
+          <StatCard icon="🆓" label="Gratuit"        value={stats.freeUsers??0}       color="#6B7A99" />
+          <StatCard icon="⚡" label="Actifs auj."   value={stats.totalUsageToday??0} color="#3B82F6" />
+        </div>
+        <button className="btn-action" onClick={load} disabled={loading}
+          style={{ ...S.btn("#131922"),border:"1px solid #1E2733",color:"#6B7A99",fontSize:13,display:"flex",alignItems:"center",gap:6,alignSelf:"flex-start",opacity:loading?.5:1 }}>
+          {loading ? "…" : "↻ Actualiser"}
+        </button>
       </div>
 
       {/* Gift form */}

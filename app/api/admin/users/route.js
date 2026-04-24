@@ -16,11 +16,17 @@ export async function GET(request) {
 
   const today = new Date().toISOString().slice(0, 10);
 
-  const [{ data: registeredUsers }, { data: subs }, { data: usageLogs }] = await Promise.all([
+  const [usersRes, subsRes, usageRes] = await Promise.all([
     supabaseAdmin.from("users").select("id, email, name, provider, created_at").order("created_at", { ascending: false }),
     supabaseAdmin.from("subscriptions").select("*"),
     supabaseAdmin.from("usage_logs").select("identifier, count").eq("date", today),
   ]);
+
+  if (usersRes.error) console.error("[admin/users] Supabase error:", usersRes.error);
+
+  const registeredUsers = usersRes.data;
+  const subs            = subsRes.data;
+  const usageLogs       = usageRes.data;
 
   const subsMap  = Object.fromEntries((subs ?? []).map(s => [s.user_email, s]));
   const usageMap = Object.fromEntries((usageLogs ?? []).map(u => [u.identifier, u.count]));
