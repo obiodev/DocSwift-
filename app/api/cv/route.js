@@ -205,7 +205,7 @@ async function buildClassique(doc, data) {
     drawSection(labels.languages || "Langues");
     for (const l of validLangs) {
       if (y < 60) break;
-      const label = l.level ? `${l.lang}  —  ${l.level}` : l.lang;
+      const label = l.level ? `${l.lang}  -  ${l.level}` : l.lang;
       page.drawText(label, { x:40, y, size:10, font:regFont, color:dark });
       y -= 16;
     }
@@ -245,7 +245,7 @@ async function buildClassique(doc, data) {
     drawSection(labels.certifications || "Certifications");
     for (const c of validCerts) {
       if (y < 60) break;
-      const label = [c.title, c.org ? `— ${c.org}` : "", c.year ? `(${c.year})` : ""].filter(Boolean).join("  ");
+      const label = [c.title, c.org ? `- ${c.org}` : "", c.year ? `(${c.year})` : ""].filter(Boolean).join("  ");
       page.drawText(label, { x:40, y, size:10, font:regFont, color:dark });
       y -= 16;
     }
@@ -270,7 +270,7 @@ async function buildClassique(doc, data) {
 
   // ── Footer ──
   page.drawLine({ start:{x:40,y:30}, end:{x:width-40,y:30}, thickness:0.5, color:lightGray });
-  page.drawText((labels.createdWith || "Créé avec DocSwift — getdocswift.com"), { x:40, y:16, size:7, font:regFont, color:gray });
+  page.drawText((labels.createdWith || "Cree avec DocSwift - getdocswift.com"), { x:40, y:16, size:7, font:regFont, color:gray });
 }
 
 // ─── Template: Moderne ─────────────────────────────────────────────────────
@@ -368,7 +368,7 @@ async function buildModerne(doc, data) {
     sideY -= 14;
     for (const l of validLangs) {
       if (sideY < 20) break;
-      const label = l.level ? `${l.lang} — ${l.level}` : l.lang;
+      const label = l.level ? `${l.lang} - ${l.level}` : l.lang;
       const lines = splitLines(label, regFont, 8.5, sidebarW-20);
       for (const line of lines) {
         page.drawText(line, { x:10, y:sideY, size:8.5, font:regFont, color:white });
@@ -458,7 +458,7 @@ async function buildModerne(doc, data) {
     drawRightSection("Certifications");
     for (const c of validCerts) {
       if (y < 60) break;
-      const parts = [c.title]; if(c.org) parts.push(`— ${c.org}`); if(c.year) parts.push(`(${c.year})`);
+      const parts = [c.title]; if(c.org) parts.push(`- ${c.org}`); if(c.year) parts.push(`(${c.year})`);
       page.drawText(parts.join("  "), { x:contentX, y, size:10, font:regFont, color:dark });
       y -= 16;
     }
@@ -466,7 +466,7 @@ async function buildModerne(doc, data) {
 
   // ── Footer ──
   page.drawLine({ start:{x:contentX,y:30}, end:{x:width-30,y:30}, thickness:0.5, color:lightGray });
-  page.drawText((labels.createdWith || "Créé avec DocSwift — getdocswift.com"), { x:contentX, y:16, size:7, font:regFont, color:gray });
+  page.drawText((labels.createdWith || "Cree avec DocSwift - getdocswift.com"), { x:contentX, y:16, size:7, font:regFont, color:gray });
 }
 
 // ─── Template: Minimaliste ─────────────────────────────────────────────────
@@ -591,7 +591,7 @@ async function buildMinimaliste(doc, data) {
     drawSection(labels.languages || "Langues");
     for (const l of validLangs) {
       if (y < 60) break;
-      const label = l.level ? `${l.lang}  —  ${l.level}` : l.lang;
+      const label = l.level ? `${l.lang}  -  ${l.level}` : l.lang;
       page.drawText(label, { x:40, y, size:10, font:regFont, color:dark });
       y -= 16;
     }
@@ -624,7 +624,7 @@ async function buildMinimaliste(doc, data) {
     drawSection(labels.certifications || "Certifications");
     for (const c of validCerts) {
       if (y < 60) break;
-      const parts = [c.title]; if(c.org) parts.push(`— ${c.org}`); if(c.year) parts.push(`(${c.year})`);
+      const parts = [c.title]; if(c.org) parts.push(`- ${c.org}`); if(c.year) parts.push(`(${c.year})`);
       page.drawText(parts.join("  "), { x:40, y, size:10, font:regFont, color:dark });
       y -= 16;
     }
@@ -649,7 +649,7 @@ async function buildMinimaliste(doc, data) {
 
   // ── Footer ──
   page.drawLine({ start:{x:40,y:30}, end:{x:width-40,y:30}, thickness:0.5, color:lightGray });
-  page.drawText((labels.createdWith || "Créé avec DocSwift — getdocswift.com"), { x:40, y:16, size:7, font:regFont, color:gray });
+  page.drawText((labels.createdWith || "Cree avec DocSwift - getdocswift.com"), { x:40, y:16, size:7, font:regFont, color:gray });
 }
 
 // ─── POST Handler ───────────────────────────────────────────────────────────
@@ -697,7 +697,7 @@ export async function POST(request) {
       projects:       sectionLabels?.projects       || "Projets",
       certifications: sectionLabels?.certifications || "Certifications",
       interests:      sectionLabels?.interests      || "Centres d'intérêt",
-      createdWith:    sectionLabels?.createdWith    || "Créé avec DocSwift — getdocswift.com",
+      createdWith:    sectionLabels?.createdWith    || "Cree avec DocSwift - getdocswift.com",
     };
 
     const doc = await PDFDocument.create();
@@ -729,7 +729,7 @@ export async function POST(request) {
         period: safe(e.period),
       })),
       skills:         (Array.isArray(skills)         ? skills         : []).map(s => safe(s)),
-      languages:      (Array.isArray(languages)      ? languages      : []).map(l => ({ ...l, language: safe(l.language), level: safe(l.level) })),
+      languages:      (Array.isArray(languages)      ? languages      : []).map(l => ({ ...l, lang: safe(l.lang || l.language || ""), level: safe(l.level) })),
       projects:       (Array.isArray(projects)       ? projects       : []).map(p => ({ ...p, name: safe(p.name), tech: safe(p.tech), description: safe(p.description), url: safe(p.url) })),
       certifications: (Array.isArray(certifications) ? certifications : []).map(c => safe(typeof c === "string" ? c : c.name || "")),
       interests,
