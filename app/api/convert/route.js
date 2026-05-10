@@ -79,7 +79,17 @@ export async function POST(request) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
       const { default: mammoth } = await import("mammoth");
-      const { value: text } = await mammoth.extractRawText({ buffer });
+      let extractResult;
+      try {
+        extractResult = await mammoth.extractRawText({ buffer });
+      } catch (e) {
+        const msg = e.message || "";
+        const userMsg = (msg.includes("central directory") || msg.includes("zip") || msg.includes("End of central directory"))
+          ? "Fichier .docx invalide ou corrompu. Vérifiez que le fichier est bien un document Word (.docx)."
+          : "Impossible de lire ce fichier Word : " + msg;
+        return NextResponse.json({ error: userMsg }, { status: 422 });
+      }
+      const { value: text } = extractResult;
       const lines = text.split("\n").filter(l => l.trim());
 
       const pdfDoc = await PDFDocument.create();
@@ -133,7 +143,15 @@ export async function POST(request) {
     if (type === "compress-pdf") {
       const file = formData.get("file");
       const bytes = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(bytes);
+      let pdfDoc;
+      try {
+        pdfDoc = await PDFDocument.load(bytes);
+      } catch (e) {
+        return NextResponse.json(
+          { error: "Fichier PDF invalide ou corrompu. Vérifiez que le fichier est bien un PDF valide." },
+          { status: 422 }
+        );
+      }
       const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
       return NextResponse.json({
         file: Buffer.from(pdfBytes).toString("base64"),
@@ -148,7 +166,15 @@ export async function POST(request) {
       const merged = await PDFDocument.create();
       for (const file of files) {
         const bytes = await file.arrayBuffer();
-        const doc = await PDFDocument.load(bytes);
+        let doc;
+        try {
+          doc = await PDFDocument.load(bytes);
+        } catch {
+          return NextResponse.json(
+            { error: `Le fichier "${file.name}" est invalide ou corrompu.` },
+            { status: 422 }
+          );
+        }
         const pages = await merged.copyPages(doc, doc.getPageIndices());
         pages.forEach(p => merged.addPage(p));
       }
@@ -165,7 +191,15 @@ export async function POST(request) {
       const file = formData.get("file");
       const pageNum = parseInt(formData.get("page") || "1") - 1;
       const bytes = await file.arrayBuffer();
-      const srcDoc = await PDFDocument.load(bytes);
+      let srcDoc;
+      try {
+        srcDoc = await PDFDocument.load(bytes);
+      } catch {
+        return NextResponse.json(
+          { error: "Fichier PDF invalide ou corrompu. Vérifiez que le fichier est bien un PDF valide." },
+          { status: 422 }
+        );
+      }
       const total = srcDoc.getPageCount();
       const safePageNum = Math.min(Math.max(0, pageNum), total - 1);
       const newDoc = await PDFDocument.create();

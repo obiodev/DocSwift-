@@ -674,7 +674,7 @@ export async function POST(request) {
     projects:       sectionLabels?.projects       || "Projets",
     certifications: sectionLabels?.certifications || "Certifications",
     interests:      sectionLabels?.interests      || "Centres d'intérêt",
-    createdWith:    sectionLabels?.createdWith    || (labels.createdWith || "Créé avec DocSwift — getdocswift.com"),
+    createdWith:    sectionLabels?.createdWith    || "Créé avec DocSwift — getdocswift.com",
   };
 
   const doc = await PDFDocument.create();
