@@ -11,6 +11,24 @@ function getIdentifier(request, session) {
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
+
+/**
+ * Sanitize text for pdf-lib WinAnsi fonts.
+ * Replaces smart quotes, dashes and other common non-Latin1 chars
+ * with safe ASCII/Latin1 equivalents so drawText never throws.
+ */
+function safe(str) {
+  if (!str) return str ?? "";
+  return String(str)
+    .replace(/[‘’‚‛]/g, "'")   // curly single quotes → '
+    .replace(/[“”„‟]/g, '"')   // curly double quotes → "
+    .replace(/–/g, "-")                        // en dash → -
+    .replace(/—/g, "-")                        // em dash → -
+    .replace(/…/g, "...")                      // ellipsis → ...
+    .replace(/·/g, "·")                       // middle dot (keep, is Latin1)
+    .replace(/[^\x00-\xFF]/g, "?");                // any remaining non-Latin1 → ?
+}
+
 function hexToRgb(hex) {
   const clean = hex.replace("#","");
   const r = parseInt(clean.slice(0,2),16)/255;
@@ -40,7 +58,7 @@ function splitLines(text, font, size, maxWidth) {
 function drawSectionHeader(page, label, x, y, width, font, accent, lightGray) {
   page.drawRectangle({ x, y: y-2, width, height: 22, color: lightGray });
   page.drawRectangle({ x, y: y-2, width: 4, height: 22, color: accent });
-  page.drawText(label.toUpperCase(), { x: x+10, y: y+4, size: 10, font, color: accent });
+  page.drawText(safe(label).toUpperCase(), { x: x+10, y: y+4, size: 10, font, color: accent });
 }
 
 async function embedPhoto(doc, photo) {
@@ -636,75 +654,111 @@ async function buildMinimaliste(doc, data) {
 
 // ─── POST Handler ───────────────────────────────────────────────────────────
 export async function POST(request) {
-  const session    = await getServerSession(authOptions);
-  const pro        = session?.user?.email ? await isPro(session.user.email) : false;
-  const identifier = getIdentifier(request, session);
+  try {
+    const session    = await getServerSession(authOptions);
+    const pro        = session?.user?.email ? await isPro(session.user.email) : false;
+    const identifier = getIdentifier(request, session);
 
-  if (!pro) {
-    const [used, freeLimit] = await Promise.all([getUsageToday(identifier), getFreeLimit()]);
-    if (used >= freeLimit) {
-      return NextResponse.json({ error:"LIMIT_REACHED" }, { status:429 });
+    if (!pro) {
+      const [used, freeLimit] = await Promise.all([getUsageToday(identifier), getFreeLimit()]);
+      if (used >= freeLimit) {
+        return NextResponse.json({ error:"LIMIT_REACHED" }, { status:429 });
+      }
     }
+
+    const body = await request.json();
+    const {
+      name="", title="", email="", phone="", address="", website="",
+      summary="",
+      experiences=[],
+      educations=[],
+      skills=[],
+      languages=[],
+      projects=[],
+      certifications=[],
+      interests: _interests="",
+      accentColor="#2563EB",
+      template="classique",
+      photo=null,
+      sectionLabels=null,
+    } = body;
+    // Normalize interests: accept array or comma-string
+    const interests = Array.isArray(_interests)
+      ? _interests.join(", ")
+      : (typeof _interests === "string" ? _interests : "");
+
+    // Use provided section labels (i18n) or fall back to French defaults
+    const labels = {
+      profile:        sectionLabels?.profile        || "Profil",
+      experience:     sectionLabels?.experience     || "Expériences professionnelles",
+      education:      sectionLabels?.education      || "Formation",
+      skills:         sectionLabels?.skills         || "Compétences",
+      languages:      sectionLabels?.languages      || "Langues",
+      projects:       sectionLabels?.projects       || "Projets",
+      certifications: sectionLabels?.certifications || "Certifications",
+      interests:      sectionLabels?.interests      || "Centres d'intérêt",
+      createdWith:    sectionLabels?.createdWith    || "Créé avec DocSwift — getdocswift.com",
+    };
+
+    const doc = await PDFDocument.create();
+
+    // Embed photo if provided
+    const photoImage = await embedPhoto(doc, photo);
+
+    // Sanitize all user text for WinAnsi-safe rendering
+    const tplData = {
+      name:    safe(name),
+      title:   safe(title),
+      email:   safe(email),
+      phone:   safe(phone),
+      address: safe(address),
+      website: safe(website),
+      summary: safe(summary),
+      experiences: experiences.map(e => ({
+        ...e,
+        company:     safe(e.company),
+        role:        safe(e.role),
+        position:    safe(e.position || e.role),
+        period:      safe(e.period),
+        description: safe(e.description),
+      })),
+      educations: educations.map(e => ({
+        ...e,
+        school: safe(e.school),
+        degree: safe(e.degree),
+        period: safe(e.period),
+      })),
+      skills:         (Array.isArray(skills)         ? skills         : []).map(s => safe(s)),
+      languages:      (Array.isArray(languages)      ? languages      : []).map(l => ({ ...l, language: safe(l.language), level: safe(l.level) })),
+      projects:       (Array.isArray(projects)       ? projects       : []).map(p => ({ ...p, name: safe(p.name), tech: safe(p.tech), description: safe(p.description), url: safe(p.url) })),
+      certifications: (Array.isArray(certifications) ? certifications : []).map(c => safe(typeof c === "string" ? c : c.name || "")),
+      interests,
+      accentColor,
+      photoImage,
+      labels: Object.fromEntries(Object.entries(labels).map(([k, v]) => [k, safe(v)])),
+    };
+
+    if (template === "moderne") {
+      await buildModerne(doc, tplData);
+    } else if (template === "minimaliste") {
+      await buildMinimaliste(doc, tplData);
+    } else {
+      await buildClassique(doc, tplData);
+    }
+
+    // Consume usage for free users
+    if (!pro) await incrementUsage(identifier);
+
+    const pdfBytes = await doc.save();
+    return new NextResponse(Buffer.from(pdfBytes), {
+      status: 200,
+      headers: {
+        "Content-Type":        "application/pdf",
+        "Content-Disposition": `attachment; filename="${(name||"cv").replace(/\s+/g,"_")}_CV.pdf"`,
+      },
+    });
+  } catch (error) {
+    console.error("[CV API] Error:", error);
+    return NextResponse.json({ error: "Erreur lors de la génération du CV : " + error.message }, { status: 500 });
   }
-
-  const body = await request.json();
-  const {
-    name="", title="", email="", phone="", address="", website="",
-    summary="",
-    experiences=[],
-    educations=[],
-    skills=[],
-    languages=[],
-    projects=[],
-    certifications=[],
-    interests="",
-    accentColor="#2563EB",
-    template="classique",
-    photo=null,
-    sectionLabels=null,
-  } = body;
-
-  // Use provided section labels (i18n) or fall back to French defaults
-  const labels = {
-    profile:        sectionLabels?.profile        || "Profil",
-    experience:     sectionLabels?.experience     || "Expériences professionnelles",
-    education:      sectionLabels?.education      || "Formation",
-    skills:         sectionLabels?.skills         || "Compétences",
-    languages:      sectionLabels?.languages      || "Langues",
-    projects:       sectionLabels?.projects       || "Projets",
-    certifications: sectionLabels?.certifications || "Certifications",
-    interests:      sectionLabels?.interests      || "Centres d'intérêt",
-    createdWith:    sectionLabels?.createdWith    || "Créé avec DocSwift — getdocswift.com",
-  };
-
-  const doc = await PDFDocument.create();
-
-  // Embed photo if provided
-  const photoImage = await embedPhoto(doc, photo);
-
-  const tplData = {
-    name, title, email, phone, address, website, summary,
-    experiences, educations, skills, languages,
-    projects, certifications, interests, accentColor, photoImage, labels,
-  };
-
-  if (template === "moderne") {
-    await buildModerne(doc, tplData);
-  } else if (template === "minimaliste") {
-    await buildMinimaliste(doc, tplData);
-  } else {
-    await buildClassique(doc, tplData);
-  }
-
-  // Consume usage for free users
-  if (!pro) await incrementUsage(identifier);
-
-  const pdfBytes = await doc.save();
-  return new NextResponse(Buffer.from(pdfBytes), {
-    status: 200,
-    headers: {
-      "Content-Type":        "application/pdf",
-      "Content-Disposition": `attachment; filename="${(name||"cv").replace(/\s+/g,"_")}_CV.pdf"`,
-    },
-  });
 }
