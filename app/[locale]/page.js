@@ -97,7 +97,7 @@ export default function Home() {
   const locale = useLocale();
   const { data: session } = useSession();
   const router = useRouter();
-  const [pricing, setPricing] = useState({ promo_enabled:"false", promo_price:"19", promo_months:"3", normal_price:"49" });
+  const [pricing, setPricing] = useState({ promo_enabled:"true", promo_price:"4.99", promo_months:"3", normal_price:"9.99" });
   const [openFaq, setOpenFaq] = useState(null);
 
   useEffect(() => {
@@ -109,7 +109,8 @@ export default function Home() {
 
   const handleUpgrade = async (plan) => {
     if (!session) { signIn(); return; }
-    const res  = await fetch("/api/stripe/checkout", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ affiliateCode: typeof window !== "undefined" ? localStorage.getItem("docswift_ref") : null, plan }) });
+    const isPromo = pricing.promo_enabled === "true";
+    const res  = await fetch("/api/stripe/checkout", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ affiliateCode: typeof window !== "undefined" ? localStorage.getItem("docswift_ref") : null, plan: isPromo ? "promo" : "regular" }) });
     const data = await res.json();
     if (data.url) window.location.href = data.url;
   };
