@@ -4,7 +4,7 @@ import { NextResponse }     from "next/server";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { getServerSession } from "next-auth";
 import { authOptions }      from "@/lib/auth";
-import { getUsageToday, incrementUsage, isPro, getPlan, getFreeLimit } from "@/lib/supabase";
+import { getUsageToday, incrementUsage, isPro, getPlan, getFreeLimit, isPremium } from "@/lib/supabase";
 import { pdfToDocx }        from "@/lib/pdfToDocx";
 import { execFileSync }     from "child_process";
 import { writeFileSync, readFileSync, unlinkSync, mkdtempSync, rmdirSync } from "fs";
@@ -54,8 +54,8 @@ export async function POST(request) {
 
     // ── Premium gate ──────────────────────────────────────────────────────
     if (PREMIUM_TOOLS.has(type)) {
-      const plan = session?.user?.email ? await getPlan(session.user.email) : "free";
-      if (plan !== "premium") {
+      const hasPremium = session?.user?.email ? await isPremium(session.user.email) : false;
+      if (!hasPremium) {
         return NextResponse.json(
           { error: "PREMIUM_REQUIRED", message: "This tool requires a Premium subscription." },
           { status: 403 }
