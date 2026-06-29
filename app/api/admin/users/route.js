@@ -2,6 +2,7 @@ import { NextResponse }     from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions }      from "@/lib/auth";
 import { supabaseAdmin }    from "@/lib/supabase";
+import { PLANS, PRO_PLANS } from "@/lib/plans";
 import bcrypt               from "bcryptjs";
 
 function isAdmin(email) {
@@ -75,7 +76,7 @@ export async function GET(request) {
 
   const stats = {
     totalUsers:      users.length,
-    proUsers:        users.filter(u => ["pro","business"].includes(u.status)).length,
+    proUsers:        users.filter(u => PRO_PLANS.has(u.status)).length,
     starterUsers:    users.filter(u => u.status === "starter").length,
     freeUsers:       users.filter(u => u.status === "free").length,
     totalUsageToday: Object.values(usageMap).reduce((a, b) => a + b, 0),
@@ -91,7 +92,7 @@ export async function PATCH(request) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { email, status } = await request.json();
-  if (!email || !["free","starter","pro","business"].includes(status))
+  if (!email || !Object.values(PLANS).includes(status))
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
 
   await supabaseAdmin.from("subscriptions").upsert({

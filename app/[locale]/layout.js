@@ -3,7 +3,7 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
 const locales = ['fr', 'en', 'ar'];
-const BASE_URL = "https://getdocswift.com";
+const BASE_URL = process.env.NEXTAUTH_URL ?? "https://getdocswift.com";
 
 const META = {
   fr: {

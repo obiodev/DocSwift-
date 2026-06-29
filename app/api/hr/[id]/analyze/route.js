@@ -95,15 +95,23 @@ export async function POST(request, { params }) {
     return NextResponse.json({ error: "GEMINI_KEY_MISSING", message: "Clé API Gemini non configurée." }, { status: 503 });
   }
 
-  // Mark job as analyzing
-  await supabaseAdmin.from("hr_jobs").update({ status: "analyzing", analyzed_count: 0 }).eq("id", id);
-  // Reset pending CVs
+  // Mark job as analyzing with a started_at timestamp for watchdog recovery
+  await supabaseAdmin.from("hr_jobs").update({
+    status: "analyzing",
+    analyzed_count: 0,
+    started_at: new Date().toISOString(),
+  }).eq("id", id);
+
+  // Reset errored CVs so they can be retried
   await supabaseAdmin.from("hr_cv_analyses").update({ status: "pending" }).eq("job_id", id).in("status", ["error"]);
 
-  // Fire-and-forget — Railway keeps the process alive
-  runBatch(id, job.title, job.description).catch(err => {
+  // Fire-and-forget with error recovery
+  runBatch(id, job.title, job.description).catch(async (err) => {
     console.error("runBatch fatal error:", err);
-    supabaseAdmin.from("hr_jobs").update({ status: "error" }).eq("id", id);
+    await supabaseAdmin.from("hr_jobs").update({
+      status: "error",
+      error_msg: err.message?.slice(0, 255) ?? "Erreur inconnue",
+    }).eq("id", id);
   });
 
   return NextResponse.json({ started: true });

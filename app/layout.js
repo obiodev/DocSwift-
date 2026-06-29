@@ -5,7 +5,7 @@ import SessionProviderWrapper from "./SessionProviderWrapper";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
-const BASE_URL = "https://getdocswift.com";
+const BASE_URL = process.env.NEXTAUTH_URL ?? "https://getdocswift.com";
 
 export const metadata = {
   metadataBase: new URL(BASE_URL),
@@ -73,9 +73,9 @@ export const metadata = {
       "ar": `${BASE_URL}/ar`,
     },
   },
-  verification: {
-    google: "GOOGLE_SITE_VERIFICATION_TOKEN",
-  },
+  ...(process.env.GOOGLE_SITE_VERIFICATION && {
+    verification: { google: process.env.GOOGLE_SITE_VERIFICATION },
+  }),
   category: "technology",
 };
 
@@ -121,24 +121,17 @@ const jsonLd = {
       "offers": [
         {
           "@type": "Offer",
-          "name": "Starter",
-          "price": "19",
+          "name": "Free",
+          "price": "0",
           "priceCurrency": "EUR",
-          "priceSpecification": { "@type": "UnitPriceSpecification", "price": "19", "priceCurrency": "EUR", "unitCode": "MON" },
+          "priceSpecification": { "@type": "UnitPriceSpecification", "price": "0", "priceCurrency": "EUR", "unitCode": "MON" },
         },
         {
           "@type": "Offer",
           "name": "Pro",
-          "price": "49",
+          "price": "9.99",
           "priceCurrency": "EUR",
-          "priceSpecification": { "@type": "UnitPriceSpecification", "price": "49", "priceCurrency": "EUR", "unitCode": "MON" },
-        },
-        {
-          "@type": "Offer",
-          "name": "Business",
-          "price": "149",
-          "priceCurrency": "EUR",
-          "priceSpecification": { "@type": "UnitPriceSpecification", "price": "149", "priceCurrency": "EUR", "unitCode": "MON" },
+          "priceSpecification": { "@type": "UnitPriceSpecification", "price": "9.99", "priceCurrency": "EUR", "unitCode": "MON" },
         },
       ],
       "aggregateRating": {

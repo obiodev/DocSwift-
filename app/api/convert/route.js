@@ -12,18 +12,36 @@ import { join }             from "path";
 import { tmpdir }           from "os";
 
 const PREMIUM_TOOLS = new Set(["protect-pdf", "compress-image", "unlock-pdf"]);
-
+const VALID_TYPES   = new Set([
+  "pdf-to-word", "word-to-pdf", "compress-pdf", "merge-pdf",
+  "split-pdf", "image-to-pdf", "protect-pdf", "unlock-pdf", "compress-image",
+]);
+const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
 
 // ─── POST handler ──────────────────────────────────────────────────────────
 export async function POST(request) {
   try {
+    const formData = await request.formData();
+    const type = formData.get("type");
+
+    // ── Type validation (before consuming quota) ───────────────────────────
+    if (!type || !VALID_TYPES.has(type)) {
+      return NextResponse.json({ error: "Unsupported type" }, { status: 400 });
+    }
+
+    // ── File size validation ───────────────────────────────────────────────
+    const mainFile = formData.get("file") ?? formData.getAll("files")[0];
+    if (mainFile && mainFile.size > MAX_FILE_SIZE) {
+      return NextResponse.json({ error: "File too large (max 20 MB)" }, { status: 413 });
+    }
+
     // ── Usage gate ─────────────────────────────────────────────────────────
     const session = await getServerSession(authOptions);
     const pro     = session?.user?.email ? await isPro(session.user.email) : false;
 
     if (!pro) {
       const identifier = session?.user?.email
-        ?? (request.headers.get("x-forwarded-for") ?? "anonymous").split(",")[0].trim();
+        ?? (request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-for") ?? "anonymous").split(",")[0].trim();
       const [used, freeLimit] = await Promise.all([getUsageToday(identifier), getFreeLimit()]);
       if (used >= freeLimit) {
         return NextResponse.json(
@@ -31,12 +49,8 @@ export async function POST(request) {
           { status: 429 }
         );
       }
-      // Increment BEFORE conversion so concurrent requests can't race
       await incrementUsage(identifier);
     }
-
-    const formData = await request.formData();
-    const type = formData.get("type");
 
     // ── Premium gate ──────────────────────────────────────────────────────
     if (PREMIUM_TOOLS.has(type)) {

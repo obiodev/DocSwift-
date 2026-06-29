@@ -50,13 +50,14 @@ function AdModal({ onComplete, onClose }) {
 
   useEffect(() => {
     if (!adHtml || !zoneRef.current) return;
+    // Render ads in a sandboxed iframe to prevent XSS
     const el = zoneRef.current;
-    el.innerHTML = adHtml;
-    el.querySelectorAll("script").forEach(orig => {
-      const s = document.createElement("script");
-      if (orig.src) { s.src=orig.src; s.async=true; } else { s.textContent=orig.textContent; }
-      orig.replaceWith(s);
-    });
+    el.innerHTML = "";
+    const iframe = document.createElement("iframe");
+    iframe.sandbox = "allow-scripts allow-popups allow-same-origin";
+    iframe.style.cssText = "width:100%;border:none;min-height:180px;background:transparent;";
+    iframe.srcdoc = adHtml;
+    el.appendChild(iframe);
   }, [adHtml]);
 
   useEffect(() => {
@@ -179,7 +180,8 @@ function ToolsInner() {
     if (toolId) { const tool = TOOLS.find(tool=>tool.id===toolId); if (tool && !tool.external) setActiveTool(tool); }
   }, [refreshUsage, searchParams]);
 
-  const effectiveRemaining = usage.isPro ? Infinity : Math.max(0,(usage.remaining??0)+bonusUses);
+  // remaining === -1 means unlimited (Pro users)
+  const effectiveRemaining = (usage.isPro || usage.remaining === -1) ? Infinity : Math.max(0,(usage.remaining??0)+bonusUses);
 
   const addFiles = (incoming) => {
     const arr = Array.from(incoming);

@@ -5,8 +5,25 @@ import { sendWelcomeEmail } from "@/lib/email";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Simple in-memory rate limiter: max 5 registrations per IP per hour
+const registerAttempts = new Map();
+function isRateLimited(ip) {
+  const now = Date.now();
+  const window = 60 * 60 * 1000; // 1 hour
+  const entry = registerAttempts.get(ip) ?? { count: 0, reset: now + window };
+  if (now > entry.reset) { entry.count = 0; entry.reset = now + window; }
+  entry.count++;
+  registerAttempts.set(ip, entry);
+  return entry.count > 5;
+}
+
 export async function POST(request) {
   try {
+    const ip = (request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-for") ?? "unknown").split(",")[0].trim();
+    if (isRateLimited(ip)) {
+      return NextResponse.json({ error: "Trop de tentatives. Réessayez dans une heure." }, { status: 429 });
+    }
+
     const { name, email, password } = await request.json();
 
     // ── Validation ───────────────────────────────────────────────────────

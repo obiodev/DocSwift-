@@ -29,7 +29,7 @@ export default function LanguageSwitcher() {
     }
     const newPath = segments.join('/').replace(/\/\//g, '/') || '/';
     // Update locale cookie so middleware doesn't redirect back to the old locale
-    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax; Secure`;
     window.location.href = newPath;
   };
 
