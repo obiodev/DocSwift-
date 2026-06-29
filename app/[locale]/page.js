@@ -143,23 +143,30 @@ export default function Home() {
     },
   ];
 
+  const promoActive = pricing.promo_enabled === "true";
+  const proPrice    = promoActive ? pricing.promo_price : pricing.normal_price;
+  const regularPrice = pricing.normal_price;
+
   const PLANS = [
     {
-      name:"Starter", price:"19", period:"/mois", color:"#6B7A99", border:"#1E2733",
+      name:"Gratuit", price:"0", period:"/mois", color:"#6B7A99", border:"#1E2733",
       bg:"#0D1117", badge:null, badgeBg:null,
-      features:["PDF Essentials (10 outils)", "50 documents / mois", "1 utilisateur", "Support email"],
-      ctaKey:"landing.pricing.startStarter", plan:"starter", ctaStyle:{ background:"transparent", border:"1px solid #1E2733", color:"#F0F4FF" }
+      features:["5 conversions par jour", "Tous les outils PDF", "CV Builder inclus", "Fichiers jusqu'à 5 MB"],
+      ctaKey:"landing.pricing.startFree", plan:"free", ctaStyle:{ background:"transparent", border:"1px solid #1E2733", color:"#F0F4FF" }
     },
     {
-      name:"Pro", price:"49", period:"/mois", color:"#60A5FA", border:"#3B82F6",
-      bg:"linear-gradient(145deg,#0D1F3C,#132240)", badge:"Le plus populaire", badgeBg:"linear-gradient(135deg,#3B82F6,#2563EB)",
-      features:["Tout Starter +", "DocSwift AI (chat PDF, extraction)", "DocSwift HR — 100 CV/mois", "3 utilisateurs", "Traitement prioritaire"],
-      ctaKey:"landing.pricing.startPro", plan:"pro", ctaStyle:{ background:"linear-gradient(135deg,#3B82F6,#2563EB)", border:"none", color:"#fff" }
+      name:"Pro", price: proPrice, period:"/mois", color:"#60A5FA", border:"#3B82F6",
+      bg:"linear-gradient(145deg,#0D1F3C,#132240)",
+      badge: promoActive ? `🔥 OFFRE -${Math.round((1 - parseFloat(proPrice)/parseFloat(regularPrice))*100)}%` : "Le plus populaire",
+      badgeBg:"linear-gradient(135deg,#3B82F6,#2563EB)",
+      promoNote: promoActive ? `puis ${regularPrice}€/mois` : null,
+      features:["Conversions illimitées", "Fichiers jusqu'à 50 MB", "DocSwift AI (chat PDF)", "DocSwift HR — analyse CVs", "Zéro publicité", "Support prioritaire"],
+      ctaKey:"landing.pricing.startPro", plan: promoActive ? "promo" : "regular", ctaStyle:{ background:"linear-gradient(135deg,#3B82F6,#2563EB)", border:"none", color:"#fff" }
     },
     {
-      name:"Business", price:"149", period:"/mois", color:"#FB923C", border:"#F97316",
+      name:"Business", price:"Sur devis", period:"", color:"#FB923C", border:"#F97316",
       bg:"linear-gradient(145deg,#1A1000,#2A1800)", badge:"✦ Complet", badgeBg:"linear-gradient(135deg,#F97316,#EA580C)",
-      features:["Tout Pro +", "DocSwift HR illimité", "Export Excel/CSV", "API Access", "Utilisateurs illimités", "Support prioritaire 24/7"],
+      features:["Tout Pro inclus", "DocSwift HR illimité", "Export Excel/CSV", "Utilisateurs illimités", "Intégration API", "Support dédié 24/7"],
       ctaKey:"landing.pricing.startBusiness", plan:"business", ctaStyle:{ background:"linear-gradient(135deg,#F97316,#EA580C)", border:"none", color:"#fff" }
     },
   ];
