@@ -18,6 +18,14 @@ const nextConfig = {
     },
   },
 
+  // Old HR dashboard URL (pre-isolation) — preserve any bookmarks/backlinks
+  async redirects() {
+    return [
+      { source: "/dashboard/hr",              destination: "/hr/dashboard",     permanent: true },
+      { source: "/:locale(en|ar)/dashboard/hr", destination: "/:locale/hr/dashboard", permanent: true },
+    ];
+  },
+
   // HTTP security headers
   async headers() {
     return [

@@ -25,6 +25,22 @@ const META = {
   },
 };
 
+const jsonLd = (locale, url) => ({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "DocSwift HR",
+  "applicationCategory": "BusinessApplication",
+  "applicationSubCategory": "HumanResourcesApplication",
+  "operatingSystem": "Web",
+  "url": url,
+  "description": (META[locale] ?? META.fr).description,
+  "offers": [
+    { "@type": "Offer", "name": "Starter",  "price": "49",  "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
+    { "@type": "Offer", "name": "Pro",      "price": "149", "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
+    { "@type": "Offer", "name": "Business", "price": "349", "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
+  ],
+});
+
 export async function generateMetadata({ params }) {
   const { locale } = await params;
   const m      = META[locale] ?? META.fr;
@@ -59,6 +75,9 @@ export async function generateMetadata({ params }) {
       title:       m.og_title,
       description: m.og_desc,
       images:      [`${BASE_URL}/og-hr.png`],
+    },
+    other: {
+      "application/ld+json": JSON.stringify(jsonLd(locale, url)),
     },
   };
 }

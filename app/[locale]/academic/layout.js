@@ -25,6 +25,21 @@ const META = {
   },
 };
 
+const jsonLd = (locale, url) => ({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "DocSwift",
+  "applicationCategory": "BusinessApplication",
+  "applicationSubCategory": "ProductivityApplication",
+  "operatingSystem": "Web",
+  "url": url,
+  "description": (META[locale] ?? META.fr).description,
+  "offers": [
+    { "@type": "Offer", "name": "Gratuit", "price": "0", "priceCurrency": "EUR" },
+    { "@type": "Offer", "name": "Pro",      "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
+  ],
+});
+
 export async function generateMetadata({ params }) {
   const { locale } = await params;
   const m      = META[locale] ?? META.fr;
@@ -57,6 +72,9 @@ export async function generateMetadata({ params }) {
       card:        "summary_large_image",
       title:       m.og_title,
       description: m.og_desc,
+    },
+    other: {
+      "application/ld+json": JSON.stringify(jsonLd(locale, url)),
     },
   };
 }

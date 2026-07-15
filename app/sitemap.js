@@ -4,10 +4,13 @@ const LOCALE_PREFIX = { fr: "", en: "/en", ar: "/ar" };
 
 // Pages publiques indexées
 const PUBLIC_PAGES = [
-  { path: "",       changeFrequency: "weekly",  priority: 1.0  },
-  { path: "/tools", changeFrequency: "weekly",  priority: 0.9  },
-  { path: "/cv",    changeFrequency: "monthly", priority: 0.85 },
-  { path: "/terms", changeFrequency: "yearly",  priority: 0.2  },
+  { path: "",                  changeFrequency: "weekly",  priority: 1.0  },
+  { path: "/academic",         changeFrequency: "weekly",  priority: 0.9  },
+  { path: "/hr",                changeFrequency: "weekly",  priority: 0.9  },
+  { path: "/hr/essai-gratuit", changeFrequency: "weekly",  priority: 0.85 },
+  { path: "/tools",            changeFrequency: "weekly",  priority: 0.85 },
+  { path: "/cv",               changeFrequency: "monthly", priority: 0.8  },
+  { path: "/terms",            changeFrequency: "yearly",  priority: 0.2  },
 ];
 
 export default function sitemap() {
