@@ -331,7 +331,7 @@ export default function HrLanding() {
             <div style={{ fontWeight:900,fontSize:18,letterSpacing:-0.5,marginBottom:4 }}>
               Doc<span style={{ color:"#F97316" }}>Swift HR</span>
             </div>
-            <div style={{ color:"#4B5563",fontSize:12 }}>© 2026 Mokoto LLC — DocSwift HR. Recrutement assisté par IA.</div>
+            <div style={{ color:"#4B5563",fontSize:12 }}>© 2026 Motoko LLC — DocSwift HR. Recrutement assisté par IA.</div>
           </div>
           <div style={{ display:"flex",gap:24,flexWrap:"wrap" }}>
             <a href={`${localePrefix}/hr/dashboard`} style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>Dashboard</a>

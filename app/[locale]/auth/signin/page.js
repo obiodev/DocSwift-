@@ -172,7 +172,7 @@ export default function SignInPage() {
         </div>
 
         <p style={{ textAlign:"center", color:"#4B5563", fontSize:12, marginTop:20 }}>
-          © 2026 Mokoto LLC — DocSwift
+          © 2026 Motoko LLC — DocSwift
         </p>
       </div>
     </div>

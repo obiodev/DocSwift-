@@ -296,7 +296,7 @@ export default function AcademicLanding() {
         <div className="footer-inner" style={{ maxWidth:1200,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:20 }}>
           <div>
             <div style={{ fontWeight:900,fontSize:18,letterSpacing:-0.5,marginBottom:4 }}>Doc<span style={{ color:"#3B82F6" }}>Swift</span></div>
-            <div style={{ color:"#4B5563",fontSize:12 }}>© 2026 Mokoto LLC — DocSwift. L'assistant PDF intelligent pour les professionnels.</div>
+            <div style={{ color:"#4B5563",fontSize:12 }}>© 2026 Motoko LLC — DocSwift. L'assistant PDF intelligent pour les professionnels.</div>
           </div>
           <div style={{ display:"flex",gap:24,flexWrap:"wrap" }}>
             <a href={`${localePrefix}/dashboard`} style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>Dashboard</a>
