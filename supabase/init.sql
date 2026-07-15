@@ -125,6 +125,48 @@ RETURNS void LANGUAGE sql AS $$
   WHERE id = p_job_id;
 $$;
 
+-- ── 9. HR Subscriptions ──────────────────────────────────────
+-- Isolé de `subscriptions` (Academic) à dessein : l'accès HR ne doit
+-- jamais dépendre de subscriptions.status. Pas d'entité HrAccount —
+-- clé sur user_email comme hr_jobs/usage_logs.
+CREATE TABLE IF NOT EXISTS hr_subscriptions (
+  id                     uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_email             text        UNIQUE NOT NULL REFERENCES users(email) ON DELETE CASCADE,
+  stripe_customer_id     text,
+  stripe_subscription_id text        UNIQUE,
+  plan                   text        NOT NULL CHECK (plan IN ('starter', 'pro', 'business')),
+  status                 text        NOT NULL DEFAULT 'trialing' CHECK (status IN ('trialing', 'active', 'past_due', 'canceled')),
+  current_period_end     timestamptz,
+  cv_screened_this_month integer     NOT NULL DEFAULT 0,
+  cv_quota               integer     NOT NULL,
+  created_at             timestamptz DEFAULT now(),
+  updated_at             timestamptz DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS hr_subscriptions_user_email_idx    ON hr_subscriptions(user_email);
+CREATE INDEX IF NOT EXISTS hr_subscriptions_stripe_sub_id_idx ON hr_subscriptions(stripe_subscription_id);
+CREATE INDEX IF NOT EXISTS hr_subscriptions_status_idx        ON hr_subscriptions(status);
+
+-- RPC : incrément atomique du compteur mensuel de CVs screenés
+CREATE OR REPLACE FUNCTION hr_increment_cv_screened(p_user_email text, p_amount integer DEFAULT 1)
+RETURNS integer LANGUAGE sql AS $$
+  UPDATE hr_subscriptions
+  SET cv_screened_this_month = cv_screened_this_month + p_amount,
+      updated_at = now()
+  WHERE user_email = p_user_email
+  RETURNING cv_screened_this_month;
+$$;
+
+-- ── 10. HR Leads (essai gratuit / lead magnet) ─────────────────
+CREATE TABLE IF NOT EXISTS hr_leads (
+  id         uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
+  email      text        NOT NULL,
+  source     text        NOT NULL DEFAULT 'hr_trial',
+  job_title  text,
+  cv_count   integer     DEFAULT 0,
+  created_at timestamptz DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS hr_leads_email_idx ON hr_leads(email);
+
 -- ============================================================
 -- DONE — toutes les tables et fonctions sont prêtes.
 -- ============================================================

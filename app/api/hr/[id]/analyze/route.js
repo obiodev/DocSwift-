@@ -3,11 +3,12 @@ import { getServerSession } from "next-auth";
 import { authOptions }      from "@/lib/auth";
 import { supabaseAdmin }    from "@/lib/supabase";
 import { analyzeCV, extractPdfText } from "@/lib/gemini";
+import { getHrQuotaStatus, incrementHrCvScreened } from "@/lib/hrSubscription";
 
 const CONCURRENCY = 5; // max parallel Gemini calls (free tier: 15 RPM)
 
 // ── Background batch processor ────────────────────────────────────────────
-async function runBatch(jobId, jobTitle, jobDescription) {
+async function runBatch(jobId, jobTitle, jobDescription, userEmail) {
   // Fetch all pending CVs
   const { data: cvs } = await supabaseAdmin
     .from("hr_cv_analyses")
@@ -56,8 +57,9 @@ async function runBatch(jobId, jobTitle, jobDescription) {
           }).eq("id", cv.id);
         }
 
-        // Increment analyzed_count
+        // Increment analyzed_count and the monthly HR quota counter
         await supabaseAdmin.rpc("hr_increment_analyzed", { p_job_id: jobId });
+        await incrementHrCvScreened(userEmail, 1);
       })
     );
 
@@ -95,6 +97,24 @@ export async function POST(request, { params }) {
     return NextResponse.json({ error: "GEMINI_KEY_MISSING", message: "Clé API Gemini non configurée." }, { status: 503 });
   }
 
+  // Quota check — count CVs about to be (re)processed against the monthly HR quota
+  const { count: pendingCount } = await supabaseAdmin
+    .from("hr_cv_analyses")
+    .select("id", { count: "exact", head: true })
+    .eq("job_id", id)
+    .in("status", ["pending", "error"]);
+
+  const quota = await getHrQuotaStatus(session.user.email);
+  if (!quota.active) {
+    return NextResponse.json({ error: "HR_SUBSCRIPTION_REQUIRED", message: "DocSwift HR nécessite un abonnement actif." }, { status: 403 });
+  }
+  if (quota.remaining !== null && (pendingCount ?? 0) > quota.remaining) {
+    return NextResponse.json({
+      error:   "QUOTA_EXCEEDED",
+      message: `Quota mensuel dépassé (${quota.used}/${quota.quota} CVs déjà screenés).`,
+    }, { status: 403 });
+  }
+
   // Mark job as analyzing with a started_at timestamp for watchdog recovery
   await supabaseAdmin.from("hr_jobs").update({
     status: "analyzing",
@@ -106,7 +126,7 @@ export async function POST(request, { params }) {
   await supabaseAdmin.from("hr_cv_analyses").update({ status: "pending" }).eq("job_id", id).in("status", ["error"]);
 
   // Fire-and-forget with error recovery
-  runBatch(id, job.title, job.description).catch(async (err) => {
+  runBatch(id, job.title, job.description, session.user.email).catch(async (err) => {
     console.error("runBatch fatal error:", err);
     await supabaseAdmin.from("hr_jobs").update({
       status: "error",

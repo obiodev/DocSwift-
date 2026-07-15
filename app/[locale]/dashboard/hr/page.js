@@ -27,9 +27,47 @@ const CSS = `
 const STATUS_COLOR = { recommended:"#10B981", consider:"#F59E0B", rejected:"#EF4444", pending:"#4B5563", error:"#EF4444" };
 const STATUS_LABEL = { recommended:"Recommandé", consider:"À considérer", rejected:"Non retenu", pending:"En attente", error:"Erreur" };
 
+const PLAN_CARDS = [
+  { plan:"starter",  label:"Starter",  price:"49€",  quota:"50 CVs/mois" },
+  { plan:"pro",       label:"Pro",      price:"149€", quota:"250 CVs/mois" },
+  { plan:"business",  label:"Business", price:"349€", quota:"1000 CVs/mois" },
+];
+
 // ─────────────────────────────────────────────────────────────────────────────
 export default function HRPage() {
   const { data: session } = useSession();
+
+  // ── Subscription state ──────────────────────────────────────────────────
+  const [sub, setSub]             = useState(null);   // { active, plan, quota, used, remaining, status }
+  const [subLoading, setSubLoading] = useState(true);
+  const [checkoutLoading, setCheckoutLoading] = useState(null); // plan being checked out
+  const [portalLoading, setPortalLoading]     = useState(false);
+
+  useEffect(() => {
+    fetch("/api/hr/subscription").then(r => r.ok ? r.json() : null).then(setSub).finally(() => setSubLoading(false));
+  }, []);
+
+  const startCheckout = async (plan) => {
+    setCheckoutLoading(plan);
+    try {
+      const r = await fetch("/api/hr/checkout", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ plan }) });
+      const data = await r.json();
+      if (!r.ok) { alert(data.message ?? "Erreur lors de la création de l'abonnement."); return; }
+      window.location.href = data.url;
+    } catch { alert("Erreur réseau."); }
+    finally { setCheckoutLoading(null); }
+  };
+
+  const openPortal = async () => {
+    setPortalLoading(true);
+    try {
+      const r = await fetch("/api/hr/portal", { method:"POST" });
+      const data = await r.json();
+      if (!r.ok) { alert(data.message ?? "Erreur."); return; }
+      window.location.href = data.url;
+    } catch { alert("Erreur réseau."); }
+    finally { setPortalLoading(false); }
+  };
 
   // ── View state ──────────────────────────────────────────────────────────
   const [view, setView]     = useState("list");      // list | create | job
@@ -207,7 +245,7 @@ export default function HRPage() {
           </h1>
           <p style={{ color:"#6B7A99",fontSize:14,margin:"4px 0 0" }}>Analyse de CVs par IA — scoring /100 · export CSV</p>
         </div>
-        {view === "list" && (
+        {view === "list" && sub?.active && (
           <button className="btn" onClick={() => setView("create")}
             style={{ background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",border:"none",padding:"11px 24px",borderRadius:12,fontSize:14,fontWeight:700 }}>
             + Nouvelle analyse
@@ -215,8 +253,46 @@ export default function HRPage() {
         )}
       </div>
 
+      {/* ── SUBSCRIPTION STATUS / PLAN PICKER ── */}
+      {!subLoading && sub?.active && (
+        <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:12,background:"#0D1117",border:"1px solid #1E2733",borderRadius:14,padding:"14px 20px",marginBottom:28 }}>
+          <div style={{ display:"flex",alignItems:"center",gap:18,flexWrap:"wrap" }}>
+            <span style={{ fontSize:12,fontWeight:700,color:"#F97316",background:"rgba(249,115,22,.1)",border:"1px solid rgba(249,115,22,.3)",padding:"4px 12px",borderRadius:20 }}>
+              Plan {sub.plan?.charAt(0).toUpperCase()}{sub.plan?.slice(1)} {sub.status === "trialing" ? "· Essai" : ""}
+            </span>
+            <span style={{ fontSize:13,color:"#8892AA" }}>{sub.used}/{sub.quota} CVs screenés ce mois-ci</span>
+          </div>
+          <button className="btn" onClick={openPortal} disabled={portalLoading}
+            style={{ background:"transparent",border:"1px solid #1E2733",color:"#C0CBE0",padding:"8px 18px",borderRadius:10,fontSize:13,fontWeight:600,opacity:portalLoading?0.6:1 }}>
+            {portalLoading ? "…" : "Gérer l'abonnement"}
+          </button>
+        </div>
+      )}
+
+      {!subLoading && !sub?.active && (
+        <div className="fade-in" style={{ marginBottom:32 }}>
+          <div style={{ textAlign:"center",marginBottom:24 }}>
+            <h2 style={{ fontSize:20,fontWeight:800,margin:"0 0 6px" }}>Choisissez votre plan DocSwift HR</h2>
+            <p style={{ color:"#6B7A99",fontSize:14,margin:0 }}>14 jours d'essai gratuit · Carte bancaire requise · Annulez à tout moment</p>
+          </div>
+          <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16 }}>
+            {PLAN_CARDS.map(c => (
+              <div key={c.plan} style={{ background:"#0D1117",border:"1px solid #1E2733",borderRadius:16,padding:24,textAlign:"center" }}>
+                <div style={{ fontSize:14,fontWeight:700,color:"#8892AA",marginBottom:8 }}>{c.label}</div>
+                <div style={{ fontSize:28,fontWeight:900,marginBottom:4 }}>{c.price}<span style={{ fontSize:13,color:"#4B5563",fontWeight:600 }}>/mois</span></div>
+                <div style={{ fontSize:12,color:"#6B7A99",marginBottom:18 }}>{c.quota}</div>
+                <button className="btn" onClick={() => startCheckout(c.plan)} disabled={checkoutLoading === c.plan}
+                  style={{ width:"100%",background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",border:"none",padding:"11px",borderRadius:10,fontSize:13,fontWeight:700,opacity:checkoutLoading===c.plan?0.6:1 }}>
+                  {checkoutLoading === c.plan ? "…" : "Démarrer l'essai →"}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ══════════════ LIST VIEW ══════════════ */}
-      {view === "list" && (
+      {view === "list" && sub?.active && (
         <div className="fade-in">
           {jobsLoading ? (
             <div style={{ textAlign:"center",padding:60,color:"#4B5563" }}>Chargement…</div>

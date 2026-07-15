@@ -1,7 +1,8 @@
 import { NextResponse }      from "next/server";
 import { getServerSession }  from "next-auth";
 import { authOptions }       from "@/lib/auth";
-import { supabaseAdmin, isPro } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase";
+import { isHrActive } from "@/lib/hrSubscription";
 
 // ── POST /api/hr/job — Create a new HR job ──────────────────────────────────
 export async function POST(request) {
@@ -10,9 +11,9 @@ export async function POST(request) {
     return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
   }
 
-  const pro = await isPro(session.user.email);
-  if (!pro) {
-    return NextResponse.json({ error: "PRO_REQUIRED", message: "DocSwift HR nécessite un plan Pro ou Business." }, { status: 403 });
+  const active = await isHrActive(session.user.email);
+  if (!active) {
+    return NextResponse.json({ error: "HR_SUBSCRIPTION_REQUIRED", message: "DocSwift HR nécessite un abonnement actif." }, { status: 403 });
   }
 
   const { title, description } = await request.json();
