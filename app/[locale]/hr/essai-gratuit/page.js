@@ -198,7 +198,7 @@ export default function HrTrialPage() {
             {unlocked && (
               <div style={{ padding:"24px 22px",background:"#0A0E17",borderTop:"1px solid #1E2733",textAlign:"center" }}>
                 <p style={{ fontSize:14,color:"#8892AA",margin:"0 0 14px" }}>Envie d'analyser jusqu'à 1000 CVs par mois ?</p>
-                <a href="/dashboard/hr" style={{ display:"inline-block",background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",textDecoration:"none",padding:"12px 28px",borderRadius:10,fontSize:14,fontWeight:700 }}>
+                <a href="/hr/dashboard" style={{ display:"inline-block",background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",textDecoration:"none",padding:"12px 28px",borderRadius:10,fontSize:14,fontWeight:700 }}>
                   Découvrir DocSwift HR →
                 </a>
               </div>

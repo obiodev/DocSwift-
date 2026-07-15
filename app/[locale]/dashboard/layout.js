@@ -21,7 +21,6 @@ const CSS = `
 
 const LINKS = [
   { href:"/dashboard",     icon:"🏠", label:"Vue d'ensemble" },
-  { href:"/dashboard/hr",  icon:"👥", label:"DocSwift HR",   badge:"⭐", color:"#F97316" },
   { href:"/dashboard/ai",  icon:"🤖", label:"DocSwift AI",   badge:"Bientôt", badgeBg:"#6B7A99" },
   { href:"/dashboard/pdf", icon:"📄", label:"PDF Essentials" },
 ];
@@ -65,7 +64,6 @@ export default function DashboardLayout({ children }) {
         <div style={{ padding:"22px 20px 16px",borderBottom:"1px solid #1E2733" }}>
           <div style={{ fontWeight:900,fontSize:20,letterSpacing:-0.8,cursor:"pointer" }} onClick={() => go("/")}>
             Doc<span style={{ color:"#3B82F6" }}>Swift</span>
-            <span style={{ fontSize:10,fontWeight:700,color:"#F97316",marginLeft:5,background:"rgba(249,115,22,.12)",border:"1px solid rgba(249,115,22,.3)",padding:"2px 6px",borderRadius:5 }}>B2B</span>
           </div>
           <div style={{ fontSize:11,color:"#4B5563",marginTop:4 }}>Dashboard</div>
         </div>

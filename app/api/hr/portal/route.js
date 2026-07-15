@@ -21,7 +21,7 @@ export async function POST() {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   const portalSession = await stripe.billingPortal.sessions.create({
     customer:   sub.stripe_customer_id,
-    return_url: `${process.env.NEXTAUTH_URL ?? "https://getdocswift.com"}/dashboard/hr`,
+    return_url: `${process.env.NEXTAUTH_URL ?? "https://getdocswift.com"}/hr/dashboard`,
   });
 
   return NextResponse.json({ url: portalSession.url });

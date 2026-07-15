@@ -8,7 +8,7 @@ export default function DashboardHome() {
   const locale = useLocale();
   const prefix = locale === "fr" ? "" : `/${locale}`;
 
-  useEffect(() => { router.replace(`${prefix}/dashboard/hr`); }, []);
+  useEffect(() => { router.replace(`${prefix}/dashboard/pdf`); }, []);
 
   return (
     <div style={{ minHeight:"60vh",display:"flex",alignItems:"center",justifyContent:"center",color:"#6B7A99",fontSize:14 }}>

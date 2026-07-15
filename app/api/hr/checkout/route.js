@@ -37,8 +37,8 @@ export async function POST(request) {
     payment_method_collection: "always", // carte obligatoire dès l'inscription, même en essai
     customer_email:           session.user.email,
     line_items:                [{ price: priceId, quantity: 1 }],
-    success_url:               `${baseUrl}/dashboard/hr?subscribed=1`,
-    cancel_url:                `${baseUrl}/dashboard/hr`,
+    success_url:               `${baseUrl}/hr/dashboard?subscribed=1`,
+    cancel_url:                `${baseUrl}/hr/dashboard`,
     subscription_data: {
       trial_period_days: 14,
       metadata,

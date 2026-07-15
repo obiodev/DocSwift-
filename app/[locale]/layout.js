@@ -7,20 +7,20 @@ const BASE_URL = process.env.NEXTAUTH_URL ?? "https://getdocswift.com";
 
 const META = {
   fr: {
-    title: "DocSwift — L'assistant PDF intelligent pour les professionnels",
-    description: "DocSwift analyse 100 CVs en 2 minutes, extrait les clauses de vos contrats et traite tous vos PDFs. Pour PME, cabinets RH et avocats.",
+    title: "DocSwift — Documents intelligents pour professionnels",
+    description: "DocSwift regroupe deux produits : DocSwift Academic (conversion PDF, CV Builder, chat IA) et DocSwift HR (analyse de CVs par IA pour recruteurs).",
     locale: "fr_FR",
     canonical: BASE_URL,
   },
   en: {
-    title: "DocSwift — The intelligent PDF assistant for professionals",
-    description: "DocSwift analyzes 100 CVs in 2 minutes, extracts contract clauses and handles all your PDFs. For SMBs, HR firms and law offices.",
+    title: "DocSwift — Smart documents for professionals",
+    description: "DocSwift brings together two products: DocSwift Academic (PDF conversion, resume builder, AI chat) and DocSwift HR (AI resume screening for recruiters).",
     locale: "en_US",
     canonical: `${BASE_URL}/en`,
   },
   ar: {
-    title: "DocSwift — المساعد الذكي لـ PDF للمحترفين",
-    description: "يحلل DocSwift 100 سيرة ذاتية في دقيقتين ويستخرج بنود العقود ويعالج جميع ملفات PDF. للشركات الصغيرة ومكاتب التوظيف والمحامين.",
+    title: "DocSwift — مستندات ذكية للمحترفين",
+    description: "يجمع DocSwift بين منتجين: DocSwift Academic (تحويل PDF، منشئ السيرة الذاتية، دردشة بالذكاء الاصطناعي) وDocSwift HR (تحليل السير الذاتية بالذكاء الاصطناعي للمجندين).",
     locale: "ar_SA",
     canonical: `${BASE_URL}/ar`,
   },

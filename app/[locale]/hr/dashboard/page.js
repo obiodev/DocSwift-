@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 
 const CSS = `
   @keyframes spin { to { transform:rotate(360deg); } }
@@ -34,8 +34,12 @@ const PLAN_CARDS = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-export default function HRPage() {
-  const { data: session } = useSession();
+export default function HrDashboardPage() {
+  const { data: session, status: sessionStatus } = useSession();
+
+  useEffect(() => {
+    if (sessionStatus === "unauthenticated") signIn();
+  }, [sessionStatus]);
 
   // ── Subscription state ──────────────────────────────────────────────────
   const [sub, setSub]             = useState(null);   // { active, plan, quota, used, remaining, status }
@@ -44,8 +48,9 @@ export default function HRPage() {
   const [portalLoading, setPortalLoading]     = useState(false);
 
   useEffect(() => {
+    if (sessionStatus !== "authenticated") return;
     fetch("/api/hr/subscription").then(r => r.ok ? r.json() : null).then(setSub).finally(() => setSubLoading(false));
-  }, []);
+  }, [sessionStatus]);
 
   const startCheckout = async (plan) => {
     setCheckoutLoading(plan);
@@ -103,7 +108,7 @@ export default function HRPage() {
     }
   }, []);
 
-  useEffect(() => { loadJobs(); }, [loadJobs]);
+  useEffect(() => { if (sessionStatus === "authenticated") loadJobs(); }, [sessionStatus, loadJobs]);
 
   // ── Poll results ────────────────────────────────────────────────────────
   const startPolling = useCallback((jobId) => {
@@ -226,9 +231,29 @@ export default function HRPage() {
       : 0
     : 0;
 
+  if (sessionStatus === "loading" || !session) {
+    return (
+      <div style={{ minHeight:"100vh",background:"#07090F",display:"flex",alignItems:"center",justifyContent:"center" }}>
+        <div style={{ color:"#6B7A99",fontSize:14 }}>Chargement…</div>
+      </div>
+    );
+  }
+
   // ─────────────────────────────────────────────────────────────────────────
   return (
-    <div style={{ minHeight:"100vh",padding:"32px 28px",fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif",color:"#F0F4FF",maxWidth:1100,margin:"0 auto" }}>
+    <div style={{ minHeight:"100vh",background:"#07090F" }}>
+      {/* ── HR TOPBAR (isolé — pas de lien vers Academic) ── */}
+      <div style={{ borderBottom:"1px solid #1E2733",padding:"14px 28px",display:"flex",alignItems:"center",justifyContent:"space-between" }}>
+        <a href="/hr" style={{ textDecoration:"none",color:"#F0F4FF",fontWeight:900,fontSize:16,display:"flex",alignItems:"center",gap:8 }}>
+          👥 Doc<span style={{ color:"#F97316" }}>Swift HR</span>
+        </a>
+        <div style={{ display:"flex",alignItems:"center",gap:14,fontSize:13,color:"#6B7A99" }}>
+          <span>{session.user?.email}</span>
+          <a href="/hr" style={{ color:"#4B5563",textDecoration:"none" }} title="Retour au site DocSwift HR">↗</a>
+        </div>
+      </div>
+
+    <div style={{ padding:"32px 28px",fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif",color:"#F0F4FF",maxWidth:1100,margin:"0 auto" }}>
       <style>{CSS}</style>
 
       {/* ── HEADER ── */}
@@ -592,6 +617,7 @@ export default function HRPage() {
           )}
         </div>
       )}
+    </div>
     </div>
   );
 }

@@ -52,31 +52,6 @@ const jsonLdByLocale = (locale, url) => ({
         "bestRating": "5",
       },
     },
-    {
-      "@type": "FAQPage",
-      "mainEntity": locale === "en" ? [
-        { "@type": "Question", "name": "How many resumes can DocSwift HR analyze at once?",
-          "acceptedAnswer": { "@type": "Answer", "text": "DocSwift HR can analyze up to 100 resumes simultaneously on Pro and Business plans. Each analysis takes less than 2 minutes." } },
-        { "@type": "Question", "name": "Is candidate data secure?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Files are processed and deleted immediately after analysis. No HR data is retained beyond your session. GDPR compliant." } },
-        { "@type": "Question", "name": "Does it work with all CV formats?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes, DocSwift HR supports PDF, Word (.docx) and text resumes in French, English and Arabic." } },
-      ] : locale === "ar" ? [
-        { "@type": "Question", "name": "كم عدد السير الذاتية التي يمكن لـ DocSwift HR تحليلها دفعة واحدة؟",
-          "acceptedAnswer": { "@type": "Answer", "text": "يمكن لـ DocSwift HR تحليل ما يصل إلى 100 سيرة ذاتية في وقت واحد على خطط Pro وBusiness. يستغرق كل تحليل أقل من دقيقتين." } },
-        { "@type": "Question", "name": "هل بيانات المرشحين آمنة؟",
-          "acceptedAnswer": { "@type": "Answer", "text": "نعم. تتم معالجة الملفات وحذفها فوراً بعد التحليل. لا يتم الاحتفاظ بأي بيانات موارد بشرية بعد انتهاء جلستك. متوافق مع اللائحة العامة لحماية البيانات." } },
-        { "@type": "Question", "name": "هل يعمل مع جميع تنسيقات السيرة الذاتية؟",
-          "acceptedAnswer": { "@type": "Answer", "text": "نعم، يدعم DocSwift HR ملفات PDF وWord وملفات السيرة الذاتية النصية باللغات الفرنسية والإنجليزية والعربية." } },
-      ] : [
-        { "@type": "Question", "name": "Combien de CVs DocSwift HR peut-il analyser en une fois ?",
-          "acceptedAnswer": { "@type": "Answer", "text": "DocSwift HR peut analyser jusqu'à 100 CVs simultanément sur les plans Pro et Business. Chaque analyse prend moins de 2 minutes." } },
-        { "@type": "Question", "name": "Les données des candidats sont-elles sécurisées ?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Oui. Les fichiers sont traités et supprimés immédiatement après analyse. Aucune donnée RH n'est conservée au-delà de votre session. Conforme RGPD." } },
-        { "@type": "Question", "name": "Fonctionne-t-il avec tous les formats de CV ?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Oui, DocSwift HR supporte les CVs en PDF, Word (.docx) et texte, en français, anglais et arabe." } },
-      ],
-    },
   ],
 });
 
@@ -84,7 +59,7 @@ export async function generateMetadata({ params }) {
   const { locale } = await params;
   const m      = META[locale] ?? META.fr;
   const prefix = LOCALE_PREFIX[locale] ?? "";
-  const url    = `${BASE_URL}${prefix}/dashboard/hr`;
+  const url    = `${BASE_URL}${prefix}/hr/dashboard`;
 
   return {
     title:       m.title,
@@ -95,17 +70,17 @@ export async function generateMetadata({ params }) {
     alternates: {
       canonical: url,
       languages: {
-        "fr":        `${BASE_URL}/dashboard/hr`,
-        "en":        `${BASE_URL}/en/dashboard/hr`,
-        "ar":        `${BASE_URL}/ar/dashboard/hr`,
-        "x-default": `${BASE_URL}/dashboard/hr`,
+        "fr":        `${BASE_URL}/hr/dashboard`,
+        "en":        `${BASE_URL}/en/hr/dashboard`,
+        "ar":        `${BASE_URL}/ar/hr/dashboard`,
+        "x-default": `${BASE_URL}/hr/dashboard`,
       },
     },
     openGraph: {
       title:       m.og_title,
       description: m.og_desc,
       url,
-      siteName: "DocSwift",
+      siteName: "DocSwift HR",
       type:     "website",
       locale:   locale === "ar" ? "ar_SA" : locale === "en" ? "en_US" : "fr_FR",
       images: [{ url: `${BASE_URL}/og-hr.png`, width: 1200, height: 630, alt: m.og_title }],
@@ -122,6 +97,6 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function HrLayout({ children }) {
+export default function HrDashboardLayout({ children }) {
   return children;
 }

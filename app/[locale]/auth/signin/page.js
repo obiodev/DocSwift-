@@ -18,7 +18,7 @@ export default function SignInPage() {
   const router       = useRouter();
   const locale       = useLocale();
   const searchParams = useSearchParams();
-  const callbackUrl  = searchParams.get("callbackUrl") || (locale === "fr" ? "/dashboard/hr" : `/${locale}/dashboard/hr`);
+  const callbackUrl  = searchParams.get("callbackUrl") || (locale === "fr" ? "/dashboard" : `/${locale}/dashboard`);
 
   const [tab, setTab]           = useState("signin");   // signin | signup
   const [name, setName]         = useState("");
