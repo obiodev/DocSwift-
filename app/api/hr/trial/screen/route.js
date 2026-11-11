@@ -16,7 +16,7 @@ function trialIdentifier(request) {
 
 // ── POST /api/hr/trial/screen — Anonymous CV screening (no account, no persistence) ──
 export async function POST(request) {
-  if (!process.env.GEMINI_API_KEY) {
+  if (!process.env.GEMINI_API_KEY && !process.env.OPENROUTER_API_KEY) {
     return NextResponse.json({ error: "GEMINI_KEY_MISSING", message: "Service temporairement indisponible." }, { status: 503 });
   }
 

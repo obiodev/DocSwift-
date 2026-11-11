@@ -65,7 +65,7 @@ export async function POST(request) {
     };
   }
 
-  if (!process.env.GEMINI_API_KEY) return NextResponse.json({ reply: FALLBACK });
+  if (!process.env.GEMINI_API_KEY && !process.env.OPENROUTER_API_KEY) return NextResponse.json({ reply: FALLBACK });
 
   try {
     // Gemini requires the history to start with a user turn

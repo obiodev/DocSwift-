@@ -94,7 +94,7 @@ export async function POST(request, { params }) {
   if (job.user_email !== session.user.email) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   if (job.cv_count === 0) return NextResponse.json({ error: "NO_CVS" }, { status: 400 });
 
-  if (!process.env.GEMINI_API_KEY) {
+  if (!process.env.GEMINI_API_KEY && !process.env.OPENROUTER_API_KEY) {
     return NextResponse.json({ error: "GEMINI_KEY_MISSING", message: "Clé API Gemini non configurée." }, { status: 503 });
   }
 
