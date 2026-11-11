@@ -134,13 +134,6 @@ const jsonLd = {
           "priceSpecification": { "@type": "UnitPriceSpecification", "price": "9.99", "priceCurrency": "EUR", "unitCode": "MON" },
         },
       ],
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "reviewCount": "312",
-        "bestRating": "5",
-        "worstRating": "1",
-      },
     },
     {
       "@type": "FAQPage",
@@ -149,17 +142,17 @@ const jsonLd = {
         {
           "@type": "Question",
           "name": "Combien de CVs peut-on analyser simultanément ?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Jusqu'à 100 CVs en parallèle sur les plans Pro et Business. Chaque analyse prend moins de 10 secondes." },
+          "acceptedAnswer": { "@type": "Answer", "text": "Jusqu'à 100 CVs par analyse, dans la limite du quota mensuel de votre plan DocSwift HR." },
         },
         {
           "@type": "Question",
           "name": "Les données de mes candidats sont-elles sécurisées ?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Oui. Les fichiers sont traités et supprimés immédiatement après analyse. Aucune donnée RH n'est conservée au-delà de votre session." },
+          "acceptedAnswer": { "@type": "Answer", "text": "Le fichier PDF est effacé dès la fin de son analyse. Seuls le score et la synthèse restent dans votre espace, et vous pouvez les supprimer à tout moment." },
         },
         {
           "@type": "Question",
           "name": "Y a-t-il une période d'essai gratuite ?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Oui, 7 jours d'essai gratuit sur le plan Pro, sans carte bancaire requise." },
+          "acceptedAnswer": { "@type": "Answer", "text": "Oui : 5 CVs analysés gratuitement sans compte, puis 14 jours d'essai sur les plans DocSwift HR, sans débit avant la fin de l'essai." },
         },
       ],
     },

@@ -197,10 +197,13 @@ export default function HrTrialPage() {
 
             {unlocked && (
               <div style={{ padding:"24px 22px",background:"#0A0E17",borderTop:"1px solid #1E2733",textAlign:"center" }}>
-                <p style={{ fontSize:14,color:"#8892AA",margin:"0 0 14px" }}>Envie d'analyser jusqu'à 1000 CVs par mois ?</p>
-                <a href="/hr/dashboard" style={{ display:"inline-block",background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",textDecoration:"none",padding:"12px 28px",borderRadius:10,fontSize:14,fontWeight:700 }}>
-                  Découvrir DocSwift HR →
+                <p style={{ fontSize:14,color:"#8892AA",margin:"0 0 14px" }}>Ce tri vous a fait gagner du temps ? Analysez toutes les candidatures de ce poste : 14 jours offerts, 0 € débité avant J14.</p>
+                <a href="/hr/dashboard?plan=pro" style={{ display:"inline-block",background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",textDecoration:"none",padding:"12px 28px",borderRadius:10,fontSize:14,fontWeight:700 }}>
+                  Lancer mon essai 14 jours →
                 </a>
+                <div style={{ marginTop:12 }}>
+                  <a href="/hr#pricing" style={{ color:"#6B7A99",fontSize:13 }}>Voir les tarifs</a>
+                </div>
               </div>
             )}
           </div>

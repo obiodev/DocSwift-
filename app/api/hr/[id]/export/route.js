@@ -33,7 +33,10 @@ export async function GET(request, { params }) {
   // Build CSV
   const escape = (v) => {
     if (v == null) return "";
-    const s = String(v).replace(/"/g, '""');
+    let s = String(v);
+    // Neutralise spreadsheet formulas (CSV injection, CWE-1236)
+    if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+    s = s.replace(/"/g, '""');
     return s.includes(",") || s.includes('"') || s.includes("\n") ? `"${s}"` : s;
   };
 

@@ -58,10 +58,10 @@ const PLANS = [
 ];
 
 const FAQ = [
-  { q:"Combien de CVs peut-on analyser simultanément ?", a:"Jusqu'à 100 CVs en parallèle par analyse. Chaque analyse prend moins de 2 minutes." },
-  { q:"Les données de mes candidats sont-elles sécurisées ?", a:"Oui. Les fichiers sont traités et supprimés immédiatement après analyse. Aucune donnée RH n'est conservée au-delà de votre session." },
+  { q:"Combien de CVs peut-on analyser simultanément ?", a:"Jusqu'à 100 CVs par analyse, dans la limite du quota mensuel de votre plan." },
+  { q:"Les données de mes candidats sont-elles sécurisées ?", a:"Le fichier PDF est effacé dès que son analyse est terminée. Seuls le score et la synthèse restent dans votre espace, et vous pouvez supprimer une analyse à tout moment. Les coordonnées (email, téléphone, liens) sont masquées avant l'envoi à l'IA, et les CVs ne servent pas à entraîner de modèle." },
   { q:"Puis-je exporter les résultats d'analyse ?", a:"Oui, export CSV/Excel disponible sur tous les plans." },
-  { q:"L'IA est-elle vraiment fiable pour évaluer des CVs ?", a:"Elle analyse objectivement les correspondances entre la fiche de poste et les compétences du CV. Elle remplace le tri initial, pas l'entretien humain." },
+  { q:"L'IA prend-elle la décision à ma place ?", a:"Non. DocSwift HR classe et justifie, vous décidez. L'IA ne tient compte ni de l'âge, ni du genre, ni de l'origine : uniquement des compétences et de l'expérience au regard du poste. Le score est une aide au tri, pas un verdict." },
   { q:"Comment fonctionne la facturation ?", a:"Paiement mensuel par carte via Stripe. Annulation à tout moment, sans frais ni engagement." },
   { q:"Y a-t-il une période d'essai gratuite ?", a:"Oui, 14 jours d'essai gratuit sur tous les plans (carte bancaire requise, aucun débit avant la fin de l'essai)." },
 ];
@@ -77,7 +77,8 @@ export default function HrLanding() {
   const go = (path) => router.push(`${localePrefix}${path}`);
 
   const handleSubscribe = async (plan) => {
-    if (!session) { signIn(undefined, { callbackUrl: "/hr" }); return; }
+    // Keep the chosen plan through login: the dashboard resumes checkout from ?plan=
+    if (!session) { signIn(undefined, { callbackUrl: `${localePrefix}/hr/dashboard?plan=${plan}` }); return; }
     setCheckoutLoading(plan);
     try {
       const r = await fetch("/api/hr/checkout", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ plan }) });
@@ -118,7 +119,7 @@ export default function HrLanding() {
           </div>
 
           <h1 className="hero-text hero-h1" style={{ fontSize:"clamp(36px,6.5vw,80px)",fontWeight:900,letterSpacing:-3,lineHeight:1.04,marginBottom:24 }}>
-            <span className="gradient-text-orange">Analysez 100 CVs</span><br />en 2 minutes.
+            <span className="gradient-text-orange">Triez 100 CVs</span><br />en 2 minutes.
           </h1>
 
           <p className="hero-sub" style={{ color:"#8892AA",fontSize:19,maxWidth:560,margin:"0 auto 14px",lineHeight:1.7 }}>
@@ -139,7 +140,7 @@ export default function HrLanding() {
           </div>
 
           <p className="hero-trust" style={{ marginTop:28,color:"#4B5563",fontSize:13 }}>
-            ✓ 5 CVs gratuits sans compte &nbsp;·&nbsp; ✓ 14 jours d'essai sur les plans payants &nbsp;·&nbsp; ✓ Données supprimées après analyse
+            ✓ 5 CVs gratuits sans compte &nbsp;·&nbsp; ✓ Essai 14 jours, 0 € débité avant J14 &nbsp;·&nbsp; ✓ Résiliable en 1 clic
           </p>
         </div>
       </div>
@@ -151,7 +152,7 @@ export default function HrLanding() {
             { value:"6h", label:"économisées par recrutement" },
             { value:"100", label:"CVs analysés en parallèle" },
             { value:"< 2min", label:"pour un batch complet" },
-            { value:"98%", label:"de marge opérationnelle" },
+            { value:"0", label:"décision automatique : vous gardez la main" },
           ].map(s => (
             <div key={s.label} className="stat-card" style={{ padding:"16px 12px",borderRadius:14,border:"1px solid transparent",cursor:"default" }}>
               <div style={{ fontSize:30,fontWeight:900,color:"#F97316",letterSpacing:-1 }}>{s.value}</div>

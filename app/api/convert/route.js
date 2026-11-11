@@ -10,13 +10,16 @@ import { execFileSync }     from "child_process";
 import { writeFileSync, readFileSync, unlinkSync, mkdtempSync, rmdirSync } from "fs";
 import { join }             from "path";
 import { tmpdir }           from "os";
+import { getClientIp }      from "@/lib/clientIp";
 
 const PREMIUM_TOOLS = new Set(["protect-pdf", "compress-image", "unlock-pdf"]);
 const VALID_TYPES   = new Set([
   "pdf-to-word", "word-to-pdf", "compress-pdf", "merge-pdf",
   "split-pdf", "image-to-pdf", "protect-pdf", "unlock-pdf", "compress-image",
 ]);
-const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
+const MAX_FILE_SIZE  = 20 * 1024 * 1024; // 20 MB per file
+const MAX_TOTAL_SIZE = 50 * 1024 * 1024; // 50 MB per request
+const MAX_FILES      = 20;
 
 // ─── POST handler ──────────────────────────────────────────────────────────
 export async function POST(request) {
@@ -29,30 +32,19 @@ export async function POST(request) {
       return NextResponse.json({ error: "Unsupported type" }, { status: 400 });
     }
 
-    // ── File size validation ───────────────────────────────────────────────
-    const mainFile = formData.get("file") ?? formData.getAll("files")[0];
-    if (mainFile && mainFile.size > MAX_FILE_SIZE) {
+    // ── File size validation (every file, and total) ──────────────────────
+    const allFiles = [formData.get("file"), ...formData.getAll("files")].filter(Boolean);
+    if (allFiles.length > MAX_FILES) {
+      return NextResponse.json({ error: `Too many files (max ${MAX_FILES})` }, { status: 413 });
+    }
+    const totalSize = allFiles.reduce((n, f) => n + (f.size ?? 0), 0);
+    if (allFiles.some((f) => f.size > MAX_FILE_SIZE) || totalSize > MAX_TOTAL_SIZE) {
       return NextResponse.json({ error: "File too large (max 20 MB)" }, { status: 413 });
     }
 
-    // ── Usage gate ─────────────────────────────────────────────────────────
     const session = await getServerSession(authOptions);
-    const pro     = session?.user?.email ? await isPro(session.user.email) : false;
 
-    if (!pro) {
-      const identifier = session?.user?.email
-        ?? (request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-for") ?? "anonymous").split(",")[0].trim();
-      const [used, freeLimit] = await Promise.all([getUsageToday(identifier), getFreeLimit()]);
-      if (used >= freeLimit) {
-        return NextResponse.json(
-          { error: "LIMIT_REACHED", message: `Daily limit of ${freeLimit} reached. Upgrade to Pro or watch an ad.` },
-          { status: 429 }
-        );
-      }
-      await incrementUsage(identifier);
-    }
-
-    // ── Premium gate ──────────────────────────────────────────────────────
+    // ── Premium gate (before consuming quota) ─────────────────────────────
     if (PREMIUM_TOOLS.has(type)) {
       const hasPremium = session?.user?.email ? await isPremium(session.user.email) : false;
       if (!hasPremium) {
@@ -61,6 +53,21 @@ export async function POST(request) {
           { status: 403 }
         );
       }
+    }
+
+    // ── Usage gate ─────────────────────────────────────────────────────────
+    const pro = session?.user?.email ? await isPro(session.user.email) : false;
+
+    if (!pro) {
+      const identifier = session?.user?.email ?? getClientIp(request);
+      const [used, freeLimit] = await Promise.all([getUsageToday(identifier), getFreeLimit()]);
+      if (used >= freeLimit) {
+        return NextResponse.json(
+          { error: "LIMIT_REACHED", message: `Daily limit of ${freeLimit} reached. Upgrade to Pro or watch an ad.` },
+          { status: 429 }
+        );
+      }
+      await incrementUsage(identifier);
     }
 
     // ── PDF → Word ─────────────────────────────────────────────────────────

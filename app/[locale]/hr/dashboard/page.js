@@ -38,7 +38,9 @@ export default function HrDashboardPage() {
   const { data: session, status: sessionStatus } = useSession();
 
   useEffect(() => {
-    if (sessionStatus === "unauthenticated") signIn();
+    if (sessionStatus === "unauthenticated") {
+      signIn(undefined, { callbackUrl: window.location.pathname + window.location.search });
+    }
   }, [sessionStatus]);
 
   // ── Subscription state ──────────────────────────────────────────────────
@@ -62,6 +64,16 @@ export default function HrDashboardPage() {
     } catch { alert("Erreur réseau."); }
     finally { setCheckoutLoading(null); }
   };
+
+  // Resume the plan picked on the landing page before login (?plan=pro)
+  const autoCheckoutDone = useRef(false);
+  useEffect(() => {
+    if (subLoading || autoCheckoutDone.current || sub?.active) return;
+    const plan = new URLSearchParams(window.location.search).get("plan");
+    if (!plan || !PLAN_CARDS.some(p => p.plan === plan)) return;
+    autoCheckoutDone.current = true;
+    startCheckout(plan);
+  }, [subLoading, sub]);
 
   const openPortal = async () => {
     setPortalLoading(true);
@@ -204,6 +216,16 @@ export default function HrDashboardPage() {
   const exportCSV = () => {
     if (!activeJob) return;
     window.open(`/api/hr/${activeJob.id}/export`, "_blank");
+  };
+
+  // ── Delete job (GDPR erasure) ────────────────────────────────────────────
+  const deleteJob = async () => {
+    if (!activeJob) return;
+    if (!window.confirm("Supprimer définitivement cette analyse et tous les résultats des candidats ? Cette action est irréversible.")) return;
+    const r = await fetch(`/api/hr/${activeJob.id}`, { method:"DELETE" });
+    if (!r.ok) { alert("Suppression impossible. Réessayez."); return; }
+    setActiveJob(null); setAnalyses([]); setView("list");
+    loadJobs();
   };
 
   // ── File drop handlers ───────────────────────────────────────────────────
@@ -496,6 +518,10 @@ export default function HrDashboardPage() {
                     <button className="btn" onClick={exportCSV}
                       style={{ background:"rgba(16,185,129,.1)",color:"#10B981",border:"1px solid rgba(16,185,129,.25)",padding:"8px 18px",borderRadius:8,fontSize:13,fontWeight:700 }}>
                       ⬇️ Export CSV
+                    </button>
+                    <button className="btn" onClick={deleteJob}
+                      style={{ background:"rgba(239,68,68,.08)",color:"#FCA5A5",border:"1px solid rgba(239,68,68,.25)",padding:"8px 18px",borderRadius:8,fontSize:13,fontWeight:700 }}>
+                      🗑 Supprimer
                     </button>
                     <button className="btn" onClick={startAnalysis} disabled={analyzing}
                       style={{ background:"rgba(59,130,246,.1)",color:"#60A5FA",border:"1px solid rgba(59,130,246,.25)",padding:"8px 18px",borderRadius:8,fontSize:13,fontWeight:700 }}>

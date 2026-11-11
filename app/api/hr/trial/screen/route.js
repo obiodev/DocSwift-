@@ -1,18 +1,17 @@
 import { NextResponse } from "next/server";
 import { getUsageToday, incrementUsage } from "@/lib/supabase";
 import { analyzeCV, extractPdfText } from "@/lib/gemini";
+import { getClientIp } from "@/lib/clientIp";
 
 const MAX_CVS         = 5;
 const MAX_FILE_SIZE   = 5 * 1024 * 1024; // 5 MB per CV
-const DAILY_TRIAL_CAP = 1;               // 1 free trial run per IP per day
+const MAX_BODY_SIZE   = MAX_CVS * MAX_FILE_SIZE + 512 * 1024;
+const DAILY_TRIAL_CAP = 3;               // 3 free trial runs per IP per day (shared office NAT)
 
 // Namespaced identifier so this never collides with the Academic anonymous
 // usage counter, which keys usage_logs by bare IP.
 function trialIdentifier(request) {
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
-    ?? request.headers.get("x-real-ip")
-    ?? "unknown";
-  return `hr_trial:${ip}`;
+  return `hr_trial:${getClientIp(request)}`;
 }
 
 // ── POST /api/hr/trial/screen — Anonymous CV screening (no account, no persistence) ──
@@ -24,7 +23,12 @@ export async function POST(request) {
   const identifier = trialIdentifier(request);
   const usedToday   = await getUsageToday(identifier);
   if (usedToday >= DAILY_TRIAL_CAP) {
-    return NextResponse.json({ error: "TRIAL_LIMIT_REACHED", message: "Essai gratuit déjà utilisé aujourd'hui. Réessayez demain ou créez un compte." }, { status: 429 });
+    return NextResponse.json({ error: "TRIAL_LIMIT_REACHED", message: "Limite d'essais gratuits atteinte pour aujourd'hui. Créez votre compte pour continuer : 14 jours offerts." }, { status: 429 });
+  }
+
+  const contentLength = Number(request.headers.get("content-length") ?? 0);
+  if (!contentLength || contentLength > MAX_BODY_SIZE) {
+    return NextResponse.json({ error: "PAYLOAD_TOO_LARGE" }, { status: 413 });
   }
 
   const formData    = await request.formData();
@@ -57,7 +61,8 @@ export async function POST(request) {
       const result = await analyzeCV({ jobTitle, jobDescription: jobDesc, cvText });
       return { filename: file.name, ...result };
     } catch (err) {
-      return { filename: file.name, status: "error", error_msg: err.message?.slice(0, 255) ?? "Erreur inconnue" };
+      console.error("[hr/trial] analysis error:", err?.message);
+      return { filename: file.name, status: "error", error_msg: "Analyse impossible pour ce fichier." };
     }
   }));
 

@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions }      from "@/lib/auth";
 import { getUsageToday, incrementUsage, isPro, getPlan, getFreeLimit } from "@/lib/supabase";
+import { getClientIp }      from "@/lib/clientIp";
 
 // Helper: get the caller's identifier (email or IP)
 function getIdentifier(request, session) {
   if (session?.user?.email) return session.user.email;
-  const forwarded = request.headers.get("x-forwarded-for");
-  return (forwarded ? forwarded.split(",")[0] : "anonymous").trim();
+  return getClientIp(request);
 }
 
 // GET /api/usage — returns { used, limit, isPro, remaining }

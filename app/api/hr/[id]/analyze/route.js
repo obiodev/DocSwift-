@@ -26,6 +26,7 @@ async function runBatch(jobId, jobTitle, jobDescription, userEmail) {
     const batch = cvs.slice(i, i + CONCURRENCY);
     await Promise.allSettled(
       batch.map(async (cv) => {
+        let succeeded = false;
         try {
           // Extract text from base64 PDF
           const pdfBuffer = Buffer.from(cv.pdf_data, "base64");
@@ -49,6 +50,7 @@ async function runBatch(jobId, jobTitle, jobDescription, userEmail) {
             summary:    result.summary,
             pdf_data:   null, // free up space once analyzed
           }).eq("id", cv.id);
+          succeeded = true;
 
         } catch (err) {
           console.error(`CV analysis error [${cv.filename}]:`, err.message);
@@ -57,9 +59,9 @@ async function runBatch(jobId, jobTitle, jobDescription, userEmail) {
           }).eq("id", cv.id);
         }
 
-        // Increment analyzed_count and the monthly HR quota counter
+        // Progress counter always moves; the paid quota is only charged on success
         await supabaseAdmin.rpc("hr_increment_analyzed", { p_job_id: jobId });
-        await incrementHrCvScreened(userEmail, 1);
+        if (succeeded) await incrementHrCvScreened(userEmail, 1);
       })
     );
 
@@ -90,7 +92,6 @@ export async function POST(request, { params }) {
 
   if (jobErr || !job) return NextResponse.json({ error: "JOB_NOT_FOUND" }, { status: 404 });
   if (job.user_email !== session.user.email) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
-  if (job.status === "analyzing") return NextResponse.json({ error: "ALREADY_ANALYZING" }, { status: 409 });
   if (job.cv_count === 0) return NextResponse.json({ error: "NO_CVS" }, { status: 400 });
 
   if (!process.env.GEMINI_API_KEY) {
@@ -115,12 +116,21 @@ export async function POST(request, { params }) {
     }, { status: 403 });
   }
 
-  // Mark job as analyzing with a started_at timestamp for watchdog recovery
-  await supabaseAdmin.from("hr_jobs").update({
-    status: "analyzing",
-    analyzed_count: 0,
-    started_at: new Date().toISOString(),
-  }).eq("id", id);
+  // Atomically claim the job: only one request can flip it to "analyzing"
+  // (a job stuck > 15 min, e.g. killed by a redeploy, can be re-claimed).
+  const staleBefore = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+  const { data: claimed, error: claimErr } = await supabaseAdmin
+    .from("hr_jobs")
+    .update({ status: "analyzing", analyzed_count: 0, started_at: new Date().toISOString() })
+    .eq("id", id)
+    .or(`status.neq.analyzing,started_at.lt.${staleBefore},started_at.is.null`)
+    .select("id");
+
+  if (claimErr) {
+    console.error("[hr/analyze] claim error:", claimErr);
+    return NextResponse.json({ error: "SERVER_ERROR" }, { status: 500 });
+  }
+  if (!claimed?.length) return NextResponse.json({ error: "ALREADY_ANALYZING" }, { status: 409 });
 
   // Reset errored CVs so they can be retried
   await supabaseAdmin.from("hr_cv_analyses").update({ status: "pending" }).eq("job_id", id).in("status", ["error"]);

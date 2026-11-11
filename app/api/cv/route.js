@@ -3,11 +3,11 @@ import { getServerSession } from "next-auth";
 import { authOptions }      from "@/lib/auth";
 import { getUsageToday, incrementUsage, isPro, getFreeLimit } from "@/lib/supabase";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import { getClientIp } from "@/lib/clientIp";
 
 function getIdentifier(request, session) {
   if (session?.user?.email) return session.user.email;
-  const forwarded = request.headers.get("x-forwarded-for");
-  return (forwarded ? forwarded.split(",")[0] : "anonymous").trim();
+  return getClientIp(request);
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────

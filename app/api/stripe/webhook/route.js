@@ -25,7 +25,7 @@ export async function POST(request) {
 
   const upsertSub = async (stripeCustomerId, subscriptionId, status, periodEnd, email) => {
     if (!supabaseAdmin || !email) return;
-    await supabaseAdmin.from("subscriptions").upsert({
+    const { error } = await supabaseAdmin.from("subscriptions").upsert({
       user_email:             email,
       stripe_customer_id:     stripeCustomerId,
       stripe_subscription_id: subscriptionId,
@@ -33,12 +33,22 @@ export async function POST(request) {
       current_period_end:     periodEnd ? new Date(periodEnd * 1000).toISOString() : null,
       updated_at:             new Date().toISOString(),
     }, { onConflict: "user_email" });
+    if (error) throw new Error(`subscriptions upsert failed: ${error.message}`);
   };
 
+  // HR (B2B) events are handled exclusively by /api/webhooks/stripe.
+  const isHr = (obj) => obj?.metadata?.product === "hr";
+  const subPeriodEnd = (s) => s.current_period_end ?? s.items?.data?.[0]?.current_period_end ?? null;
+  // trialing and past_due (Stripe retry window) keep access; anything else drops to free
+  const toAcademicStatus = (stripeStatus) =>
+    ["active", "trialing", "past_due"].includes(stripeStatus) ? "pro" : "free";
+
+  try {
   switch (event.type) {
 
     case "checkout.session.completed": {
       const s     = event.data.object;
+      if (isHr(s)) break;
       const email = s.customer_email ?? s.metadata?.userEmail;
       if (s.mode === "subscription") {
         await upsertSub(s.customer, s.subscription, "pro", null, email);
@@ -78,11 +88,12 @@ export async function POST(request) {
 
     case "customer.subscription.updated": {
       const s   = event.data.object;
+      if (isHr(s)) break;
       const cus = await stripe.customers.retrieve(s.customer);
       await upsertSub(
         s.customer, s.id,
-        s.status === "active" ? "pro" : "free",
-        s.current_period_end,
+        toAcademicStatus(s.status),
+        subPeriodEnd(s),
         cus.email
       );
       break;
@@ -90,6 +101,7 @@ export async function POST(request) {
 
     case "customer.subscription.deleted": {
       const s   = event.data.object;
+      if (isHr(s)) break;
       const cus = await stripe.customers.retrieve(s.customer);
       await upsertSub(s.customer, s.id, "free", null, cus.email);
       // Cancellation email (non-blocking)
@@ -102,6 +114,11 @@ export async function POST(request) {
 
     case "invoice.payment_failed": {
       const inv = event.data.object;
+      const subId = inv.subscription ?? inv.parent?.subscription_details?.subscription;
+      if (subId) {
+        const sub = await stripe.subscriptions.retrieve(subId);
+        if (isHr(sub)) break;
+      }
       const cus = await stripe.customers.retrieve(inv.customer);
       if (cus.email) {
         const { data: user } = await supabaseAdmin?.from("users").select("name").eq("email", cus.email).maybeSingle() ?? {};
@@ -110,6 +127,10 @@ export async function POST(request) {
       }
       break;
     }
+  }
+  } catch (err) {
+    console.error(`[academic webhook] ${event.type} failed:`, err);
+    return NextResponse.json({ error: "Processing failed" }, { status: 500 });
   }
 
   return NextResponse.json({ received: true });

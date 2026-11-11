@@ -44,9 +44,16 @@ export async function POST(request) {
       row.cv_quota = HR_PLAN_QUOTAS[plan] ?? 0;
     }
     if (resetUsage) row.cv_screened_this_month = 0;
-    await supabaseAdmin.from("hr_subscriptions").upsert(row, { onConflict: "user_email" });
+    const { error } = await supabaseAdmin.from("hr_subscriptions").upsert(row, { onConflict: "user_email" });
+    // Throw so the handler answers 500 and Stripe retries instead of losing a payment
+    if (error) throw new Error(`hr_subscriptions upsert failed: ${error.message}`);
   };
 
+  // Stripe API ≥ 2025-03 (basil/dahlia) moved these fields; support both shapes.
+  const subPeriodEnd   = (s) => s.current_period_end ?? s.items?.data?.[0]?.current_period_end ?? null;
+  const invoiceSubId   = (inv) => inv.subscription ?? inv.parent?.subscription_details?.subscription ?? null;
+
+  try {
   switch (event.type) {
 
     case "checkout.session.completed": {
@@ -80,7 +87,28 @@ export async function POST(request) {
         email: cus.email, plan,
         status: STATUS_MAP[s.status] ?? "past_due",
         stripeCustomerId: s.customer, stripeSubscriptionId: s.id,
-        periodEnd: s.current_period_end,
+        periodEnd: subPeriodEnd(s),
+      });
+      break;
+    }
+
+    // New billing period paid → reset the monthly CV counter
+    case "invoice.paid": {
+      const inv   = event.data.object;
+      const subId = invoiceSubId(inv);
+      if (!subId) break;
+      if (!["subscription_cycle", "subscription_create"].includes(inv.billing_reason)) break;
+
+      const sub = await stripe.subscriptions.retrieve(subId);
+      if (sub.metadata?.product !== "hr") break;
+
+      const cus = await stripe.customers.retrieve(inv.customer);
+      await upsertHrSub({
+        email: cus.email, plan: sub.metadata?.plan,
+        status: STATUS_MAP[sub.status] ?? "active",
+        stripeCustomerId: inv.customer, stripeSubscriptionId: subId,
+        periodEnd: subPeriodEnd(sub),
+        resetUsage: inv.billing_reason === "subscription_cycle",
       });
       break;
     }
@@ -104,8 +132,9 @@ export async function POST(request) {
 
     case "invoice.payment_failed": {
       const inv = event.data.object;
-      if (!inv.subscription) break;
-      const sub = await stripe.subscriptions.retrieve(inv.subscription);
+      const subId = invoiceSubId(inv);
+      if (!subId) break;
+      const sub = await stripe.subscriptions.retrieve(subId);
       if (sub.metadata?.product !== "hr") break;
 
       const cus = await stripe.customers.retrieve(inv.customer);
@@ -116,6 +145,10 @@ export async function POST(request) {
       }
       break;
     }
+  }
+  } catch (err) {
+    console.error(`[hr webhook] ${event.type} failed:`, err);
+    return NextResponse.json({ error: "Processing failed" }, { status: 500 });
   }
 
   return NextResponse.json({ received: true });

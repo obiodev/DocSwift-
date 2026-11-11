@@ -18,7 +18,11 @@ export default function SignInPage() {
   const router       = useRouter();
   const locale       = useLocale();
   const searchParams = useSearchParams();
-  const callbackUrl  = searchParams.get("callbackUrl") || (locale === "fr" ? "/dashboard" : `/${locale}/dashboard`);
+  const defaultCb    = locale === "fr" ? "/dashboard" : `/${locale}/dashboard`;
+  const rawCb        = searchParams.get("callbackUrl") || "";
+  // Only same-site relative paths — prevents open redirect to phishing pages
+  const callbackUrl  = rawCb.startsWith("/") && !rawCb.startsWith("//") && !rawCb.startsWith("/\\") ? rawCb : defaultCb;
+  const verified     = searchParams.get("verified");
 
   const [tab, setTab]           = useState("signin");   // signin | signup
   const [name, setName]         = useState("");
@@ -26,8 +30,8 @@ export default function SignInPage() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm]   = useState("");
   const [loading, setLoading]   = useState(false);
-  const [error, setError]       = useState("");
-  const [success, setSuccess]   = useState("");
+  const [error, setError]       = useState(verified === "0" ? "Lien de vérification invalide ou expiré." : "");
+  const [success, setSuccess]   = useState(verified === "1" ? "Email confirmé ! Vous pouvez vous connecter." : "");
 
   const prefix = locale === "fr" ? "" : `/${locale}`;
 
@@ -37,6 +41,7 @@ export default function SignInPage() {
     setError(""); setLoading(true);
     const res = await signIn("credentials", { email: email.trim().toLowerCase(), password, redirect: false });
     setLoading(false);
+    if (res?.error === "EMAIL_NOT_VERIFIED") { setError("Confirmez d'abord votre email : cliquez sur le lien que nous vous avons envoyé."); return; }
     if (res?.error) { setError("Email ou mot de passe incorrect."); return; }
     router.push(callbackUrl);
   };
@@ -54,12 +59,11 @@ export default function SignInPage() {
         body: JSON.stringify({ name, email: email.trim().toLowerCase(), password }),
       });
       const data = await r.json();
-      if (!r.ok) { setError(data.error ?? "Erreur lors de l'inscription."); setLoading(false); return; }
-      // Auto sign-in after registration
-      const res = await signIn("credentials", { email: email.trim().toLowerCase(), password, redirect: false });
       setLoading(false);
-      if (res?.error) { setSuccess("Compte créé ! Connectez-vous maintenant."); setTab("signin"); return; }
-      router.push(callbackUrl);
+      if (!r.ok) { setError(data.error ?? "Erreur lors de l'inscription."); return; }
+      setSuccess("Presque fini ! Un lien de confirmation vient d'être envoyé à " + email.trim().toLowerCase() + ". Cliquez dessus pour activer votre compte.");
+      setTab("signin");
+      setPassword(""); setConfirm("");
     } catch { setError("Erreur réseau."); setLoading(false); }
   };
 

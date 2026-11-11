@@ -37,6 +37,9 @@ export async function POST(request) {
     payment_method_collection: "always", // carte obligatoire dès l'inscription, même en essai
     customer_email:           session.user.email,
     line_items:                [{ price: priceId, quantity: 1 }],
+    allow_promotion_codes:     true,                 // codes "FONDATEUR" etc.
+    tax_id_collection:         { enabled: true },    // n° TVA intracom. pour les clients B2B
+    billing_address_collection: "required",
     success_url:               `${baseUrl}/hr/dashboard?subscribed=1`,
     cancel_url:                `${baseUrl}/hr/dashboard`,
     subscription_data: {
