@@ -8,7 +8,7 @@ import { buildSystemPrompt } from "@/lib/assistantKnowledge";
 import { sendAssistantLeadAlert } from "@/lib/email";
 import { getClientIp }      from "@/lib/clientIp";
 
-const MODEL            = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const MODEL            = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 const MAX_TURNS        = 12;    // messages kept from the conversation
 const MAX_CHARS        = 1200;  // per message
 const DAILY_CAP_ANON   = 40;    // messages / IP / day
@@ -73,7 +73,7 @@ export async function POST(request) {
       {
         model: MODEL,
         systemInstruction: buildSystemPrompt({ customer }),
-        generationConfig: { temperature: 0.3, maxOutputTokens: 600, thinkingConfig: { thinkingBudget: 0 } },
+        generationConfig: { maxOutputTokens: 2048, thinkingConfig: { thinkingLevel: "low" } },
       },
       { timeout: 25_000 }
     );
