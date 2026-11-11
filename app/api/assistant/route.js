@@ -1,6 +1,6 @@
 import { NextResponse }     from "next/server";
 import { getServerSession } from "next-auth";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { generateWithFallback, GEMINI_FALLBACK_MODEL } from "@/lib/gemini";
 import { authOptions }      from "@/lib/auth";
 import { supabaseAdmin, getUsageToday, incrementUsage } from "@/lib/supabase";
 import { getHrQuotaStatus, HR_PLAN_LABELS } from "@/lib/hrSubscription";
@@ -68,16 +68,6 @@ export async function POST(request) {
   if (!process.env.GEMINI_API_KEY) return NextResponse.json({ reply: FALLBACK });
 
   try {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel(
-      {
-        model: MODEL,
-        systemInstruction: buildSystemPrompt({ customer }),
-        generationConfig: { maxOutputTokens: 2048, thinkingConfig: { thinkingLevel: "low" } },
-      },
-      { timeout: 25_000 }
-    );
-
     // Gemini requires the history to start with a user turn
     const firstUser = messages.findIndex((m) => m.role === "user");
     const contents  = messages.slice(firstUser).map((m) => ({
@@ -85,7 +75,16 @@ export async function POST(request) {
       parts: [{ text: m.content }],
     }));
 
-    const result = await model.generateContent({ contents });
+    // Chat favours speed: light model first, the main model as backup
+    const result = await generateWithFallback({
+      models: [process.env.GEMINI_ASSISTANT_MODEL || GEMINI_FALLBACK_MODEL, MODEL],
+      modelParams: {
+        systemInstruction: buildSystemPrompt({ customer }),
+        generationConfig: { maxOutputTokens: 2048, thinkingConfig: { thinkingLevel: "low" } },
+      },
+      request: { contents },
+      timeoutMs: 20_000,
+    });
     const reply  = result.response.text().trim().slice(0, 2000);
     return NextResponse.json({ reply: reply || FALLBACK });
   } catch (err) {
