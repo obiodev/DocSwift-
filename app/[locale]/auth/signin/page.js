@@ -14,14 +14,25 @@ const CSS = `
   .tab-btn { transition:all .15s; }
 `;
 
+function safeCallback(raw, fallback) {
+  if (!raw || typeof window === "undefined") return fallback;
+  try {
+    const u = new URL(raw, window.location.origin);
+    if (u.origin !== window.location.origin) return fallback;
+    return u.pathname + u.search + u.hash;
+  } catch {
+    return fallback;
+  }
+}
+
 export default function SignInPage() {
   const router       = useRouter();
   const locale       = useLocale();
   const searchParams = useSearchParams();
   const defaultCb    = locale === "fr" ? "/dashboard" : `/${locale}/dashboard`;
   const rawCb        = searchParams.get("callbackUrl") || "";
-  // Only same-site relative paths — prevents open redirect to phishing pages
-  const callbackUrl  = rawCb.startsWith("/") && !rawCb.startsWith("//") && !rawCb.startsWith("/\\") ? rawCb : defaultCb;
+  // Same-origin only (NextAuth passes absolute URLs) — prevents open redirect to phishing pages
+  const callbackUrl  = safeCallback(rawCb, defaultCb);
   const verified     = searchParams.get("verified");
 
   const [tab, setTab]           = useState("signin");   // signin | signup

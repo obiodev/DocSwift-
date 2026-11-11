@@ -51,11 +51,11 @@ const STATUS_LABEL = { recommended:"Recommandé", consider:"À considérer", rej
 
 const PLANS = [
   { plan:"starter",  name:"Solo",     price:"49",  color:"#6B7A99", border:"#1E2733", bg:"#0D1117", badge:null,
-    features:["300 CVs analysés / mois", "Recruteur indépendant, 1 utilisateur", "Score /100 justifié par critère", "Export CSV / Excel", "≈ 0,16 € par CV"] },
+    features:["300 CVs analysés / mois", "Recruteur indépendant, 1 utilisateur", "Score /100 + points forts et faibles", "Export CSV / Excel", "≈ 0,16 € par CV"] },
   { plan:"pro",       name:"Cabinet",  price:"129", color:"#F97316", border:"#F97316", bg:"linear-gradient(145deg,#1A1000,#261500)", badge:"Le plus choisi", badgeBg:"linear-gradient(135deg,#F97316,#EA580C)",
-    features:["1 500 CVs analysés / mois", "Jusqu'à 3 recruteurs", "Score /100 justifié par critère", "Export CSV / Excel", "Support prioritaire", "≈ 0,09 € par CV"] },
+    features:["1 500 CVs analysés / mois", "Jusqu'à 3 recruteurs", "Score /100 + points forts et faibles", "Export CSV / Excel", "Support prioritaire", "≈ 0,09 € par CV"] },
   { plan:"business",  name:"Volume",   price:"290", color:"#FB923C", border:"#F97316", bg:"linear-gradient(145deg,#1A1000,#2A1800)", badge:"✦ Centres d'appels / RPO", badgeBg:"linear-gradient(135deg,#F97316,#EA580C)",
-    features:["5 000 CVs analysés / mois", "Utilisateurs illimités", "Score /100 justifié par critère", "Export CSV / Excel", "Interlocuteur dédié", "≈ 0,06 € par CV"] },
+    features:["5 000 CVs analysés / mois", "Utilisateurs illimités", "Score /100 + points forts et faibles", "Export CSV / Excel", "Interlocuteur dédié", "≈ 0,06 € par CV"] },
 ];
 
 const FAQ = [
@@ -120,7 +120,7 @@ export default function HrLanding() {
           </div>
 
           <h1 className="hero-text hero-h1" style={{ fontSize:"clamp(36px,6.5vw,80px)",fontWeight:900,letterSpacing:-3,lineHeight:1.04,marginBottom:24 }}>
-            <span className="gradient-text-orange">Triez 100 CVs</span><br />en 2 minutes.
+            <span className="gradient-text-orange">Triez 100 CVs</span><br />en 3 minutes.
           </h1>
 
           <p className="hero-sub" style={{ color:"#8892AA",fontSize:19,maxWidth:560,margin:"0 auto 14px",lineHeight:1.7 }}>
@@ -150,9 +150,9 @@ export default function HrLanding() {
       <div style={{ borderTop:"1px solid #1E2733",borderBottom:"1px solid #1E2733",padding:"32px 24px",background:"rgba(13,17,23,.9)" }}>
         <div className="stats-bar" style={{ maxWidth:960,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:24,textAlign:"center" }}>
           {[
-            { value:"6h", label:"économisées par recrutement" },
-            { value:"100", label:"CVs analysés en parallèle" },
-            { value:"< 2min", label:"pour un batch complet" },
+            { value:"100", label:"CVs par analyse" },
+            { value:"≈ 3 min", label:"pour trier 100 CVs" },
+            { value:"FR · EN · AR", label:"analyse multilingue" },
             { value:"0", label:"décision automatique : vous gardez la main" },
           ].map(s => (
             <div key={s.label} className="stat-card" style={{ padding:"16px 12px",borderRadius:14,border:"1px solid transparent",cursor:"default" }}>
@@ -170,7 +170,7 @@ export default function HrLanding() {
             <div>
               <div style={{ display:"inline-block",background:"rgba(239,68,68,.08)",border:"1px solid rgba(239,68,68,.2)",color:"#FCA5A5",padding:"5px 14px",borderRadius:20,fontSize:12,fontWeight:700,marginBottom:20 }}>😩 Le problème</div>
               <h2 style={{ fontSize:"clamp(24px,3.5vw,42px)",fontWeight:900,letterSpacing:-1.5,lineHeight:1.15,marginBottom:20 }}>
-                Les recruteurs passent en moyenne <span style={{ color:"#EF4444" }}>6 heures</span> à trier les CVs pour un seul poste.
+                Trier à la main <span style={{ color:"#EF4444" }}>100 CVs</span> pour un seul poste prend facilement une journée.
               </h2>
               <p style={{ color:"#6B7A99",fontSize:16,lineHeight:1.7 }}>
                 Lecture individuelle, notes dispersées, critères subjectifs, oublis… Le tri de CV est chronophage, épuisant et source d'erreurs.
@@ -179,7 +179,7 @@ export default function HrLanding() {
             <div>
               <div style={{ display:"inline-block",background:"rgba(16,185,129,.08)",border:"1px solid rgba(16,185,129,.2)",color:"#6EE7B7",padding:"5px 14px",borderRadius:20,fontSize:12,fontWeight:700,marginBottom:20 }}>✅ La solution</div>
               <h2 style={{ fontSize:"clamp(24px,3.5vw,42px)",fontWeight:900,letterSpacing:-1.5,lineHeight:1.15,marginBottom:20 }}>
-                DocSwift HR le fait en <span style={{ color:"#10B981" }}>2 minutes</span>.
+                DocSwift HR le fait en <span style={{ color:"#10B981" }}>quelques minutes</span>.
               </h2>
               <p style={{ color:"#6B7A99",fontSize:16,lineHeight:1.7 }}>
                 Uploadez votre fiche de poste + vos CVs. L'IA analyse chaque profil, calcule un score de matching et génère une recommandation RH instantanément.
@@ -195,6 +195,7 @@ export default function HrLanding() {
           <div style={{ textAlign:"center",marginBottom:48 }}>
             <div style={{ display:"inline-block",background:"rgba(249,115,22,.08)",border:"1px solid rgba(249,115,22,.2)",color:"#FB923C",padding:"5px 14px",borderRadius:20,fontSize:12,fontWeight:700,marginBottom:16 }}>👥 Démo</div>
             <h2 style={{ fontSize:"clamp(24px,4vw,44px)",fontWeight:900,letterSpacing:-1.5,marginBottom:12 }}>Tableau de résultats en temps réel</h2>
+            <p style={{ color:"#4B5563",fontSize:12,margin:"0 0 8px" }}>Exemple illustratif : candidats fictifs.</p>
             <p style={{ color:"#6B7A99",fontSize:16 }}>Chaque CV analysé automatiquement — score, forces, faiblesses, recommandation.</p>
           </div>
 
@@ -317,7 +318,7 @@ export default function HrLanding() {
           <div style={{ fontSize:56,marginBottom:20 }}>🚀</div>
           <h2 style={{ fontSize:"clamp(28px,4vw,48px)",fontWeight:900,letterSpacing:-1.5,marginBottom:16 }}>Prêt à recruter plus vite ?</h2>
           <p style={{ color:"#6B7A99",fontSize:17,marginBottom:40,lineHeight:1.7 }}>
-            Rejoignez les équipes qui analysent leurs CVs en 2 minutes.<br />5 CVs gratuits, sans compte.
+            Testez sur vos propres candidatures, en moins d&apos;une minute.<br />5 CVs gratuits, sans compte.
           </p>
           <button className="btn-primary" onClick={() => go("/hr/essai-gratuit")}
             style={{ background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",border:"none",padding:"18px 48px",borderRadius:16,fontSize:18,fontWeight:800,cursor:"pointer" }}>

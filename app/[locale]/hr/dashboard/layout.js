@@ -4,16 +4,16 @@ const LOCALE_PREFIX = { fr: "", en: "/en", ar: "/ar" };
 const META = {
   fr: {
     title:       "DocSwift HR — Analyse de CVs par IA pour recruteurs",
-    description: "Analysez jusqu'à 100 CVs en 2 minutes grâce à l'IA. Scoring automatique, matching par poste, export des résultats. Pour cabinets RH, PME et recruteurs indépendants.",
+    description: "Analysez jusqu'à 100 CVs en 3 minutes grâce à l'IA. Scoring automatique, matching par poste, export des résultats. Pour cabinets RH, PME et recruteurs indépendants.",
     keywords:    "analyse CV IA, tri CV automatique, recrutement IA, scoring CV, matching candidats, logiciel RH PME, analyse CVs en masse, ATS IA, parsing CV, sélection candidats automatique",
-    og_title:    "DocSwift HR — Analyse de 100 CVs en 2 minutes par IA",
+    og_title:    "DocSwift HR — Analyse de 100 CVs en 3 minutes par IA",
     og_desc:     "Scoring automatique, matching poste/candidat, export Excel. L'outil RH IA pour les recruteurs modernes.",
   },
   en: {
     title:       "DocSwift HR — AI-Powered CV Analysis for Recruiters",
-    description: "Analyze up to 100 resumes in 2 minutes with AI. Automatic scoring, job matching, results export. For HR firms, SMBs and independent recruiters.",
+    description: "Analyze up to 100 resumes in 3 minutes with AI. Automatic scoring, job matching, results export. For HR firms, SMBs and independent recruiters.",
     keywords:    "AI resume analysis, automatic CV screening, AI recruitment, CV scoring, candidate matching, HR software SMB, bulk resume analysis, AI ATS, resume parsing, automatic candidate selection",
-    og_title:    "DocSwift HR — Analyze 100 Resumes in 2 Minutes with AI",
+    og_title:    "DocSwift HR — Analyze 100 Resumes in 3 Minutes with AI",
     og_desc:     "Automatic scoring, job/candidate matching, Excel export. The AI HR tool for modern recruiters.",
   },
   ar: {

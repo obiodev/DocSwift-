@@ -5,17 +5,17 @@ const LOCALE_PREFIX = { fr: "", en: "/en", ar: "/ar" };
 
 const META = {
   fr: {
-    title:       "DocSwift HR — Analysez 100 CVs en 2 minutes par IA",
+    title:       "DocSwift HR — Analysez 100 CVs en 3 minutes par IA",
     description: "DocSwift HR analyse automatiquement vos candidatures et vous donne un score de matching avec votre fiche de poste. Pour cabinets RH, PME et recruteurs indépendants.",
     keywords:    "analyse CV IA, tri CV automatique, recrutement IA, scoring CV, matching candidats, logiciel RH PME, ATS IA",
-    og_title:    "DocSwift HR — Analyse de 100 CVs en 2 minutes par IA",
+    og_title:    "DocSwift HR — Analyse de 100 CVs en 3 minutes par IA",
     og_desc:     "Scoring automatique, matching poste/candidat, export Excel. L'outil RH IA pour les recruteurs modernes.",
   },
   en: {
-    title:       "DocSwift HR — Analyze 100 Resumes in 2 Minutes with AI",
+    title:       "DocSwift HR — Analyze 100 Resumes in 3 Minutes with AI",
     description: "DocSwift HR automatically screens your applications and gives you a matching score against your job description. For HR firms, SMBs and independent recruiters.",
     keywords:    "AI resume analysis, automatic CV screening, AI recruitment, CV scoring, candidate matching, HR software SMB, AI ATS",
-    og_title:    "DocSwift HR — Analyze 100 Resumes in 2 Minutes with AI",
+    og_title:    "DocSwift HR — Analyze 100 Resumes in 3 Minutes with AI",
     og_desc:     "Automatic scoring, job/candidate matching, Excel export. The AI HR tool for modern recruiters.",
   },
   ar: {

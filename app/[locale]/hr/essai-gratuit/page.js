@@ -31,6 +31,22 @@ export default function HrTrialPage() {
 
   const removeFile = (name) => setFiles(prev => prev.filter(f => f.name !== name));
 
+  const [dragOver, setDragOver] = useState(false);
+
+  // One-click demo: fictional job + 3 fictional CVs, no real candidate data needed
+  const loadSample = async () => {
+    setError("");
+    setJobTitle("Conseiller relation client bilingue");
+    setJobDesc("Centre d'appels, recrutement de conseillers clientèle. Expérience de 2 ans minimum en relation client par téléphone, français courant et anglais professionnel (B2+), maîtrise d'un CRM, gestion des réclamations. Un plus : arabe, expérience en vente additionnelle.");
+    try {
+      const names = ["candidat-exemple-1.pdf", "candidat-exemple-2.pdf", "candidat-exemple-3.pdf"];
+      const blobs = await Promise.all(names.map(n => fetch(`/samples/${n}`).then(r => { if (!r.ok) throw new Error(); return r.blob(); })));
+      setFiles(blobs.map((b, i) => new File([b], names[i], { type: "application/pdf" })));
+    } catch {
+      setError("Impossible de charger les CV d'exemple. Ajoutez vos propres CV.");
+    }
+  };
+
   const runTrial = async () => {
     setError("");
     if (!jobTitle.trim() || !jobDesc.trim()) { setError("Remplissez le titre et la description du poste."); return; }
@@ -77,16 +93,21 @@ export default function HrTrialPage() {
     <div style={{ minHeight:"100vh",background:"#07090F",color:"#F0F4FF",fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif",padding:"48px 20px" }}>
       <div style={{ maxWidth:720,margin:"0 auto" }}>
 
+        <a href="/hr" style={{ color:"#6B7A99",fontSize:13,textDecoration:"none",display:"inline-block",marginBottom:20 }}>← DocSwift HR</a>
         <div style={{ textAlign:"center",marginBottom:36 }}>
           <div style={{ display:"inline-block",background:"rgba(249,115,22,.1)",border:"1px solid rgba(249,115,22,.3)",borderRadius:50,padding:"6px 16px",fontSize:12,fontWeight:700,color:"#F97316",marginBottom:14 }}>
             👥 DocSwift HR — Essai gratuit
           </div>
           <h1 style={{ fontSize:28,fontWeight:900,letterSpacing:-1,margin:"0 0 10px" }}>Testez le screening de CV par IA</h1>
-          <p style={{ color:"#6B7A99",fontSize:15,margin:0 }}>Jusqu'à {MAX_CVS} CVs, sans compte. Scoring et matching en 2 minutes.</p>
+          <p style={{ color:"#6B7A99",fontSize:15,margin:0 }}>Jusqu&apos;à {MAX_CVS} CVs, sans compte. Résultat en moins d&apos;une minute.</p>
         </div>
 
         {!results && (
           <div style={{ background:"#0D1117",border:"1px solid #1E2733",borderRadius:20,padding:28 }}>
+            <button type="button" onClick={loadSample}
+              style={{ width:"100%",background:"rgba(249,115,22,.08)",border:"1px solid rgba(249,115,22,.35)",color:"#FDBA74",borderRadius:10,padding:"11px",fontSize:14,fontWeight:700,cursor:"pointer",marginBottom:20 }}>
+              ⚡ Pas de CV sous la main ? Essayer avec 3 CV d&apos;exemple
+            </button>
             <label style={{ display:"block",marginBottom:6,fontSize:13,fontWeight:600,color:"#8892AA" }}>Titre du poste *</label>
             <input
               value={jobTitle}
@@ -105,14 +126,17 @@ export default function HrTrialPage() {
             />
 
             <label style={{ display:"block",marginBottom:6,fontSize:13,fontWeight:600,color:"#8892AA" }}>CVs (PDF, max {MAX_CVS}) *</label>
-            <div
+            <button type="button"
               onClick={() => fileInputRef.current?.click()}
-              style={{ border:"2px dashed #1E2733",borderRadius:14,padding:"28px 20px",textAlign:"center",cursor:"pointer",marginBottom:14 }}>
+              onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={e => { e.preventDefault(); setDragOver(false); addFiles(e.dataTransfer.files ?? []); }}
+              style={{ display:"block",width:"100%",border:`2px dashed ${dragOver ? "#F97316" : "#1E2733"}`,background:dragOver ? "rgba(249,115,22,.06)" : "transparent",borderRadius:14,padding:"28px 20px",textAlign:"center",cursor:"pointer",marginBottom:14,color:"inherit",font:"inherit" }}>
               <div style={{ fontSize:28,marginBottom:6 }}>📄</div>
               <p style={{ color:"#6B7A99",fontSize:13,margin:0 }}>
-                {files.length ? `${files.length} fichier${files.length>1?"s":""} sélectionné${files.length>1?"s":""}` : "Cliquez pour choisir vos CVs"}
+                {files.length ? `${files.length} fichier${files.length>1?"s":""} sélectionné${files.length>1?"s":""}` : "Glissez vos CV ici ou cliquez pour les choisir"}
               </p>
-            </div>
+            </button>
             <input ref={fileInputRef} type="file" accept=".pdf" multiple style={{ display:"none" }} onChange={e => { addFiles(e.target.files ?? []); e.target.value = ""; }} />
 
             {files.length > 0 && (
