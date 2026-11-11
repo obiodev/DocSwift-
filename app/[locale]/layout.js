@@ -1,6 +1,7 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import AssistantWidget from '../../components/AssistantWidget';
 
 const locales = ['fr', 'en', 'ar'];
 const BASE_URL = process.env.NEXTAUTH_URL ?? "https://getdocswift.com";
@@ -65,6 +66,8 @@ export default async function LocaleLayout({ children, params }) {
       <div dir={locale === 'ar' ? 'rtl' : 'ltr'} lang={locale}
         style={locale === 'ar' ? { fontFamily: "'Noto Sans Arabic', Arial, sans-serif" } : {}}>
         {children}
+        {/* Sales & support assistant on every page */}
+        <AssistantWidget />
       </div>
     </NextIntlClientProvider>
   );

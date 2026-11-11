@@ -1,5 +1,3 @@
-import AssistantWidget from "../../../components/AssistantWidget";
-
 const BASE_URL      = "https://getdocswift.com";
 const LOCALE_PREFIX = { fr: "", en: "/en", ar: "/ar" };
 
@@ -89,7 +87,6 @@ export default async function HrRootLayout({ children, params }) {
       {/* JSON-LD must be a <script>, not a <meta>, for Google to read it */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd(locale, url)) }} />
       {children}
-      <AssistantWidget />
     </>
   );
 }
