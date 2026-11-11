@@ -1,3 +1,5 @@
+import AssistantWidget from "../../../components/AssistantWidget";
+
 const BASE_URL      = "https://getdocswift.com";
 const LOCALE_PREFIX = { fr: "", en: "/en", ar: "/ar" };
 
@@ -35,9 +37,9 @@ const jsonLd = (locale, url) => ({
   "url": url,
   "description": (META[locale] ?? META.fr).description,
   "offers": [
-    { "@type": "Offer", "name": "Starter",  "price": "49",  "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
-    { "@type": "Offer", "name": "Pro",      "price": "149", "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
-    { "@type": "Offer", "name": "Business", "price": "349", "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
+    { "@type": "Offer", "name": "Solo",    "price": "49",  "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
+    { "@type": "Offer", "name": "Cabinet", "price": "129", "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
+    { "@type": "Offer", "name": "Volume",  "price": "290", "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
   ],
 });
 
@@ -76,12 +78,18 @@ export async function generateMetadata({ params }) {
       description: m.og_desc,
       images:      [`${BASE_URL}/og-hr.png`],
     },
-    other: {
-      "application/ld+json": JSON.stringify(jsonLd(locale, url)),
-    },
   };
 }
 
-export default function HrRootLayout({ children }) {
-  return children;
+export default async function HrRootLayout({ children, params }) {
+  const { locale } = await params;
+  const url = `${BASE_URL}${LOCALE_PREFIX[locale] ?? ""}/hr`;
+  return (
+    <>
+      {/* JSON-LD must be a <script>, not a <meta>, for Google to read it */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd(locale, url)) }} />
+      {children}
+      <AssistantWidget />
+    </>
+  );
 }

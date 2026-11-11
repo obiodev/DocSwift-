@@ -52,7 +52,16 @@ BEGIN
       AND p.proname IN ('increment_usage','hr_increment_analyzed','hr_increment_cv_screened')
   LOOP
     EXECUTE format('REVOKE EXECUTE ON FUNCTION %s FROM anon, authenticated, public', f);
+    EXECUTE format('ALTER FUNCTION %s SET search_path = public, pg_temp', f);
   END LOOP;
+END $$;
+
+-- 5. rls_auto_enable() is SECURITY DEFINER and exposed via /rest/v1/rpc -----
+DO $$
+BEGIN
+  IF to_regprocedure('public.rls_auto_enable()') IS NOT NULL THEN
+    REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM anon, authenticated, public;
+  END IF;
 END $$;
 
 -- Then check Dashboard → Advisors → Security: no "RLS disabled" warnings left.

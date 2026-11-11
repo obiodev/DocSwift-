@@ -28,9 +28,9 @@ const STATUS_COLOR = { recommended:"#10B981", consider:"#F59E0B", rejected:"#EF4
 const STATUS_LABEL = { recommended:"Recommandé", consider:"À considérer", rejected:"Non retenu", pending:"En attente", error:"Erreur" };
 
 const PLAN_CARDS = [
-  { plan:"starter",  label:"Starter",  price:"49€",  quota:"50 CVs/mois" },
-  { plan:"pro",       label:"Pro",      price:"149€", quota:"250 CVs/mois" },
-  { plan:"business",  label:"Business", price:"349€", quota:"1000 CVs/mois" },
+  { plan:"starter",  label:"Solo",     price:"49€",  quota:"300 CVs/mois" },
+  { plan:"pro",       label:"Cabinet",  price:"129€", quota:"1 500 CVs/mois" },
+  { plan:"business",  label:"Volume",   price:"290€", quota:"5 000 CVs/mois" },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────

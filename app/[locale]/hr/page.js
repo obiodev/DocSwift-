@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useLocale } from "next-intl";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
+import NewsletterForm from "../../../components/NewsletterForm";
 
 const CSS = `
   @keyframes blob1 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(40px,-60px) scale(1.1)} 66%{transform:translate(-30px,30px) scale(0.9)} }
@@ -49,12 +50,12 @@ const STATUS_COLOR = { recommended:"#10B981", consider:"#F59E0B", rejected:"#EF4
 const STATUS_LABEL = { recommended:"Recommandé", consider:"À considérer", rejected:"Non retenu" };
 
 const PLANS = [
-  { plan:"starter",  name:"Starter",  price:"49",  color:"#6B7A99", border:"#1E2733", bg:"#0D1117", badge:null,
-    features:["50 CVs screenés / mois", "Scoring IA /100", "Matching fiche de poste", "Export CSV"] },
-  { plan:"pro",       name:"Pro",      price:"149", color:"#F97316", border:"#F97316", bg:"linear-gradient(145deg,#1A1000,#261500)", badge:"Le plus populaire", badgeBg:"linear-gradient(135deg,#F97316,#EA580C)",
-    features:["250 CVs screenés / mois", "Scoring IA /100", "Matching fiche de poste", "Export CSV / Excel", "Support prioritaire"] },
-  { plan:"business",  name:"Business", price:"349", color:"#FB923C", border:"#F97316", bg:"linear-gradient(145deg,#1A1000,#2A1800)", badge:"✦ Volume", badgeBg:"linear-gradient(135deg,#F97316,#EA580C)",
-    features:["1000 CVs screenés / mois", "Scoring IA /100", "Matching fiche de poste", "Export CSV / Excel", "Utilisateurs illimités", "Support dédié"] },
+  { plan:"starter",  name:"Solo",     price:"49",  color:"#6B7A99", border:"#1E2733", bg:"#0D1117", badge:null,
+    features:["300 CVs analysés / mois", "Recruteur indépendant, 1 utilisateur", "Score /100 justifié par critère", "Export CSV / Excel", "≈ 0,16 € par CV"] },
+  { plan:"pro",       name:"Cabinet",  price:"129", color:"#F97316", border:"#F97316", bg:"linear-gradient(145deg,#1A1000,#261500)", badge:"Le plus choisi", badgeBg:"linear-gradient(135deg,#F97316,#EA580C)",
+    features:["1 500 CVs analysés / mois", "Jusqu'à 3 recruteurs", "Score /100 justifié par critère", "Export CSV / Excel", "Support prioritaire", "≈ 0,09 € par CV"] },
+  { plan:"business",  name:"Volume",   price:"290", color:"#FB923C", border:"#F97316", bg:"linear-gradient(145deg,#1A1000,#2A1800)", badge:"✦ Centres d'appels / RPO", badgeBg:"linear-gradient(135deg,#F97316,#EA580C)",
+    features:["5 000 CVs analysés / mois", "Utilisateurs illimités", "Score /100 justifié par critère", "Export CSV / Excel", "Interlocuteur dédié", "≈ 0,06 € par CV"] },
 ];
 
 const FAQ = [
@@ -324,6 +325,15 @@ export default function HrLanding() {
           </button>
         </div>
       </div>
+
+      {/* ── NEWSLETTER ── */}
+      <section style={{ borderTop:"1px solid #1E2733",padding:"48px 24px",display:"flex",flexDirection:"column",alignItems:"center",textAlign:"center",gap:14 }}>
+        <h2 style={{ fontSize:22,fontWeight:900,letterSpacing:-0.5,margin:0 }}>Recruter plus vite, sans enfreindre le RGPD</h2>
+        <p style={{ color:"#8892AA",fontSize:15,maxWidth:520,margin:0,lineHeight:1.6 }}>
+          Nos conseils pratiques sur le tri de CV et l&apos;IA en recrutement, deux fois par mois maximum.
+        </p>
+        <NewsletterForm source="hr_landing" />
+      </section>
 
       {/* ── FOOTER ── */}
       <footer style={{ borderTop:"1px solid #1E2733",padding:"32px 40px" }}>

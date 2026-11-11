@@ -38,7 +38,7 @@ const jsonLdByLocale = (locale, url) => ({
       "description": META[locale]?.description ?? META.fr.description,
       "offers": [
         { "@type": "Offer", "name": "Pro",      "price": "49",  "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
-        { "@type": "Offer", "name": "Business", "price": "149", "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
+        { "@type": "Offer", "name": "Cabinet", "price": "129", "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
       ],
       "featureList": locale === "ar"
         ? ["تحليل ما يصل إلى 100 سيرة ذاتية في وقت واحد", "تسجيل وترتيب تلقائي بالذكاء الاصطناعي", "مطابقة السيرة الذاتية بالوظيفة", "تصدير Excel للنتائج", "تحليل متعدد اللغات FR/EN/AR", "تخزين آمن وتشفير"]

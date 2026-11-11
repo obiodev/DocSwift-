@@ -6,6 +6,7 @@ import {
   sendHrSubscriptionConfirmEmail,
   sendHrPaymentFailedEmail,
   sendHrSubscriptionCancelledEmail,
+  sendHrTrialEndingEmail,
 } from "@/lib/email";
 
 // Dedicated webhook for DocSwift HR (B2B). Kept separate from /api/stripe/webhook
@@ -89,6 +90,22 @@ export async function POST(request) {
         stripeCustomerId: s.customer, stripeSubscriptionId: s.id,
         periodEnd: subPeriodEnd(s),
       });
+      break;
+    }
+
+    // Sent by Stripe 3 days before the trial ends
+    case "customer.subscription.trial_will_end": {
+      const s = event.data.object;
+      if (s.metadata?.product !== "hr") break;
+      const cus = await stripe.customers.retrieve(s.customer);
+      if (cus.email) {
+        const { data: user } = await supabaseAdmin?.from("users").select("name").eq("email", cus.email).maybeSingle() ?? {};
+        await sendHrTrialEndingEmail({
+          email: cus.email, name: user?.name ?? "", plan: s.metadata?.plan,
+          trialEnd: s.trial_end, amount: s.items?.data?.[0]?.price?.unit_amount ?? null,
+          eventId: event.id,
+        });
+      }
       break;
     }
 
