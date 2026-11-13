@@ -43,7 +43,7 @@ Le service est accessible sans inscription dans la limite d'un quota gratuit de 
 Tout visiteur peut utiliser DocSwift sans créer de compte, dans la limite de 5 opérations par jour. Cette limite est suivie par adresse IP ou par compte utilisateur si l'utilisateur est connecté.
 
 4.2 Offre Pro
-L'abonnement Pro permet un accès illimité à l'ensemble des outils, sans publicité, avec des fichiers jusqu'à 50 MB. L'abonnement est mensuel, sans engagement, et peut être résilié à tout moment depuis le portail client Stripe accessible via le compte utilisateur.
+L'abonnement Pro permet un accès illimité à l'ensemble des outils, sans publicité, avec des fichiers jusqu'à 20 MB. L'abonnement est mensuel, sans engagement, et peut être résilié à tout moment depuis le portail client Stripe accessible via le compte utilisateur.
 
 4.3 Compte utilisateur
 La création d'un compte (via Google OAuth) permet de bénéficier d'un suivi personnalisé du quota d'utilisation. L'utilisateur s'engage à fournir des informations exactes et à maintenir la confidentialité de ses accès.`,
