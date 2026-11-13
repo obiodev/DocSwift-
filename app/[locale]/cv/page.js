@@ -867,7 +867,7 @@ export default function CVPage() {
       {/* Nav */}
       <nav className="cv-nav-wrap" style={{ position:"fixed",top:0,left:0,right:0,zIndex:100,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(7,9,15,.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid #1E2733" }}>
         <div style={{ fontWeight:900,fontSize:20,letterSpacing:-1,cursor:"pointer" }} onClick={()=>router.push(`${localePrefix}/`)}>
-          Doc<span style={{ color:"#3B82F6" }}>Swift</span>
+          <bdi dir="ltr">Doc<span style={{ color:"#3B82F6" }}>Swift</span></bdi>
         </div>
         <div style={{ display:"flex",alignItems:"center",gap:12 }}>
           {!usage.isPro && (

@@ -63,7 +63,7 @@ export default function DashboardLayout({ children }) {
         {/* Logo */}
         <div style={{ padding:"22px 20px 16px",borderBottom:"1px solid #1E2733" }}>
           <div style={{ fontWeight:900,fontSize:20,letterSpacing:-0.8,cursor:"pointer" }} onClick={() => go("/")}>
-            Doc<span style={{ color:"#3B82F6" }}>Swift</span>
+            <bdi dir="ltr">Doc<span style={{ color:"#3B82F6" }}>Swift</span></bdi>
           </div>
           <div style={{ fontSize:11,color:"#4B5563",marginTop:4 }}>Dashboard</div>
         </div>

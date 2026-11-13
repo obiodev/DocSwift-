@@ -90,7 +90,7 @@ export default function SignInPage() {
         {/* Logo */}
         <div style={{ textAlign:"center", marginBottom:32 }}>
           <div style={{ fontWeight:900, fontSize:28, letterSpacing:-1, cursor:"pointer" }} onClick={() => router.push(`${prefix}/`)}>
-            Doc<span style={{ color:"#3B82F6" }}>Swift</span>
+            <bdi dir="ltr">Doc<span style={{ color:"#3B82F6" }}>Swift</span></bdi>
           </div>
           <p style={{ color:"#6B7A99", fontSize:14, marginTop:6 }}>L'assistant PDF intelligent pour les professionnels</p>
         </div>

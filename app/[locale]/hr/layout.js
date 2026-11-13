@@ -17,7 +17,7 @@ const META = {
     og_desc:     "Automatic scoring, job/candidate matching, Excel export. The AI HR tool for modern recruiters.",
   },
   ar: {
-    title:       "DocSwift HR — تحليل 100 سيرة ذاتية في دقيقتين بالذكاء الاصطناعي",
+    title:       "DocSwift HR — تحليل 100 سيرة ذاتية في 3 دقائق بالذكاء الاصطناعي",
     description: "يحلل DocSwift HR طلبات الترشح تلقائياً ويمنحك درجة مطابقة مع وصف الوظيفة. لشركات التوظيف والشركات الصغيرة.",
     keywords:    "تحليل السيرة الذاتية بالذكاء الاصطناعي، فرز السير الذاتية تلقائياً، التوظيف بالذكاء الاصطناعي",
     og_title:    "DocSwift HR — تحليل السير الذاتية بالذكاء الاصطناعي",

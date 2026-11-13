@@ -37,41 +37,167 @@ const CSS = `
   }
 `;
 
-const MODULES = [
-  {
-    icon:"📄", color:"#3B82F6", glow:"rgba(59,130,246,.15)", badge:"Inclus dans tous les plans",
-    title:"Outils PDF", desc:"Convertissez, compressez, fusionnez et signez vos documents PDF en quelques clics.",
-    features:["PDF → Word / Excel", "Word / Excel → PDF", "Compresser, Fusionner, Diviser", "Images → PDF", "Signer PDF"],
-    href:"/tools",
-  },
-  {
-    icon:"🤖", color:"#8B5CF6", glow:"rgba(139,92,246,.15)", badge:"Pro & Business",
-    title:"DocSwift AI", desc:"Chattez avec vos PDFs, extrayez des clauses, générez des résumés instantanément.",
-    features:["Chat avec vos PDFs", "Extraction de clauses", "Résumé exécutif", "Traduction FR / EN / AR"],
-    href:"/dashboard/ai",
-  },
-  {
-    icon:"📝", color:"#10B981", glow:"rgba(16,185,129,.15)", badge:"Gratuit",
-    title:"CV Builder", desc:"Créez un CV professionnel en PDF avec un formulaire guidé et un aperçu en direct.",
-    features:["3 modèles modernes", "Aperçu en direct", "Export PDF instantané", "Sans inscription"],
-    href:"/cv",
-  },
+const MODULE_META = [
+  { icon:"📄", color:"#3B82F6", glow:"rgba(59,130,246,.15)", href:"/tools" },
+  { icon:"🤖", color:"#8B5CF6", glow:"rgba(139,92,246,.15)", href:"/dashboard/ai" },
+  { icon:"📝", color:"#10B981", glow:"rgba(16,185,129,.15)", href:"/cv" },
 ];
 
-const TESTIMONIALS = [
-  { name:"Maître Antoine Perrin", role:"Avocat associé, Cabinet Perrin & Cie", text:"L'extraction de clauses contractuelles par IA nous fait gagner 2h par dossier. Indispensable pour notre cabinet.", av:"A", grad:"135deg,#F59E0B,#EF4444" },
-  { name:"Sandra Kouyaté", role:"Responsable admin, PME 45 salariés", text:"On gère tous nos documents PDF depuis DocSwift. Simple, rapide et pas besoin d'un informaticien pour s'en servir.", av:"S", grad:"135deg,#10B981,#14B8A6" },
+const TESTIMONIAL_META = [
+  { name:"Maître Antoine Perrin", av:"A", grad:"135deg,#F59E0B,#EF4444" },
+  { name:"Sandra Kouyaté", av:"S", grad:"135deg,#10B981,#14B8A6" },
 ];
 
-const FAQ = [
-  { q:"Les outils PDF sont-ils vraiment gratuits ?", a:"Oui, 5 conversions par jour sont gratuites. Le plan Pro débloque des conversions illimitées et des fichiers jusqu'à 50 MB." },
-  { q:"Mes documents sont-ils stockés ?", a:"Non. Vos fichiers sont traités puis supprimés après conversion. Rien n'est conservé sur nos serveurs." },
-  { q:"Comment fonctionne la facturation ?", a:"Paiement mensuel par carte via Stripe. Annulation à tout moment, sans frais ni engagement." },
-  { q:"Y a-t-il une période d'essai gratuite ?", a:"Oui, 7 jours d'essai gratuit sur le plan Pro, sans carte bancaire requise." },
-];
+const COPY = {
+  fr: {
+    navTools:"Outils", navPricing:"Tarifs", navDashboard:"Dashboard →", navLogin:"Connexion",
+    heroBadge:"📄 L'assistant PDF intelligent",
+    heroTitle:"Vos PDFs, en un clic.",
+    heroSub:"Convertissez, compressez, chattez avec vos documents par IA. Créez votre CV professionnel. Gratuit pour commencer.",
+    ctaTry:"Essayer gratuitement →", ctaCv:"Créer mon CV →",
+    heroTrust:["✓ 5 conversions gratuites/jour", "✓ Sans inscription pour essayer", "✓ Fichiers supprimés après traitement"],
+    modulesTitle:"Tout pour vos documents.",
+    modulesSub:"Du traitement PDF basique à l'IA conversationnelle, tout est centralisé.",
+    discover:"Découvrir →",
+    modules:[
+      { badge:"Inclus dans tous les plans", title:"Outils PDF", desc:"Convertissez, compressez, fusionnez et signez vos documents PDF en quelques clics.",
+        features:["PDF → Word / Excel", "Word / Excel → PDF", "Compresser, Fusionner, Diviser", "Images → PDF", "Signer PDF"] },
+      { badge:"Pro & Business", title:"DocSwift AI", desc:"Chattez avec vos PDFs, extrayez des clauses, générez des résumés instantanément.",
+        features:["Chat avec vos PDFs", "Extraction de clauses", "Résumé exécutif", "Traduction FR / EN / AR"] },
+      { badge:"Gratuit", title:"CV Builder", desc:"Créez un CV professionnel en PDF avec un formulaire guidé et un aperçu en direct.",
+        features:["3 modèles modernes", "Aperçu en direct", "Export PDF instantané", "Sans inscription"] },
+    ],
+    pricingTitle:"Tarifs simples et transparents",
+    pricingSub:"Commencez gratuitement. Passez Pro quand vous en avez besoin.",
+    perMonth:"/mois", quote:"Sur devis",
+    offer:(pct) => `🔥 OFFRE -${pct}%`, popular:"Le plus populaire",
+    thenPrice:(p) => `puis ${p}€/mois`,
+    noCommitment:"Sans engagement · Annulation facile",
+    plans:{
+      free:{ name:"Gratuit", features:["5 conversions par jour", "Tous les outils PDF", "CV Builder inclus", "Fichiers jusqu'à 5 MB"], cta:"Commencer gratuitement" },
+      pro:{ name:"Pro", features:["Conversions illimitées", "Fichiers jusqu'à 50 MB", "DocSwift AI (chat PDF)", "Zéro publicité", "Support prioritaire"], cta:"Passer Pro" },
+      business:{ name:"Business", badge:"✦ Équipes", features:["Tout Pro inclus", "Utilisateurs illimités", "Intégration API", "Support dédié 24/7"], cta:"Nous contacter" },
+    },
+    pricingFoot:"Paiement sécurisé par Stripe · Annulation à tout moment · Facture mensuelle",
+    testiTitle:"Ils utilisent DocSwift",
+    testimonials:[
+      { role:"Avocat associé, Cabinet Perrin & Cie", text:"L'extraction de clauses contractuelles par IA nous fait gagner 2h par dossier. Indispensable pour notre cabinet." },
+      { role:"Responsable admin, PME 45 salariés", text:"On gère tous nos documents PDF depuis DocSwift. Simple, rapide et pas besoin d'un informaticien pour s'en servir." },
+    ],
+    faqTitle:"Questions fréquentes",
+    faq:[
+      { q:"Les outils PDF sont-ils vraiment gratuits ?", a:"Oui, 5 conversions par jour sont gratuites. Le plan Pro débloque des conversions illimitées et des fichiers jusqu'à 50 MB." },
+      { q:"Mes documents sont-ils stockés ?", a:"Non. Vos fichiers sont traités puis supprimés après conversion. Rien n'est conservé sur nos serveurs." },
+      { q:"Comment fonctionne la facturation ?", a:"Paiement mensuel par carte via Stripe. Annulation à tout moment, sans frais ni engagement." },
+      { q:"Y a-t-il une période d'essai gratuite ?", a:"Oui, 7 jours d'essai gratuit sur le plan Pro, sans carte bancaire requise." },
+    ],
+    finalTitle:"Prêt à simplifier vos PDFs ?",
+    finalSub:"5 conversions gratuites par jour, sans carte bancaire.",
+    footerTagline:"© 2026 Motoko LLC — DocSwift. L'assistant PDF intelligent pour les professionnels.",
+    footerDashboard:"Dashboard", footerPricing:"Tarifs", footerTerms:"Confidentialité & CGU",
+  },
+  en: {
+    navTools:"Tools", navPricing:"Pricing", navDashboard:"Dashboard →", navLogin:"Log in",
+    heroBadge:"📄 The smart PDF assistant",
+    heroTitle:"Your PDFs, in one click.",
+    heroSub:"Convert, compress and chat with your documents using AI. Create your professional resume. Free to get started.",
+    ctaTry:"Try it free →", ctaCv:"Create my resume →",
+    heroTrust:["✓ 5 free conversions/day", "✓ No sign-up needed to try", "✓ Files deleted after processing"],
+    modulesTitle:"Everything for your documents.",
+    modulesSub:"From basic PDF processing to conversational AI, everything in one place.",
+    discover:"Explore →",
+    modules:[
+      { badge:"Included in all plans", title:"PDF Tools", desc:"Convert, compress, merge and sign your PDF documents in just a few clicks.",
+        features:["PDF → Word / Excel", "Word / Excel → PDF", "Compress, Merge, Split", "Images → PDF", "Sign PDF"] },
+      { badge:"Pro & Business", title:"DocSwift AI", desc:"Chat with your PDFs, extract clauses and generate summaries instantly.",
+        features:["Chat with your PDFs", "Clause extraction", "Executive summary", "FR / EN / AR translation"] },
+      { badge:"Free", title:"CV Builder", desc:"Create a professional PDF resume with a guided form and a live preview.",
+        features:["3 modern templates", "Live preview", "Instant PDF export", "No sign-up required"] },
+    ],
+    pricingTitle:"Simple, transparent pricing",
+    pricingSub:"Start for free. Go Pro when you need it.",
+    perMonth:"/month", quote:"Custom quote",
+    offer:(pct) => `🔥 OFFER -${pct}%`, popular:"Most popular",
+    thenPrice:(p) => `then €${p}/month`,
+    noCommitment:"No commitment · Easy cancellation",
+    plans:{
+      free:{ name:"Free", features:["5 conversions per day", "All PDF tools", "CV Builder included", "Files up to 5 MB"], cta:"Get started free" },
+      pro:{ name:"Pro", features:["Unlimited conversions", "Files up to 50 MB", "DocSwift AI (PDF chat)", "Zero ads", "Priority support"], cta:"Go Pro" },
+      business:{ name:"Business", badge:"✦ Teams", features:["Everything in Pro", "Unlimited users", "API integration", "Dedicated 24/7 support"], cta:"Contact us" },
+    },
+    pricingFoot:"Secure payment via Stripe · Cancel anytime · Monthly invoice",
+    testiTitle:"They use DocSwift",
+    testimonials:[
+      { role:"Partner attorney, Cabinet Perrin & Cie", text:"AI-powered contract clause extraction saves us 2 hours per case. Essential for our firm." },
+      { role:"Admin manager, SME with 45 employees", text:"We manage all our PDF documents from DocSwift. Simple, fast, and you don't need an IT person to use it." },
+    ],
+    faqTitle:"Frequently asked questions",
+    faq:[
+      { q:"Are the PDF tools really free?", a:"Yes, 5 conversions per day are free. The Pro plan unlocks unlimited conversions and files up to 50 MB." },
+      { q:"Are my documents stored?", a:"No. Your files are processed and then deleted after conversion. Nothing is kept on our servers." },
+      { q:"How does billing work?", a:"Monthly card payment via Stripe. Cancel anytime, with no fees or commitment." },
+      { q:"Is there a free trial?", a:"Yes, a 7-day free trial on the Pro plan, no credit card required." },
+    ],
+    finalTitle:"Ready to simplify your PDFs?",
+    finalSub:"5 free conversions per day, no credit card required.",
+    footerTagline:"© 2026 Motoko LLC — DocSwift. The smart PDF assistant for professionals.",
+    footerDashboard:"Dashboard", footerPricing:"Pricing", footerTerms:"Privacy & Terms",
+  },
+  ar: {
+    navTools:"الأدوات", navPricing:"الأسعار", navDashboard:"لوحة التحكم ←", navLogin:"تسجيل الدخول",
+    heroBadge:"📄 مساعد PDF الذكي",
+    heroTitle:"ملفات PDF الخاصة بك، بنقرة واحدة.",
+    heroSub:"حوّل مستنداتك واضغطها وتحاور معها بالذكاء الاصطناعي. أنشئ سيرتك الذاتية الاحترافية. مجاني للبدء.",
+    ctaTry:"جرّبه مجانًا ←", ctaCv:"أنشئ سيرتي الذاتية ←",
+    heroTrust:["✓ 5 تحويلات مجانية يوميًا", "✓ دون تسجيل للتجربة", "✓ حذف الملفات بعد المعالجة"],
+    modulesTitle:"كل ما تحتاجه لمستنداتك.",
+    modulesSub:"من المعالجة الأساسية لملفات PDF إلى الذكاء الاصطناعي التحاوري، كل شيء في مكان واحد.",
+    discover:"اكتشف ←",
+    modules:[
+      { badge:"مضمَّن في جميع الخطط", title:"أدوات PDF", desc:"حوّل مستندات PDF واضغطها وادمجها ووقّعها ببضع نقرات.",
+        features:["PDF → Word / Excel", "Word / Excel → PDF", "ضغط، دمج، تقسيم", "صور ← PDF", "توقيع PDF"] },
+      { badge:"Pro و Business", title:"DocSwift AI", desc:"تحاور مع ملفات PDF، واستخرج البنود، وأنشئ ملخصات فورًا.",
+        features:["محادثة مع ملفات PDF", "استخراج البنود", "ملخص تنفيذي", "ترجمة FR / EN / AR"] },
+      { badge:"مجاني", title:"CV Builder", desc:"أنشئ سيرة ذاتية احترافية بصيغة PDF عبر نموذج موجَّه ومعاينة مباشرة.",
+        features:["3 قوالب عصرية", "معاينة مباشرة", "تصدير PDF فوري", "دون تسجيل"] },
+    ],
+    pricingTitle:"أسعار بسيطة وشفافة",
+    pricingSub:"ابدأ مجانًا. انتقل إلى Pro عندما تحتاج إليه.",
+    perMonth:"/شهريًا", quote:"حسب الطلب",
+    offer:(pct) => `🔥 عرض -${pct}%`, popular:"الأكثر شيوعًا",
+    thenPrice:(p) => `ثم ${p}€/شهريًا`,
+    noCommitment:"دون التزام · إلغاء سهل",
+    plans:{
+      free:{ name:"مجاني", features:["5 تحويلات يوميًا", "جميع أدوات PDF", "CV Builder مضمَّن", "ملفات حتى 5 MB"], cta:"ابدأ مجانًا" },
+      pro:{ name:"Pro", features:["تحويلات غير محدودة", "ملفات حتى 50 MB", "DocSwift AI (محادثة PDF)", "بلا إعلانات", "دعم ذو أولوية"], cta:"انتقل إلى Pro" },
+      business:{ name:"Business", badge:"✦ للفرق", features:["كل مزايا Pro", "عدد غير محدود من المستخدمين", "تكامل عبر API", "دعم مخصّص 24/7"], cta:"تواصل معنا" },
+    },
+    pricingFoot:"دفع آمن عبر Stripe · إلغاء في أي وقت · فاتورة شهرية",
+    testiTitle:"يستخدمون DocSwift",
+    testimonials:[
+      { role:"محامٍ شريك، Cabinet Perrin & Cie", text:"استخراج البنود التعاقدية بالذكاء الاصطناعي يوفّر علينا ساعتين في كل ملف. لا غنى عنه لمكتبنا." },
+      { role:"مسؤولة إدارية، شركة صغيرة ومتوسطة تضم 45 موظفًا", text:"ندير جميع مستندات PDF من DocSwift. بسيط وسريع ولا يحتاج إلى خبير معلوماتية لاستخدامه." },
+    ],
+    faqTitle:"الأسئلة الشائعة",
+    faq:[
+      { q:"هل أدوات PDF مجانية حقًا؟", a:"نعم، 5 تحويلات يوميًا مجانية. تتيح خطة Pro تحويلات غير محدودة وملفات حتى 50 MB." },
+      { q:"هل يتم تخزين مستنداتي؟", a:"لا. تُعالَج ملفاتك ثم تُحذف بعد التحويل. لا يُحتفظ بأي شيء على خوادمنا." },
+      { q:"كيف تتم الفوترة؟", a:"دفع شهري بالبطاقة عبر Stripe. يمكنك الإلغاء في أي وقت، دون رسوم أو التزام." },
+      { q:"هل توجد فترة تجريبية مجانية؟", a:"نعم، 7 أيام تجربة مجانية على خطة Pro، دون الحاجة إلى بطاقة بنكية." },
+    ],
+    finalTitle:"هل أنت مستعد لتبسيط ملفات PDF الخاصة بك؟",
+    finalSub:"5 تحويلات مجانية يوميًا، دون بطاقة بنكية.",
+    footerTagline:"© 2026 Motoko LLC — DocSwift. مساعد PDF الذكي للمحترفين.",
+    footerDashboard:"لوحة التحكم", footerPricing:"الأسعار", footerTerms:"الخصوصية والشروط",
+  },
+};
 
 export default function AcademicLanding() {
   const locale = useLocale();
+  const t = COPY[locale] ?? COPY.fr;
+  const MODULES = MODULE_META.map((m, i) => ({ ...m, ...t.modules[i] }));
+  const TESTIMONIALS = TESTIMONIAL_META.map((m, i) => ({ ...m, ...t.testimonials[i] }));
+  const FAQ = t.faq;
   const { data: session } = useSession();
   const router = useRouter();
   const [pricing, setPricing] = useState({ promo_enabled:"true", promo_price:"4.99", promo_months:"3", normal_price:"9.99" });
@@ -87,19 +213,19 @@ export default function AcademicLanding() {
   const regularPrice = pricing.normal_price;
 
   const PLANS = [
-    { name:"Gratuit", price:"0", period:"/mois", color:"#6B7A99", border:"#1E2733", bg:"#0D1117", badge:null,
-      features:["5 conversions par jour", "Tous les outils PDF", "CV Builder inclus", "Fichiers jusqu'à 5 MB"],
-      cta:"Commencer gratuitement", plan:"free", ctaStyle:{ background:"transparent", border:"1px solid #1E2733", color:"#F0F4FF" } },
-    { name:"Pro", price:proPrice, period:"/mois", color:"#60A5FA", border:"#3B82F6", bg:"linear-gradient(145deg,#0D1F3C,#132240)",
-      badge: promoActive ? `🔥 OFFRE -${Math.round((1 - parseFloat(proPrice)/parseFloat(regularPrice))*100)}%` : "Le plus populaire",
+    { name:t.plans.free.name, price:"0", period:t.perMonth, color:"#6B7A99", border:"#1E2733", bg:"#0D1117", badge:null,
+      features:t.plans.free.features,
+      cta:t.plans.free.cta, plan:"free", ctaStyle:{ background:"transparent", border:"1px solid #1E2733", color:"#F0F4FF" } },
+    { name:t.plans.pro.name, price:proPrice, period:t.perMonth, color:"#60A5FA", border:"#3B82F6", bg:"linear-gradient(145deg,#0D1F3C,#132240)",
+      badge: promoActive ? t.offer(Math.round((1 - parseFloat(proPrice)/parseFloat(regularPrice))*100)) : t.popular,
       badgeBg:"linear-gradient(135deg,#3B82F6,#2563EB)",
-      promoNote: promoActive ? `puis ${regularPrice}€/mois` : null,
-      features:["Conversions illimitées", "Fichiers jusqu'à 50 MB", "DocSwift AI (chat PDF)", "Zéro publicité", "Support prioritaire"],
-      cta:"Passer Pro", plan: promoActive ? "promo" : "regular", ctaStyle:{ background:"linear-gradient(135deg,#3B82F6,#2563EB)", border:"none", color:"#fff" } },
-    { name:"Business", price:"Sur devis", period:"", color:"#8B5CF6", border:"#8B5CF6", bg:"linear-gradient(145deg,#1A1030,#241540)", badge:"✦ Équipes",
+      promoNote: promoActive ? t.thenPrice(regularPrice) : null,
+      features:t.plans.pro.features,
+      cta:t.plans.pro.cta, plan: promoActive ? "promo" : "regular", ctaStyle:{ background:"linear-gradient(135deg,#3B82F6,#2563EB)", border:"none", color:"#fff" } },
+    { name:t.plans.business.name, price:t.quote, period:"", color:"#8B5CF6", border:"#8B5CF6", bg:"linear-gradient(145deg,#1A1030,#241540)", badge:t.plans.business.badge,
       badgeBg:"linear-gradient(135deg,#8B5CF6,#6D28D9)",
-      features:["Tout Pro inclus", "Utilisateurs illimités", "Intégration API", "Support dédié 24/7"],
-      cta:"Nous contacter", plan:"business", ctaStyle:{ background:"linear-gradient(135deg,#8B5CF6,#6D28D9)", border:"none", color:"#fff" } },
+      features:t.plans.business.features,
+      cta:t.plans.business.cta, plan:"business", ctaStyle:{ background:"linear-gradient(135deg,#8B5CF6,#6D28D9)", border:"none", color:"#fff" } },
   ];
 
   const handleUpgrade = async (plan) => {
@@ -116,15 +242,15 @@ export default function AcademicLanding() {
       {/* ── NAV ── */}
       <nav className="nav-wrap" style={{ position:"fixed",top:0,left:0,right:0,zIndex:200,padding:"16px 40px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(7,9,15,.92)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(30,39,51,.9)" }}>
         <a href={`${localePrefix}/`} style={{ fontWeight:900,fontSize:22,letterSpacing:-1,textDecoration:"none",color:"#F0F4FF" }}>
-          Doc<span style={{ color:"#3B82F6" }}>Swift</span>
+          <bdi dir="ltr">Doc<span style={{ color:"#3B82F6" }}>Swift</span></bdi>
         </a>
         <div className="nav-links" style={{ display:"flex",gap:28,alignItems:"center" }}>
-          <a href="#modules" className="nav-link" style={{ color:"#8892AA",textDecoration:"none",fontSize:14 }}>Outils</a>
-          <a href="#pricing" className="nav-link" style={{ color:"#8892AA",textDecoration:"none",fontSize:14 }}>Tarifs</a>
+          <a href="#modules" className="nav-link" style={{ color:"#8892AA",textDecoration:"none",fontSize:14 }}>{t.navTools}</a>
+          <a href="#pricing" className="nav-link" style={{ color:"#8892AA",textDecoration:"none",fontSize:14 }}>{t.navPricing}</a>
           <LanguageSwitcher />
           {session
-            ? <button className="btn-primary" onClick={() => go("/dashboard")} style={{ background:"#3B82F6",color:"#fff",padding:"9px 22px",borderRadius:8,fontSize:14,fontWeight:700,border:"none",cursor:"pointer" }}>Dashboard →</button>
-            : <button className="btn-primary" onClick={() => signIn()} style={{ background:"#3B82F6",color:"#fff",padding:"9px 22px",borderRadius:8,fontSize:14,fontWeight:700,border:"none",cursor:"pointer" }}>Connexion</button>
+            ? <button className="btn-primary" onClick={() => go("/dashboard")} style={{ background:"#3B82F6",color:"#fff",padding:"9px 22px",borderRadius:8,fontSize:14,fontWeight:700,border:"none",cursor:"pointer" }}>{t.navDashboard}</button>
+            : <button className="btn-primary" onClick={() => signIn()} style={{ background:"#3B82F6",color:"#fff",padding:"9px 22px",borderRadius:8,fontSize:14,fontWeight:700,border:"none",cursor:"pointer" }}>{t.navLogin}</button>
           }
         </div>
       </nav>
@@ -136,29 +262,29 @@ export default function AcademicLanding() {
 
         <div style={{ position:"relative",zIndex:1,maxWidth:820 }}>
           <div style={{ display:"inline-flex",alignItems:"center",gap:8,background:"rgba(59,130,246,.08)",border:"1px solid rgba(59,130,246,.22)",color:"#BFDBFE",padding:"6px 18px",borderRadius:40,fontSize:13,fontWeight:600,marginBottom:32 }}>
-            📄 L'assistant PDF intelligent
+            {t.heroBadge}
           </div>
 
           <h1 className="hero-text hero-h1" style={{ fontSize:"clamp(36px,6.5vw,72px)",fontWeight:900,letterSpacing:-3,lineHeight:1.04,marginBottom:24 }}>
-            <span className="gradient-text">Vos PDFs, en un clic.</span>
+            <span className="gradient-text">{t.heroTitle}</span>
           </h1>
 
           <p className="hero-sub" style={{ color:"#8892AA",fontSize:19,maxWidth:560,margin:"0 auto 14px",lineHeight:1.7 }}>
-            Convertissez, compressez, chattez avec vos documents par IA. Créez votre CV professionnel. Gratuit pour commencer.
+            {t.heroSub}
           </p>
 
           <div className="hero-ctas" style={{ display:"flex",gap:16,justifyContent:"center",flexWrap:"wrap",marginTop:30 }}>
             <button className="btn-primary" onClick={() => go("/tools")} style={{ background:"linear-gradient(135deg,#3B82F6,#2563EB)",color:"#fff",padding:"16px 38px",borderRadius:14,fontSize:17,fontWeight:800,border:"none",cursor:"pointer",letterSpacing:-.3 }}>
-              Essayer gratuitement →
+              {t.ctaTry}
             </button>
             <button className="btn-secondary" onClick={() => go("/cv")}
               style={{ background:"rgba(30,39,51,.6)",color:"#C0CBE0",padding:"16px 28px",borderRadius:14,fontSize:16,cursor:"pointer",border:"1px solid #1E2733",backdropFilter:"blur(10px)" }}>
-              Créer mon CV →
+              {t.ctaCv}
             </button>
           </div>
 
           <p style={{ marginTop:28,color:"#4B5563",fontSize:13 }}>
-            ✓ 5 conversions gratuites/jour &nbsp;·&nbsp; ✓ Sans inscription pour essayer &nbsp;·&nbsp; ✓ Fichiers supprimés après traitement
+            {t.heroTrust[0]} &nbsp;·&nbsp; {t.heroTrust[1]} &nbsp;·&nbsp; {t.heroTrust[2]}
           </p>
         </div>
       </div>
@@ -167,8 +293,8 @@ export default function AcademicLanding() {
       <div id="modules" style={{ padding:"100px 24px",background:"#07090F" }}>
         <div style={{ maxWidth:1200,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:64 }}>
-            <h2 style={{ fontSize:"clamp(28px,4vw,50px)",fontWeight:900,letterSpacing:-1.5,marginBottom:14 }}>Tout pour vos documents.</h2>
-            <p style={{ color:"#6B7A99",fontSize:16,maxWidth:500,margin:"0 auto" }}>Du traitement PDF basique à l'IA conversationnelle, tout est centralisé.</p>
+            <h2 style={{ fontSize:"clamp(28px,4vw,50px)",fontWeight:900,letterSpacing:-1.5,marginBottom:14 }}>{t.modulesTitle}</h2>
+            <p style={{ color:"#6B7A99",fontSize:16,maxWidth:500,margin:"0 auto" }}>{t.modulesSub}</p>
           </div>
 
           <div className="modules-grid" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:24 }}>
@@ -188,7 +314,7 @@ export default function AcademicLanding() {
                     </li>
                   ))}
                 </ul>
-                <div style={{ color:mod.color,fontSize:13,fontWeight:700 }}>Découvrir →</div>
+                <div style={{ color:mod.color,fontSize:13,fontWeight:700 }}>{t.discover}</div>
               </div>
             ))}
           </div>
@@ -199,8 +325,8 @@ export default function AcademicLanding() {
       <div id="pricing" style={{ padding:"100px 24px",background:"#070B13",borderTop:"1px solid #1E2733" }}>
         <div style={{ maxWidth:1100,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:60 }}>
-            <h2 style={{ fontSize:"clamp(28px,4vw,48px)",fontWeight:900,letterSpacing:-1.5,marginBottom:14 }}>Tarifs simples et transparents</h2>
-            <p style={{ color:"#6B7A99",fontSize:16 }}>Commencez gratuitement. Passez Pro quand vous en avez besoin.</p>
+            <h2 style={{ fontSize:"clamp(28px,4vw,48px)",fontWeight:900,letterSpacing:-1.5,marginBottom:14 }}>{t.pricingTitle}</h2>
+            <p style={{ color:"#6B7A99",fontSize:16 }}>{t.pricingSub}</p>
           </div>
 
           <div className="pricing-grid" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:20 }}>
@@ -211,10 +337,10 @@ export default function AcademicLanding() {
                 )}
                 <div style={{ fontSize:12,fontWeight:800,color:plan.color,letterSpacing:1.5,textTransform:"uppercase",marginBottom:10 }}>{plan.name}</div>
                 <div style={{ display:"flex",alignItems:"flex-end",gap:4,marginBottom:4 }}>
-                  <span style={{ fontSize:44,fontWeight:900,letterSpacing:-2,color:"#F0F4FF",lineHeight:1 }}>{plan.price === "Sur devis" ? plan.price : `${plan.price}€`}</span>
+                  <span style={{ fontSize:44,fontWeight:900,letterSpacing:-2,color:"#F0F4FF",lineHeight:1 }}>{plan.price === t.quote ? plan.price : `${plan.price}€`}</span>
                   <span style={{ color:"#4B5563",fontSize:15,marginBottom:8 }}>{plan.period}</span>
                 </div>
-                <div style={{ color:"#4B5563",fontSize:12,marginBottom:28 }}>Sans engagement · Annulation facile</div>
+                <div style={{ color:"#4B5563",fontSize:12,marginBottom:28 }}>{t.noCommitment}</div>
                 <ul style={{ listStyle:"none",padding:0,margin:"0 0 32px",display:"flex",flexDirection:"column",gap:11 }}>
                   {plan.features.map((f,j) => (
                     <li key={j} style={{ display:"flex",alignItems:"center",gap:10,fontSize:13,color:"#8892AA" }}>
@@ -229,7 +355,7 @@ export default function AcademicLanding() {
               </div>
             ))}
           </div>
-          <p style={{ textAlign:"center",color:"#4B5563",fontSize:13,marginTop:24 }}>Paiement sécurisé par Stripe · Annulation à tout moment · Facture mensuelle</p>
+          <p style={{ textAlign:"center",color:"#4B5563",fontSize:13,marginTop:24 }}>{t.pricingFoot}</p>
         </div>
       </div>
 
@@ -237,7 +363,7 @@ export default function AcademicLanding() {
       <div style={{ padding:"100px 24px",background:"#07090F" }}>
         <div style={{ maxWidth:900,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:60 }}>
-            <h2 style={{ fontSize:"clamp(28px,4vw,44px)",fontWeight:900,letterSpacing:-1.5,marginBottom:14 }}>Ils utilisent DocSwift</h2>
+            <h2 style={{ fontSize:"clamp(28px,4vw,44px)",fontWeight:900,letterSpacing:-1.5,marginBottom:14 }}>{t.testiTitle}</h2>
           </div>
           <div className="testi-grid" style={{ display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:20 }}>
             {TESTIMONIALS.map(tst => (
@@ -260,7 +386,7 @@ export default function AcademicLanding() {
       <div style={{ padding:"80px 24px",background:"#070B13",borderTop:"1px solid #1E2733" }}>
         <div style={{ maxWidth:900,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:52 }}>
-            <h2 style={{ fontSize:"clamp(26px,4vw,44px)",fontWeight:900,letterSpacing:-1.5,marginBottom:12 }}>Questions fréquentes</h2>
+            <h2 style={{ fontSize:"clamp(26px,4vw,44px)",fontWeight:900,letterSpacing:-1.5,marginBottom:12 }}>{t.faqTitle}</h2>
           </div>
           <div className="faq-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:16 }}>
             {FAQ.map((item, i) => (
@@ -282,11 +408,11 @@ export default function AcademicLanding() {
       <div style={{ padding:"100px 24px",background:"#07090F",textAlign:"center" }}>
         <div style={{ maxWidth:640,margin:"0 auto" }}>
           <div style={{ fontSize:56,marginBottom:20 }}>📄</div>
-          <h2 style={{ fontSize:"clamp(28px,4vw,48px)",fontWeight:900,letterSpacing:-1.5,marginBottom:16 }}>Prêt à simplifier vos PDFs ?</h2>
-          <p style={{ color:"#6B7A99",fontSize:17,marginBottom:40,lineHeight:1.7 }}>5 conversions gratuites par jour, sans carte bancaire.</p>
+          <h2 style={{ fontSize:"clamp(28px,4vw,48px)",fontWeight:900,letterSpacing:-1.5,marginBottom:16 }}>{t.finalTitle}</h2>
+          <p style={{ color:"#6B7A99",fontSize:17,marginBottom:40,lineHeight:1.7 }}>{t.finalSub}</p>
           <button className="btn-primary" onClick={() => go("/tools")}
             style={{ background:"linear-gradient(135deg,#3B82F6,#2563EB)",color:"#fff",border:"none",padding:"18px 48px",borderRadius:16,fontSize:18,fontWeight:800,cursor:"pointer" }}>
-            Essayer gratuitement →
+            {t.ctaTry}
           </button>
         </div>
       </div>
@@ -295,13 +421,13 @@ export default function AcademicLanding() {
       <footer style={{ borderTop:"1px solid #1E2733",padding:"32px 40px" }}>
         <div className="footer-inner" style={{ maxWidth:1200,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:20 }}>
           <div>
-            <div style={{ fontWeight:900,fontSize:18,letterSpacing:-0.5,marginBottom:4 }}>Doc<span style={{ color:"#3B82F6" }}>Swift</span></div>
-            <div style={{ color:"#4B5563",fontSize:12 }}>© 2026 Motoko LLC — DocSwift. L'assistant PDF intelligent pour les professionnels.</div>
+            <div style={{ fontWeight:900,fontSize:18,letterSpacing:-0.5,marginBottom:4 }}><bdi dir="ltr">Doc<span style={{ color:"#3B82F6" }}>Swift</span></bdi></div>
+            <div style={{ color:"#4B5563",fontSize:12 }}>{t.footerTagline}</div>
           </div>
           <div style={{ display:"flex",gap:24,flexWrap:"wrap" }}>
-            <a href={`${localePrefix}/dashboard`} style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>Dashboard</a>
-            <a href="#pricing" style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>Tarifs</a>
-            <a href={`${localePrefix}/terms`} style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>Confidentialité & CGU</a>
+            <a href={`${localePrefix}/dashboard`} style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>{t.footerDashboard}</a>
+            <a href="#pricing" style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>{t.footerPricing}</a>
+            <a href={`${localePrefix}/terms`} style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>{t.footerTerms}</a>
           </div>
         </div>
       </footer>

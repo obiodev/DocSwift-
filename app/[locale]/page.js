@@ -23,8 +23,42 @@ const CSS = `
   }
 `;
 
+const COPY = {
+  fr: {
+    dashboard: "Dashboard →",
+    login: "Connexion",
+    heroTitle: "L'assistant intelligent pour vos documents.",
+    heroSub: "Deux produits DocSwift, chacun conçu pour un usage précis.",
+    academicDesc: "Convertissez, compressez et chattez avec vos PDFs par IA. Créez votre CV professionnel. Gratuit pour commencer.",
+    hrDesc: "Analysez jusqu'à 100 CVs en 3 minutes par IA. Scoring automatique, matching poste/candidat, export CSV. Pour recruteurs et cabinets RH.",
+    discover: "Découvrir →",
+    termsLink: "Confidentialité & CGU",
+  },
+  en: {
+    dashboard: "Dashboard →",
+    login: "Sign in",
+    heroTitle: "The smart assistant for your documents.",
+    heroSub: "Two DocSwift products, each built for a specific purpose.",
+    academicDesc: "Convert, compress and chat with your PDFs using AI. Create your professional resume. Free to get started.",
+    hrDesc: "Analyze up to 100 resumes in 3 minutes with AI. Automatic scoring, job/candidate matching, CSV export. For recruiters and HR firms.",
+    discover: "Discover →",
+    termsLink: "Privacy & Terms",
+  },
+  ar: {
+    dashboard: "لوحة التحكم ←",
+    login: "تسجيل الدخول",
+    heroTitle: "المساعد الذكي لمستنداتك.",
+    heroSub: "منتجان من DocSwift، صُمِّم كلٌّ منهما لاستخدام محدد.",
+    academicDesc: "حوِّل ملفات PDF واضغطها وتحاور معها بالذكاء الاصطناعي. أنشئ سيرتك الذاتية الاحترافية. مجاني للبدء.",
+    hrDesc: "حلِّل ما يصل إلى 100 سيرة ذاتية في 3 دقائق بالذكاء الاصطناعي. تقييم تلقائي، ومطابقة بين الوظيفة والمرشح، وتصدير CSV. للمسؤولين عن التوظيف ومكاتب الموارد البشرية.",
+    discover: "اكتشف ←",
+    termsLink: "الخصوصية والشروط العامة",
+  },
+};
+
 export default function Home() {
   const locale = useLocale();
+  const t = COPY[locale] ?? COPY.fr;
   const { data: session } = useSession();
   const router = useRouter();
   const localePrefix = locale === "fr" ? "" : `/${locale}`;
@@ -37,13 +71,13 @@ export default function Home() {
       {/* ── NAV ── */}
       <nav className="nav-wrap" style={{ position:"fixed",top:0,left:0,right:0,zIndex:200,padding:"16px 40px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(7,9,15,.92)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(30,39,51,.9)" }}>
         <div style={{ fontWeight:900,fontSize:22,letterSpacing:-1 }}>
-          Doc<span style={{ color:"#3B82F6" }}>Swift</span>
+          <bdi dir="ltr">Doc<span style={{ color:"#3B82F6" }}>Swift</span></bdi>
         </div>
         <div style={{ display:"flex",gap:20,alignItems:"center" }}>
           <LanguageSwitcher />
           {session
-            ? <button className="btn-primary" onClick={() => go("/dashboard")} style={{ background:"#3B82F6",color:"#fff",padding:"9px 22px",borderRadius:8,fontSize:14,fontWeight:700,border:"none",cursor:"pointer" }}>Dashboard →</button>
-            : <button className="btn-primary" onClick={() => signIn()} style={{ background:"#3B82F6",color:"#fff",padding:"9px 22px",borderRadius:8,fontSize:14,fontWeight:700,border:"none",cursor:"pointer" }}>Connexion</button>
+            ? <button className="btn-primary" onClick={() => go("/dashboard")} style={{ background:"#3B82F6",color:"#fff",padding:"9px 22px",borderRadius:8,fontSize:14,fontWeight:700,border:"none",cursor:"pointer" }}>{t.dashboard}</button>
+            : <button className="btn-primary" onClick={() => signIn()} style={{ background:"#3B82F6",color:"#fff",padding:"9px 22px",borderRadius:8,fontSize:14,fontWeight:700,border:"none",cursor:"pointer" }}>{t.login}</button>
           }
         </div>
       </nav>
@@ -55,10 +89,10 @@ export default function Home() {
 
         <div style={{ position:"relative",zIndex:1,maxWidth:760 }}>
           <h1 className="hero-text hero-h1" style={{ fontSize:"clamp(32px,5.5vw,58px)",fontWeight:900,letterSpacing:-2,lineHeight:1.1,marginBottom:20 }}>
-            L'assistant intelligent pour vos documents.
+            {t.heroTitle}
           </h1>
           <p className="hero-sub" style={{ color:"#8892AA",fontSize:18,maxWidth:540,margin:"0 auto",lineHeight:1.7 }}>
-            Deux produits DocSwift, chacun conçu pour un usage précis.
+            {t.heroSub}
           </p>
         </div>
       </div>
@@ -71,18 +105,18 @@ export default function Home() {
             <div style={{ fontSize:40,marginBottom:18 }}>📄</div>
             <h2 style={{ fontSize:24,fontWeight:900,letterSpacing:-0.8,marginBottom:10 }}>DocSwift <span style={{ color:"#3B82F6" }}>Academic</span></h2>
             <p style={{ color:"#8892AA",fontSize:15,lineHeight:1.7,marginBottom:24 }}>
-              Convertissez, compressez et chattez avec vos PDFs par IA. Créez votre CV professionnel. Gratuit pour commencer.
+              {t.academicDesc}
             </p>
-            <div style={{ color:"#3B82F6",fontSize:14,fontWeight:700 }}>Découvrir →</div>
+            <div style={{ color:"#3B82F6",fontSize:14,fontWeight:700 }}>{t.discover}</div>
           </div>
 
           <div className="product-card" style={{ background:"#0D1117",border:"2px solid #1E2733",borderRadius:24,padding:"40px 36px",cursor:"pointer" }} onClick={() => go("/hr")}>
             <div style={{ fontSize:40,marginBottom:18 }}>👥</div>
             <h2 style={{ fontSize:24,fontWeight:900,letterSpacing:-0.8,marginBottom:10 }}>DocSwift <span style={{ color:"#F97316" }}>HR</span></h2>
             <p style={{ color:"#8892AA",fontSize:15,lineHeight:1.7,marginBottom:24 }}>
-              Analysez jusqu'à 100 CVs en 2 minutes par IA. Scoring automatique, matching poste/candidat, export CSV. Pour recruteurs et cabinets RH.
+              {t.hrDesc}
             </p>
-            <div style={{ color:"#F97316",fontSize:14,fontWeight:700 }}>Découvrir →</div>
+            <div style={{ color:"#F97316",fontSize:14,fontWeight:700 }}>{t.discover}</div>
           </div>
 
         </div>
@@ -92,13 +126,13 @@ export default function Home() {
       <footer style={{ borderTop:"1px solid #1E2733",padding:"32px 40px" }}>
         <div style={{ maxWidth:1200,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:20 }}>
           <div>
-            <div style={{ fontWeight:900,fontSize:18,letterSpacing:-0.5,marginBottom:4 }}>Doc<span style={{ color:"#3B82F6" }}>Swift</span></div>
+            <div style={{ fontWeight:900,fontSize:18,letterSpacing:-0.5,marginBottom:4 }}><bdi dir="ltr">Doc<span style={{ color:"#3B82F6" }}>Swift</span></bdi></div>
             <div style={{ color:"#4B5563",fontSize:12 }}>© 2026 Motoko LLC — DocSwift.</div>
           </div>
           <div style={{ display:"flex",gap:24,flexWrap:"wrap" }}>
             <a href={`${localePrefix}/academic`} style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>DocSwift Academic</a>
             <a href={`${localePrefix}/hr`}       style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>DocSwift HR</a>
-            <a href={`${localePrefix}/terms`}    style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>Confidentialité & CGU</a>
+            <a href={`${localePrefix}/terms`}    style={{ color:"#6B7A99",textDecoration:"none",fontSize:13 }}>{t.termsLink}</a>
           </div>
         </div>
       </footer>

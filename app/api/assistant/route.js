@@ -15,12 +15,23 @@ const DAILY_CAP_ANON   = 40;    // messages / IP / day
 const DAILY_CAP_USER   = 120;   // messages / account / day
 const EMAIL_RE         = /[\w.+-]+@[\w-]+\.[\w.-]+/;
 
-const FALLBACK = "Je rencontre un souci technique. Laissez votre email ici et un membre de l'équipe vous répond sous 24 h ouvrées, ou essayez directement l'analyse gratuite de 5 CV : https://getdocswift.com/hr/essai-gratuit";
+const FALLBACKS = {
+  fr: "Je rencontre un souci technique. Laissez votre email ici et un membre de l'équipe vous répond sous 24 h ouvrées, ou essayez directement l'analyse gratuite de 5 CV : https://getdocswift.com/hr/essai-gratuit",
+  en: "I'm having a technical issue. Leave your email here and a team member will reply within one business day, or try the free 5-CV analysis right away: https://getdocswift.com/en/hr/essai-gratuit",
+  ar: "أواجه مشكلة تقنية. اترك بريدك الإلكتروني هنا وسيرد عليك أحد أعضاء الفريق خلال يوم عمل، أو جرّب مباشرة التحليل المجاني لـ 5 سير ذاتية: https://getdocswift.com/ar/hr/essai-gratuit",
+};
+const LIMIT_MSG = {
+  fr: "Vous avez atteint la limite de messages pour aujourd'hui. Laissez votre email et nous vous répondrons, ou revenez demain.",
+  en: "You've reached today's message limit. Leave your email and we'll get back to you, or come back tomorrow.",
+  ar: "لقد بلغت الحد اليومي للرسائل. اترك بريدك الإلكتروني وسنرد عليك، أو عد غدًا.",
+};
 
 // ── POST /api/assistant — on-site sales & support assistant ──────────────────
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   const page = String(body.page ?? "").slice(0, 200);
+  const locale   = ["fr", "en", "ar"].includes(body.locale) ? body.locale : "fr";
+  const FALLBACK = FALLBACKS[locale];
 
   const messages = (Array.isArray(body.messages) ? body.messages : [])
     .filter((m) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
@@ -38,7 +49,7 @@ export async function POST(request) {
   // ── Rate limit ─────────────────────────────────────────────────────────
   const key = email ? `assistant:${email}` : `assistant:${getClientIp(request)}`;
   if ((await getUsageToday(key)) >= (email ? DAILY_CAP_USER : DAILY_CAP_ANON)) {
-    return NextResponse.json({ reply: "Vous avez atteint la limite de messages pour aujourd'hui. Laissez votre email et nous vous répondrons, ou revenez demain." });
+    return NextResponse.json({ reply: LIMIT_MSG[locale] });
   }
   await incrementUsage(key);
 
@@ -79,7 +90,7 @@ export async function POST(request) {
     const result = await generateWithFallback({
       models: [process.env.GEMINI_ASSISTANT_MODEL || GEMINI_FALLBACK_MODEL, MODEL],
       modelParams: {
-        systemInstruction: buildSystemPrompt({ customer }),
+        systemInstruction: buildSystemPrompt({ customer, locale }),
         generationConfig: { maxOutputTokens: 2048, thinkingConfig: { thinkingLevel: "low" } },
       },
       request: { contents },
