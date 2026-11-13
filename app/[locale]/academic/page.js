@@ -43,11 +43,6 @@ const MODULE_META = [
   { icon:"📝", color:"#10B981", glow:"rgba(16,185,129,.15)", href:"/cv" },
 ];
 
-const TESTIMONIAL_META = [
-  { name:"Maître Antoine Perrin", av:"A", grad:"135deg,#F59E0B,#EF4444" },
-  { name:"Sandra Kouyaté", av:"S", grad:"135deg,#10B981,#14B8A6" },
-];
-
 const COPY = {
   fr: {
     navTools:"Outils", navPricing:"Tarifs", navDashboard:"Dashboard →", navLogin:"Connexion",
@@ -79,11 +74,6 @@ const COPY = {
       business:{ name:"Business", badge:"✦ Équipes", features:["Tout Pro inclus", "Utilisateurs illimités", "Intégration API", "Support dédié 24/7"], cta:"Nous contacter" },
     },
     pricingFoot:"Paiement sécurisé par Stripe · Annulation à tout moment · Facture mensuelle",
-    testiTitle:"Ils utilisent DocSwift",
-    testimonials:[
-      { role:"Avocat associé, Cabinet Perrin & Cie", text:"L'extraction de clauses contractuelles par IA nous fait gagner 2h par dossier. Indispensable pour notre cabinet." },
-      { role:"Responsable admin, PME 45 salariés", text:"On gère tous nos documents PDF depuis DocSwift. Simple, rapide et pas besoin d'un informaticien pour s'en servir." },
-    ],
     faqTitle:"Questions fréquentes",
     faq:[
       { q:"Les outils PDF sont-ils vraiment gratuits ?", a:"Oui, 5 conversions par jour sont gratuites. Le plan Pro débloque des conversions illimitées et des fichiers jusqu'à 50 MB." },
@@ -126,11 +116,6 @@ const COPY = {
       business:{ name:"Business", badge:"✦ Teams", features:["Everything in Pro", "Unlimited users", "API integration", "Dedicated 24/7 support"], cta:"Contact us" },
     },
     pricingFoot:"Secure payment via Stripe · Cancel anytime · Monthly invoice",
-    testiTitle:"They use DocSwift",
-    testimonials:[
-      { role:"Partner attorney, Cabinet Perrin & Cie", text:"AI-powered contract clause extraction saves us 2 hours per case. Essential for our firm." },
-      { role:"Admin manager, SME with 45 employees", text:"We manage all our PDF documents from DocSwift. Simple, fast, and you don't need an IT person to use it." },
-    ],
     faqTitle:"Frequently asked questions",
     faq:[
       { q:"Are the PDF tools really free?", a:"Yes, 5 conversions per day are free. The Pro plan unlocks unlimited conversions and files up to 50 MB." },
@@ -173,11 +158,6 @@ const COPY = {
       business:{ name:"Business", badge:"✦ للفرق", features:["كل مزايا Pro", "عدد غير محدود من المستخدمين", "تكامل عبر API", "دعم مخصّص 24/7"], cta:"تواصل معنا" },
     },
     pricingFoot:"دفع آمن عبر Stripe · إلغاء في أي وقت · فاتورة شهرية",
-    testiTitle:"يستخدمون DocSwift",
-    testimonials:[
-      { role:"محامٍ شريك، Cabinet Perrin & Cie", text:"استخراج البنود التعاقدية بالذكاء الاصطناعي يوفّر علينا ساعتين في كل ملف. لا غنى عنه لمكتبنا." },
-      { role:"مسؤولة إدارية، شركة صغيرة ومتوسطة تضم 45 موظفًا", text:"ندير جميع مستندات PDF من DocSwift. بسيط وسريع ولا يحتاج إلى خبير معلوماتية لاستخدامه." },
-    ],
     faqTitle:"الأسئلة الشائعة",
     faq:[
       { q:"هل أدوات PDF مجانية حقًا؟", a:"نعم، 5 تحويلات يوميًا مجانية. تتيح خطة Pro تحويلات غير محدودة وملفات حتى 50 MB." },
@@ -196,7 +176,6 @@ export default function AcademicLanding() {
   const locale = useLocale();
   const t = COPY[locale] ?? COPY.fr;
   const MODULES = MODULE_META.map((m, i) => ({ ...m, ...t.modules[i] }));
-  const TESTIMONIALS = TESTIMONIAL_META.map((m, i) => ({ ...m, ...t.testimonials[i] }));
   const FAQ = t.faq;
   const { data: session } = useSession();
   const router = useRouter();
@@ -356,29 +335,6 @@ export default function AcademicLanding() {
             ))}
           </div>
           <p style={{ textAlign:"center",color:"#4B5563",fontSize:13,marginTop:24 }}>{t.pricingFoot}</p>
-        </div>
-      </div>
-
-      {/* ── TÉMOIGNAGES ── */}
-      <div style={{ padding:"100px 24px",background:"#07090F" }}>
-        <div style={{ maxWidth:900,margin:"0 auto" }}>
-          <div style={{ textAlign:"center",marginBottom:60 }}>
-            <h2 style={{ fontSize:"clamp(28px,4vw,44px)",fontWeight:900,letterSpacing:-1.5,marginBottom:14 }}>{t.testiTitle}</h2>
-          </div>
-          <div className="testi-grid" style={{ display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:20 }}>
-            {TESTIMONIALS.map(tst => (
-              <div key={tst.name} className="testi-card" style={{ background:"#0D1117",border:"1px solid #1E2733",borderRadius:22,padding:28 }}>
-                <p style={{ color:"#C0CBE0",fontSize:14,lineHeight:1.75,marginBottom:22 }}>"{tst.text}"</p>
-                <div style={{ display:"flex",alignItems:"center",gap:12 }}>
-                  <div style={{ width:40,height:40,borderRadius:"50%",background:`linear-gradient(${tst.grad})`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:16,color:"#fff",flexShrink:0 }}>{tst.av}</div>
-                  <div>
-                    <div style={{ fontWeight:700,fontSize:14,color:"#F0F4FF" }}>{tst.name}</div>
-                    <div style={{ fontSize:12,color:"#6B7A99" }}>{tst.role}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 

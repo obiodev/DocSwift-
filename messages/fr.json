@@ -90,25 +90,18 @@
       "step4Title": "Téléchargez",
       "step4Desc": "Récupérez votre document transformé, immédiatement prêt à l'emploi."
     },
-    "testimonials": {
-      "title": "Ils font confiance à DocSwift",
-      "subtitle": "Des milliers d'utilisateurs convertissent leurs fichiers chaque jour.",
-      "t1Text": "J'utilise DocSwift tous les jours pour convertir les CV des candidats. En 10 secondes c'est fait — bluffant.",
-      "t1Name": "Sophie M.",
-      "t1Role": "Assistante RH, Paris",
-      "t2Text": "Le compresseur PDF est incroyable. J'ai réduit un rapport de 45 Mo à 6 Mo sans aucune perte de qualité visible.",
-      "t2Name": "Thomas R.",
-      "t2Role": "Consultant freelance",
-      "t3Text": "J'ai créé mon CV en 5 minutes avec le générateur. Rendu super professionnel, téléchargé directement en PDF.",
-      "t3Name": "Amina K.",
-      "t3Role": "Étudiante en master"
-    },
     "pricing": {
       "title": "Tarifs simples et transparents",
       "subtitle": "Commencez gratuitement. Passez au Pro quand vous en avez besoin.",
       "freePlan": "Gratuit",
       "forever": "pour toujours",
-      "freeFeatures": ["5 conversions par jour", "Tous les 7 outils", "Fichiers jusqu'à 5 MB", "Publicités affichées", "+3 via pub vidéo"],
+      "freeFeatures": [
+        "5 conversions par jour",
+        "Tous les 7 outils",
+        "Fichiers jusqu'à 5 MB",
+        "Publicités affichées",
+        "+3 via pub vidéo"
+      ],
       "startFree": "Commencer gratuitement",
       "proLabel": "Pro",
       "launchOffer": "🔥 OFFRE DE LANCEMENT",
@@ -116,14 +109,28 @@
       "perMonthFor": "/mois pendant {months} mois · puis {price}€/mois",
       "saveAmount": "Économisez {amount}€ les {months} premiers mois",
       "perMonth": "par mois · sans engagement",
-      "proFeatures": ["Conversions illimitées", "Tous les 7 outils", "Fichiers jusqu'à 50 MB", "Zéro publicité", "Traitement prioritaire", "Support par email"],
+      "proFeatures": [
+        "Conversions illimitées",
+        "Tous les 7 outils",
+        "Fichiers jusqu'à 50 MB",
+        "Zéro publicité",
+        "Traitement prioritaire",
+        "Support par email"
+      ],
       "upgradeSession": "Passer au Pro →",
       "upgradeGuest": "S'inscrire et passer au Pro →",
       "premiumLabel": "Premium",
       "premiumBadge": "✦ LE PLUS COMPLET",
       "premiumPrice": "19.99",
       "premiumPerMonth": "par mois · sans engagement",
-      "premiumFeatures": ["Tous les outils Pro inclus", "Protéger PDF par mot de passe", "Déverrouiller PDF", "Compresseur d'images avancé", "Outils premium à venir", "Support prioritaire 24/7"],
+      "premiumFeatures": [
+        "Tous les outils Pro inclus",
+        "Protéger PDF par mot de passe",
+        "Déverrouiller PDF",
+        "Compresseur d'images avancé",
+        "Outils premium à venir",
+        "Support prioritaire 24/7"
+      ],
       "upgradePremiumSession": "Passer Premium →",
       "upgradePremiumGuest": "S'inscrire et passer Premium →",
       "securePayment": "Paiement sécurisé par Stripe · Annulation à tout moment · Sans carte pour le plan gratuit",
@@ -147,7 +154,7 @@
     },
     "cta": {
       "title": "Prêt à gagner du temps ?",
-      "subtitle": "Rejoignez 15 000+ utilisateurs qui traitent leurs documents avec DocSwift chaque jour.",
+      "subtitle": "Commencez gratuitement, sans créer de compte.",
       "btn": "Essayer maintenant — c'est gratuit →"
     },
     "footer": {
@@ -200,16 +207,46 @@
     },
     "proBadge": "✓ PRO — Illimité",
     "upgradePro": "Passer Pro",
-    "pdfToWord": { "name": "PDF → Word", "desc": "Convertir un PDF en Word éditable" },
-    "wordToPdf": { "name": "Word → PDF", "desc": "Transformer un .docx en PDF" },
-    "compressPdf": { "name": "Compresser", "desc": "Réduire le poids jusqu'à 80%" },
-    "mergePdf": { "name": "Fusionner", "desc": "Combiner plusieurs PDFs en un seul" },
-    "splitPdf": { "name": "Diviser", "desc": "Extraire une page spécifique" },
-    "imageToPdf": { "name": "Image → PDF", "desc": "Convertir des images en PDF" },
-    "createCv": { "name": "Créer un CV", "desc": "CV professionnel en PDF" },
-    "protectPdf": { "name": "Protéger PDF", "desc": "Ajouter un mot de passe à votre PDF" },
-    "unlockPdf": { "name": "Déverrouiller PDF", "desc": "Supprimer le mot de passe d'un PDF" },
-    "compressImage": { "name": "Compresser Image", "desc": "Réduire la taille de vos images JPG/PNG" },
+    "pdfToWord": {
+      "name": "PDF → Word",
+      "desc": "Convertir un PDF en Word éditable"
+    },
+    "wordToPdf": {
+      "name": "Word → PDF",
+      "desc": "Transformer un .docx en PDF"
+    },
+    "compressPdf": {
+      "name": "Compresser",
+      "desc": "Réduire le poids jusqu'à 80%"
+    },
+    "mergePdf": {
+      "name": "Fusionner",
+      "desc": "Combiner plusieurs PDFs en un seul"
+    },
+    "splitPdf": {
+      "name": "Diviser",
+      "desc": "Extraire une page spécifique"
+    },
+    "imageToPdf": {
+      "name": "Image → PDF",
+      "desc": "Convertir des images en PDF"
+    },
+    "createCv": {
+      "name": "Créer un CV",
+      "desc": "CV professionnel en PDF"
+    },
+    "protectPdf": {
+      "name": "Protéger PDF",
+      "desc": "Ajouter un mot de passe à votre PDF"
+    },
+    "unlockPdf": {
+      "name": "Déverrouiller PDF",
+      "desc": "Supprimer le mot de passe d'un PDF"
+    },
+    "compressImage": {
+      "name": "Compresser Image",
+      "desc": "Réduire la taille de vos images JPG/PNG"
+    },
     "premiumBadge": "✦ PREMIUM",
     "premiumRequired": "Cet outil nécessite le plan Premium.",
     "upgradePremium": "Passer Premium",
@@ -269,7 +306,13 @@
       "addLanguage": "+ Ajouter une langue",
       "langPlaceholder": "Français",
       "levelPlaceholder": "Niveau",
-      "languageLevels": ["Natif", "Courant (C1/C2)", "Avancé (B2)", "Intermédiaire (B1)", "Débutant (A1/A2)"],
+      "languageLevels": [
+        "Natif",
+        "Courant (C1/C2)",
+        "Avancé (B2)",
+        "Intermédiaire (B1)",
+        "Débutant (A1/A2)"
+      ],
       "addExp": "+ Ajouter une expérience",
       "addEdu": "+ Ajouter une formation",
       "projects": "Projets",

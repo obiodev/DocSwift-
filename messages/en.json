@@ -90,25 +90,18 @@
       "step4Title": "Download",
       "step4Desc": "Get your transformed document, immediately ready to use."
     },
-    "testimonials": {
-      "title": "Trusted by DocSwift users",
-      "subtitle": "Thousands of users convert their files every day.",
-      "t1Text": "I use DocSwift every day to convert candidate CVs. Done in 10 seconds — amazing.",
-      "t1Name": "Sophie M.",
-      "t1Role": "HR Assistant, Paris",
-      "t2Text": "The PDF compressor is incredible. I reduced a 45 MB report to 6 MB with no visible quality loss.",
-      "t2Name": "Thomas R.",
-      "t2Role": "Freelance Consultant",
-      "t3Text": "I built my resume in 5 minutes with the generator. Super professional result, downloaded directly as a PDF.",
-      "t3Name": "Amina K.",
-      "t3Role": "Master's student"
-    },
     "pricing": {
       "title": "Simple, transparent pricing",
       "subtitle": "Start for free. Go Pro when you need it.",
       "freePlan": "Free",
       "forever": "forever",
-      "freeFeatures": ["5 conversions per day", "All 7 tools", "Files up to 5 MB", "Ads displayed", "+3 via rewarded video"],
+      "freeFeatures": [
+        "5 conversions per day",
+        "All 7 tools",
+        "Files up to 5 MB",
+        "Ads displayed",
+        "+3 via rewarded video"
+      ],
       "startFree": "Get started for free",
       "proLabel": "Pro",
       "launchOffer": "🔥 LAUNCH OFFER",
@@ -116,14 +109,28 @@
       "perMonthFor": "/month for {months} months · then {price}€/month",
       "saveAmount": "Save {amount}€ for the first {months} months",
       "perMonth": "per month · no commitment",
-      "proFeatures": ["Unlimited conversions", "All 7 tools", "Files up to 50 MB", "Zero ads", "Priority processing", "Email support"],
+      "proFeatures": [
+        "Unlimited conversions",
+        "All 7 tools",
+        "Files up to 50 MB",
+        "Zero ads",
+        "Priority processing",
+        "Email support"
+      ],
       "upgradeSession": "Go Pro →",
       "upgradeGuest": "Sign up and go Pro →",
       "premiumLabel": "Premium",
       "premiumBadge": "✦ MOST COMPLETE",
       "premiumPrice": "19.99",
       "premiumPerMonth": "per month · no commitment",
-      "premiumFeatures": ["All Pro features included", "Password-protect PDFs", "Unlock encrypted PDFs", "Advanced image compressor", "Upcoming premium tools", "Priority 24/7 support"],
+      "premiumFeatures": [
+        "All Pro features included",
+        "Password-protect PDFs",
+        "Unlock encrypted PDFs",
+        "Advanced image compressor",
+        "Upcoming premium tools",
+        "Priority 24/7 support"
+      ],
       "upgradePremiumSession": "Go Premium →",
       "upgradePremiumGuest": "Sign up and go Premium →",
       "securePayment": "Secure payment by Stripe · Cancel anytime · No card required for free plan",
@@ -147,7 +154,7 @@
     },
     "cta": {
       "title": "Ready to save time?",
-      "subtitle": "Join 15,000+ users who process their documents with DocSwift every day.",
+      "subtitle": "Get started for free, no account needed.",
       "btn": "Try it now — it's free →"
     },
     "footer": {
@@ -200,16 +207,46 @@
     },
     "proBadge": "✓ PRO — Unlimited",
     "upgradePro": "Go Pro",
-    "pdfToWord": { "name": "PDF → Word", "desc": "Convert a PDF to editable Word" },
-    "wordToPdf": { "name": "Word → PDF", "desc": "Convert a .docx to PDF" },
-    "compressPdf": { "name": "Compress", "desc": "Reduce file size by up to 80%" },
-    "mergePdf": { "name": "Merge", "desc": "Combine multiple PDFs into one" },
-    "splitPdf": { "name": "Split", "desc": "Extract a specific page" },
-    "imageToPdf": { "name": "Image → PDF", "desc": "Convert images to PDF" },
-    "createCv": { "name": "Create Resume", "desc": "Professional PDF resume" },
-    "protectPdf": { "name": "Protect PDF", "desc": "Add a password to your PDF" },
-    "unlockPdf": { "name": "Unlock PDF", "desc": "Remove the password from a PDF" },
-    "compressImage": { "name": "Compress Image", "desc": "Reduce JPG/PNG image file size" },
+    "pdfToWord": {
+      "name": "PDF → Word",
+      "desc": "Convert a PDF to editable Word"
+    },
+    "wordToPdf": {
+      "name": "Word → PDF",
+      "desc": "Convert a .docx to PDF"
+    },
+    "compressPdf": {
+      "name": "Compress",
+      "desc": "Reduce file size by up to 80%"
+    },
+    "mergePdf": {
+      "name": "Merge",
+      "desc": "Combine multiple PDFs into one"
+    },
+    "splitPdf": {
+      "name": "Split",
+      "desc": "Extract a specific page"
+    },
+    "imageToPdf": {
+      "name": "Image → PDF",
+      "desc": "Convert images to PDF"
+    },
+    "createCv": {
+      "name": "Create Resume",
+      "desc": "Professional PDF resume"
+    },
+    "protectPdf": {
+      "name": "Protect PDF",
+      "desc": "Add a password to your PDF"
+    },
+    "unlockPdf": {
+      "name": "Unlock PDF",
+      "desc": "Remove the password from a PDF"
+    },
+    "compressImage": {
+      "name": "Compress Image",
+      "desc": "Reduce JPG/PNG image file size"
+    },
     "premiumBadge": "✦ PREMIUM",
     "premiumRequired": "This tool requires a Premium subscription.",
     "upgradePremium": "Go Premium",
@@ -269,7 +306,13 @@
       "addLanguage": "+ Add a language",
       "langPlaceholder": "English",
       "levelPlaceholder": "Level",
-      "languageLevels": ["Native", "Fluent (C1/C2)", "Advanced (B2)", "Intermediate (B1)", "Beginner (A1/A2)"],
+      "languageLevels": [
+        "Native",
+        "Fluent (C1/C2)",
+        "Advanced (B2)",
+        "Intermediate (B1)",
+        "Beginner (A1/A2)"
+      ],
       "addExp": "+ Add experience",
       "addEdu": "+ Add education",
       "projects": "Projects",

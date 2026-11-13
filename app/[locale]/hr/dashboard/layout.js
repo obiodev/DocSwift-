@@ -37,20 +37,15 @@ const jsonLdByLocale = (locale, url) => ({
       "url": url,
       "description": META[locale]?.description ?? META.fr.description,
       "offers": [
-        { "@type": "Offer", "name": "Pro",      "price": "49",  "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
+        { "@type": "Offer", "name": "Solo",    "price": "49",  "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
         { "@type": "Offer", "name": "Cabinet", "price": "129", "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
+        { "@type": "Offer", "name": "Volume",  "price": "290", "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "unitCode": "MON" } },
       ],
       "featureList": locale === "ar"
         ? ["تحليل ما يصل إلى 100 سيرة ذاتية في وقت واحد", "تسجيل وترتيب تلقائي بالذكاء الاصطناعي", "مطابقة السيرة الذاتية بالوظيفة", "تصدير Excel للنتائج", "تحليل متعدد اللغات FR/EN/AR", "تخزين آمن وتشفير"]
         : locale === "en"
           ? ["Analyze up to 100 resumes simultaneously", "Automatic AI scoring and ranking", "Job description matching", "Excel export of results", "Multilingual analysis FR/EN/AR", "Secure storage and encryption"]
           : ["Analyse jusqu'à 100 CVs simultanément", "Scoring et classement automatique par IA", "Matching avec la fiche de poste", "Export Excel des résultats", "Analyse multilingue FR/EN/AR", "Stockage sécurisé et chiffrement"],
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "reviewCount": "187",
-        "bestRating": "5",
-      },
     },
   ],
 });
