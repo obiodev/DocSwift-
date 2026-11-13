@@ -4,23 +4,23 @@ const LOCALE_PREFIX = { fr: "", en: "/en", ar: "/ar" };
 const META = {
   fr: {
     title:       "Outils PDF en ligne gratuits — Convertir, Compresser, Fusionner | DocSwift",
-    description: "10 outils PDF gratuits en un clic : convertir PDF en Word, Excel, PowerPoint, compresser, fusionner, diviser, protéger. Sans installation, sans inscription. Rapide et sécurisé.",
-    keywords:    "outils PDF gratuits, convertir PDF en Word, convertisseur PDF, compresser PDF, fusionner PDF, diviser PDF, PDF en ligne, PDF vers Word, PDF vers Excel, PDF vers PowerPoint, protéger PDF, extraire pages PDF",
-    og_title:    "10 Outils PDF gratuits en ligne — DocSwift",
+    description: "Outils PDF gratuits en un clic : PDF en Word, Word en PDF, compresser, fusionner, diviser, images en PDF. Sans installation, sans inscription.",
+    keywords:    "outils PDF gratuits, convertir PDF en Word, convertisseur PDF, compresser PDF, fusionner PDF, diviser PDF, PDF en ligne, PDF vers Word, Word vers PDF, images en PDF",
+    og_title:    "Outils PDF gratuits en ligne — DocSwift",
     og_desc:     "Convertissez, compressez, fusionnez et divisez vos PDFs gratuitement. Aucune installation requise.",
   },
   en: {
     title:       "Free Online PDF Tools — Convert, Compress, Merge | DocSwift",
-    description: "10 free PDF tools in one click: convert PDF to Word, Excel, PowerPoint, compress, merge, split, protect. No install, no sign-up. Fast and secure.",
-    keywords:    "free PDF tools, convert PDF to Word, PDF converter, compress PDF, merge PDF, split PDF, online PDF, PDF to Word, PDF to Excel, PDF to PowerPoint, protect PDF, extract PDF pages",
-    og_title:    "10 Free Online PDF Tools — DocSwift",
+    description: "Free PDF tools in one click: PDF to Word, Word to PDF, compress, merge, split, images to PDF. No install, no sign-up.",
+    keywords:    "free PDF tools, convert PDF to Word, PDF converter, compress PDF, merge PDF, split PDF, online PDF, PDF to Word, Word to PDF, images to PDF",
+    og_title:    "Free Online PDF Tools — DocSwift",
     og_desc:     "Convert, compress, merge and split your PDFs for free. No installation required.",
   },
   ar: {
     title:       "أدوات PDF مجانية عبر الإنترنت — تحويل، ضغط، دمج | DocSwift",
-    description: "10 أدوات PDF مجانية بنقرة واحدة: تحويل PDF إلى Word وExcel وPowerPoint، ضغط، دمج، تقسيم، حماية. بدون تثبيت، بدون تسجيل. سريع وآمن.",
-    keywords:    "أدوات PDF مجانية، تحويل PDF إلى Word، محول PDF، ضغط PDF، دمج PDF، تقسيم PDF، PDF عبر الإنترنت، PDF إلى Word، PDF إلى Excel، PDF إلى PowerPoint، حماية PDF",
-    og_title:    "10 أدوات PDF مجانية عبر الإنترنت — DocSwift",
+    description: "أدوات PDF مجانية بنقرة واحدة: تحويل PDF إلى Word وWord إلى PDF، ضغط، دمج، تقسيم، تحويل الصور إلى PDF. بدون تثبيت، بدون تسجيل.",
+    keywords:    "أدوات PDF مجانية، تحويل PDF إلى Word، محول PDF، ضغط PDF، دمج PDF، تقسيم PDF، PDF عبر الإنترنت، Word إلى PDF، الصور إلى PDF",
+    og_title:    "أدوات PDF مجانية عبر الإنترنت — DocSwift",
     og_desc:     "حوّل، اضغط، ادمج وقسّم ملفات PDF مجاناً. لا يلزم التثبيت.",
   },
 };
@@ -52,26 +52,22 @@ const jsonLdByLocale = (locale, url) => ({
       "url": url,
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
       "featureList": locale === "ar"
-        ? ["تحويل PDF إلى Word", "تحويل PDF إلى Excel", "تحويل PDF إلى PowerPoint", "ضغط PDF", "دمج PDF", "تقسيم PDF", "حماية PDF بكلمة مرور", "فك حماية PDF", "تدوير PDF", "استخراج صفحات PDF"]
+        ? ["تحويل PDF إلى Word", "تحويل Word إلى PDF", "ضغط PDF", "دمج PDF", "تقسيم PDF", "تحويل الصور إلى PDF"]
         : locale === "en"
-          ? ["PDF to Word", "PDF to Excel", "PDF to PowerPoint", "Compress PDF", "Merge PDF", "Split PDF", "Password-protect PDF", "Unlock PDF", "Rotate PDF", "Extract PDF pages"]
-          : ["PDF en Word", "PDF en Excel", "PDF en PowerPoint", "Compresser PDF", "Fusionner PDF", "Diviser PDF", "Protéger PDF par mot de passe", "Déverrouiller PDF", "Pivoter PDF", "Extraire pages PDF"],
+          ? ["PDF to Word", "Word to PDF", "Compress PDF", "Merge PDF", "Split PDF", "Images to PDF"]
+          : ["PDF en Word", "Word en PDF", "Compresser PDF", "Fusionner PDF", "Diviser PDF", "Images en PDF"],
     },
     {
       "@type": "ItemList",
       "name": locale === "ar" ? "أدوات PDF" : locale === "en" ? "PDF Tools" : "Outils PDF",
       "itemListElement": [
-        { "@type": "ListItem", "position": 1,  "name": locale === "ar" ? "تحويل PDF إلى Word"        : locale === "en" ? "PDF to Word"         : "PDF en Word"         },
-        { "@type": "ListItem", "position": 2,  "name": locale === "ar" ? "تحويل PDF إلى Excel"       : locale === "en" ? "PDF to Excel"        : "PDF en Excel"        },
-        { "@type": "ListItem", "position": 3,  "name": locale === "ar" ? "تحويل PDF إلى PowerPoint"  : locale === "en" ? "PDF to PowerPoint"   : "PDF en PowerPoint"   },
-        { "@type": "ListItem", "position": 4,  "name": locale === "ar" ? "ضغط PDF"                  : locale === "en" ? "Compress PDF"        : "Compresser PDF"       },
-        { "@type": "ListItem", "position": 5,  "name": locale === "ar" ? "دمج PDF"                   : locale === "en" ? "Merge PDF"           : "Fusionner PDF"        },
-        { "@type": "ListItem", "position": 6,  "name": locale === "ar" ? "تقسيم PDF"                 : locale === "en" ? "Split PDF"           : "Diviser PDF"          },
-        { "@type": "ListItem", "position": 7,  "name": locale === "ar" ? "حماية PDF"                 : locale === "en" ? "Protect PDF"         : "Protéger PDF"         },
-        { "@type": "ListItem", "position": 8,  "name": locale === "ar" ? "فك حماية PDF"              : locale === "en" ? "Unlock PDF"          : "Déverrouiller PDF"    },
-        { "@type": "ListItem", "position": 9,  "name": locale === "ar" ? "تدوير PDF"                 : locale === "en" ? "Rotate PDF"          : "Pivoter PDF"          },
-        { "@type": "ListItem", "position": 10, "name": locale === "ar" ? "استخراج صفحات PDF"         : locale === "en" ? "Extract PDF pages"   : "Extraire pages PDF"   },
-      ],
+        ["PDF en Word", "PDF to Word", "تحويل PDF إلى Word"],
+        ["Word en PDF", "Word to PDF", "تحويل Word إلى PDF"],
+        ["Compresser PDF", "Compress PDF", "ضغط PDF"],
+        ["Fusionner PDF", "Merge PDF", "دمج PDF"],
+        ["Diviser PDF", "Split PDF", "تقسيم PDF"],
+        ["Images en PDF", "Images to PDF", "تحويل الصور إلى PDF"],
+      ].map(([fr, en, ar], i) => ({ "@type": "ListItem", "position": i + 1, "name": locale === "ar" ? ar : locale === "en" ? en : fr })),
     },
     {
       "@type": "FAQPage",
@@ -81,21 +77,21 @@ const jsonLdByLocale = (locale, url) => ({
         { "@type": "Question", "name": "Are my files secure?",
           "acceptedAnswer": { "@type": "Answer", "text": "Your files are processed on secure servers and deleted immediately after conversion. No data is stored." } },
         { "@type": "Question", "name": "What file size is supported?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Free plan supports files up to 10 MB. Pro plan supports up to 100 MB per file." } },
+          "acceptedAnswer": { "@type": "Answer", "text": "Files up to 20 MB each, on every plan." } },
       ] : locale === "ar" ? [
         { "@type": "Question", "name": "هل أدوات PDF هذه مجانية حقاً؟",
           "acceptedAnswer": { "@type": "Answer", "text": "نعم، يوفر DocSwift 5 تحويلات مجانية يومياً بدون تسجيل. للاستخدام غير المحدود، تبدأ خطط Pro من 9.99 يورو شهرياً." } },
         { "@type": "Question", "name": "هل ملفاتي آمنة؟",
           "acceptedAnswer": { "@type": "Answer", "text": "تتم معالجة ملفاتك على خوادم آمنة وتُحذف فوراً بعد التحويل. لا يتم تخزين أي بيانات." } },
         { "@type": "Question", "name": "ما حجم الملف المدعوم؟",
-          "acceptedAnswer": { "@type": "Answer", "text": "تدعم الخطة المجانية ملفات حتى 10 ميغابايت. تدعم خطة Pro حتى 100 ميغابايت لكل ملف." } },
+          "acceptedAnswer": { "@type": "Answer", "text": "ملفات حتى 20 ميغابايت لكل ملف، في جميع الخطط." } },
       ] : [
         { "@type": "Question", "name": "Ces outils PDF sont-ils vraiment gratuits ?",
           "acceptedAnswer": { "@type": "Answer", "text": "Oui, DocSwift offre 5 conversions gratuites par jour sans inscription. Pour un usage illimité, les plans Pro débutent à 9,99 €/mois." } },
         { "@type": "Question", "name": "Mes fichiers sont-ils sécurisés ?",
           "acceptedAnswer": { "@type": "Answer", "text": "Vos fichiers sont traités sur des serveurs sécurisés et supprimés immédiatement après la conversion. Aucune donnée n'est conservée." } },
         { "@type": "Question", "name": "Quelle taille de fichier est supportée ?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Le plan gratuit supporte des fichiers jusqu'à 10 Mo. Le plan Pro supporte jusqu'à 100 Mo par fichier." } },
+          "acceptedAnswer": { "@type": "Answer", "text": "Fichiers jusqu'à 20 Mo chacun, sur tous les plans." } },
       ],
     },
   ],

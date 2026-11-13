@@ -17,7 +17,7 @@ export const metadata = {
   keywords: [
     // FR — PDF tools
     "outils PDF gratuits", "convertir PDF en Word", "compresser PDF", "fusionner PDF", "diviser PDF",
-    "PDF en ligne", "convertisseur PDF", "PDF vers Word", "PDF vers Excel", "protéger PDF",
+    "PDF en ligne", "convertisseur PDF", "PDF vers Word", "protéger PDF",
     // FR — CV
     "créer CV PDF", "CV gratuit en ligne", "modèle CV", "générateur de CV", "CV professionnel",
     // FR — HR
@@ -25,7 +25,7 @@ export const metadata = {
     "logiciel RH PME", "ATS IA", "parsing CV",
     // EN — PDF tools
     "free PDF tools", "convert PDF to Word", "compress PDF", "merge PDF", "split PDF",
-    "online PDF converter", "PDF to Word", "PDF to Excel",
+    "online PDF converter", "PDF to Word", 
     // EN — CV
     "free resume builder", "create PDF resume", "resume template", "CV generator",
     // EN — HR
