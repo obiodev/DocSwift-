@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getUsageToday, incrementUsage } from "@/lib/supabase";
-import { analyzeCV, readCv } from "@/lib/gemini";
+import { analyzeCV, readCv, SCAN_UNAVAILABLE_MSG } from "@/lib/gemini";
 import { detectType } from "@/lib/hrStorage";
 import { getClientIp } from "@/lib/clientIp";
 
@@ -72,7 +72,8 @@ export async function POST(request) {
       return { filename: file.name, ...result };
     } catch (err) {
       console.error("[hr/trial] analysis error:", err?.message);
-      return { filename: file.name, status: "error", error_msg: "Analyse impossible pour ce fichier." };
+      const scanMsg = Object.values(SCAN_UNAVAILABLE_MSG).includes(err?.message) ? err.message : null;
+      return { filename: file.name, status: "error", error_msg: scanMsg ?? "Analyse impossible pour ce fichier." };
     }
   }));
 
