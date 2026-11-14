@@ -15,7 +15,7 @@ const COPY = {
     jobTitlePlaceholder: "ex. Développeur React Senior",
     jobDescLabel: "Fiche de poste *",
     jobDescPlaceholder: "Décrivez le poste, les responsabilités, les compétences requises…",
-    cvsLabel: (max) => `CVs (PDF, max ${max}) *`,
+    cvsLabel: (max) => `CVs (PDF/DOCX, max ${max}) *`,
     filesSelected: (n) => `${n} fichier${n>1?"s":""} sélectionné${n>1?"s":""}`,
     dropHint: "Glissez vos CV ici ou cliquez pour les choisir",
     remove: "Retirer",
@@ -35,7 +35,7 @@ const COPY = {
     errorLabel: "Erreur",
     errSampleLoad: "Impossible de charger les CV d'exemple. Ajoutez vos propres CV.",
     errJobMissing: "Remplissez le titre et la description du poste.",
-    errNoCv: "Ajoutez au moins un CV (PDF).",
+    errNoCv: "Ajoutez au moins un CV (PDF ou DOCX).",
     errAnalysis: "Erreur lors de l'analyse.",
     errNetwork: "Erreur réseau.",
     errEmail: "Adresse email invalide.",
@@ -53,7 +53,7 @@ const COPY = {
     jobTitlePlaceholder: "e.g. Senior React Developer",
     jobDescLabel: "Job description *",
     jobDescPlaceholder: "Describe the role, responsibilities and required skills…",
-    cvsLabel: (max) => `CVs (PDF, max ${max}) *`,
+    cvsLabel: (max) => `CVs (PDF/DOCX, max ${max}) *`,
     filesSelected: (n) => `${n} file${n>1?"s":""} selected`,
     dropHint: "Drag your CVs here or click to choose them",
     remove: "Remove",
@@ -73,7 +73,7 @@ const COPY = {
     errorLabel: "Error",
     errSampleLoad: "Unable to load the sample CVs. Please add your own CVs.",
     errJobMissing: "Please fill in the job title and description.",
-    errNoCv: "Add at least one CV (PDF).",
+    errNoCv: "Add at least one CV (PDF or DOCX).",
     errAnalysis: "An error occurred during the analysis.",
     errNetwork: "Network error.",
     errEmail: "Invalid email address.",
@@ -91,7 +91,7 @@ const COPY = {
     jobTitlePlaceholder: "مثال: مطوّر React أول",
     jobDescLabel: "الوصف الوظيفي *",
     jobDescPlaceholder: "صِف الوظيفة والمسؤوليات والمهارات المطلوبة…",
-    cvsLabel: (max) => `السير الذاتية (PDF، ${max} كحد أقصى) *`,
+    cvsLabel: (max) => `السير الذاتية (PDF/DOCX، ${max} كحد أقصى) *`,
     filesSelected: (n) => (n === 1 ? "تم اختيار ملف واحد" : `تم اختيار ${n} ملفات`),
     dropHint: "اسحب سيرك الذاتية إلى هنا أو انقر لاختيارها",
     remove: "إزالة",
@@ -144,7 +144,7 @@ export default function HrTrialPage() {
   const fileInputRef = useRef(null);
 
   const addFiles = (list) => {
-    const pdfFiles = Array.from(list).filter(f => f.type === "application/pdf" || f.name.endsWith(".pdf"));
+    const pdfFiles = Array.from(list).filter(f => /\.(pdf|docx)$/i.test(f.name));
     setFiles(prev => {
       const names = new Set(prev.map(f => f.name));
       return [...prev, ...pdfFiles.filter(f => !names.has(f.name))].slice(0, MAX_CVS);
@@ -179,6 +179,7 @@ export default function HrTrialPage() {
       const fd = new FormData();
       fd.append("jobTitle", jobTitle);
       fd.append("jobDescription", jobDesc);
+      fd.append("language", locale);
       files.forEach(f => fd.append("files", f));
 
       const r = await fetch("/api/hr/trial/screen", { method: "POST", body: fd });
@@ -259,7 +260,7 @@ export default function HrTrialPage() {
                 {files.length ? t.filesSelected(files.length) : t.dropHint}
               </p>
             </button>
-            <input ref={fileInputRef} type="file" accept=".pdf" multiple style={{ display:"none" }} onChange={e => { addFiles(e.target.files ?? []); e.target.value = ""; }} />
+            <input ref={fileInputRef} type="file" accept=".pdf,.docx" multiple style={{ display:"none" }} onChange={e => { addFiles(e.target.files ?? []); e.target.value = ""; }} />
 
             {files.length > 0 && (
               <div style={{ background:"#07090F",borderRadius:10,border:"1px solid #1E2733",marginBottom:18,overflow:"hidden" }}>
@@ -291,7 +292,7 @@ export default function HrTrialPage() {
               {results.results.map((r, i) => (
                 <div key={i} style={{ padding:"16px 0",borderBottom:i<results.results.length-1?"1px solid #1E2733":"none" }}>
                   <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:unlocked?10:0 }}>
-                    <span style={{ fontWeight:600,fontSize:14,color:"#C0CBE0" }}>{r.filename.replace(/\.pdf$/i,"")}</span>
+                    <span style={{ fontWeight:600,fontSize:14,color:"#C0CBE0" }}>{r.filename.replace(/\.(pdf|docx)$/i,"")}</span>
                     {r.score != null ? (
                       <span style={{ background:`${STATUS_COLOR[r.status]}15`,color:STATUS_COLOR[r.status],fontSize:12,fontWeight:800,padding:"3px 12px",borderRadius:20,border:`1px solid ${STATUS_COLOR[r.status]}30` }}>
                         {r.score}/100 — {STATUS_LABEL[r.status] ?? r.status}

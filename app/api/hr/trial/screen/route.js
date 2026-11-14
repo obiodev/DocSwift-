@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getUsageToday, incrementUsage } from "@/lib/supabase";
-import { analyzeCV, extractPdfText } from "@/lib/gemini";
+import { analyzeCV, readCv } from "@/lib/gemini";
+import { detectType } from "@/lib/hrStorage";
 import { getClientIp } from "@/lib/clientIp";
 
 const MAX_CVS         = 5;
@@ -35,6 +36,8 @@ export async function POST(request) {
   const jobTitle    = (formData.get("jobTitle") ?? "").toString().trim();
   const jobDesc     = (formData.get("jobDescription") ?? "").toString().trim();
   const files       = formData.getAll("files");
+  const lang        = (formData.get("language") ?? "fr").toString();
+  const language    = ["fr", "en", "ar"].includes(lang) ? lang : "fr";
 
   if (!jobTitle || !jobDesc) {
     return NextResponse.json({ error: "MISSING_FIELDS" }, { status: 400 });
@@ -52,13 +55,20 @@ export async function POST(request) {
     if (file.size > MAX_FILE_SIZE) {
       return { filename: file.name, status: "error", error_msg: "Fichier trop volumineux (max 5 MB)." };
     }
+    const mime = detectType(file);
+    if (!mime) {
+      return { filename: file.name, status: "error", error_msg: "Format non pris en charge (PDF ou DOCX)." };
+    }
     try {
       const buffer = Buffer.from(await file.arrayBuffer());
-      const cvText = await extractPdfText(buffer);
-      if (!cvText.trim()) {
-        return { filename: file.name, status: "error", error_msg: "Impossible d'extraire le texte du PDF." };
+      const { text, mode } = await readCv(buffer, mime);
+      if (mode === "docx" && !text) {
+        return { filename: file.name, status: "error", error_msg: "Document Word vide ou illisible." };
       }
-      const result = await analyzeCV({ jobTitle, jobDescription: jobDesc, cvText });
+      const result = await analyzeCV({
+        jobTitle, jobDescription: jobDesc, cvText: text,
+        pdfBuffer: mode === "vision" ? buffer : null, language,
+      });
       return { filename: file.name, ...result };
     } catch (err) {
       console.error("[hr/trial] analysis error:", err?.message);

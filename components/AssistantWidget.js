@@ -130,6 +130,9 @@ export default function AssistantWidget() {
   // In RTL the panel and the button stay on the reading-start side
   const side = locale === "ar" ? { left: 16 } : { right: 16 };
 
+  // Client-facing shared reports carry no sales assistant
+  if (/\/hr\/rapport\//.test(pathname)) return null;
+
   return (
     <>
       {open && (

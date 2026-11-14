@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, Fragment } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useLocale } from "next-intl";
 
@@ -219,6 +219,139 @@ const COPY = {
   },
 };
 
+// V2 strings: criteria, human decisions, client report
+const COPY_V2 = {
+  fr: {
+    dropHint: "PDF ou Word (.docx) · PDF scannés acceptés · Max 5 MB/fichier · 100 CVs max",
+    progressLine: (done, total) => `${done} / ${total} CVs analysés`,
+    resumed: "L'analyse a été reprise là où elle s'était arrêtée.",
+    critTitle: "Critères de présélection",
+    critHint: "Le score est calculé à partir de ces critères : chaque verdict est justifié par un extrait du CV. Sans critère, l'IA évalue l'adéquation globale.",
+    critSuggest: "✨ Suggérer avec l'IA",
+    critSuggesting: "Suggestion…",
+    critSuggestNeedDesc: "Renseignez d'abord le titre et une fiche de poste détaillée.",
+    critSuggestErr: "Suggestion indisponible pour le moment. Ajoutez vos critères à la main.",
+    critAdd: "+ Ajouter un critère",
+    critPh: "ex. 3 ans d'expérience en React",
+    critMust: "Obligatoire",
+    critWeight: { 1: "Bonus", 2: "Important", 3: "Essentiel" },
+    critRemove: "Retirer",
+    critMax: "10 critères maximum.",
+    critEdit: "Modifier",
+    critSave: "Enregistrer",
+    critSaved: "Critères enregistrés. Ils s'appliquent aux prochains CVs analysés.",
+    critNone: "Aucun critère : évaluation globale par rapport à la fiche de poste.",
+    thDecision: "Décision",
+    decide: { shortlisted: "✓ Retenir", to_review: "↻ À revoir", rejected: "✗ Écarter" },
+    decisionLabel: { shortlisted: "Retenu", to_review: "À revoir", rejected: "Écarté" },
+    decisionClear: "Annuler la décision",
+    notePh: "Note (optionnelle, visible dans l'export et le rapport client)",
+    decisionHint: "L'IA suggère, vous décidez : chaque décision est horodatée dans le journal d'audit.",
+    verdict: { met: "Oui", partial: "Partiel", missing: "Non" },
+    criteriaTitle: "🎯 CRITÈRES",
+    readVision: "PDF scanné lu par l'IA",
+    shareBtn: "🔗 Rapport client",
+    shareCompanyPrompt: "Nom affiché sur le rapport (votre cabinet, optionnel) :",
+    shareTitle: "Rapport client partagé",
+    shareHint: "Lien en lecture seule, anonymisé (sans nom de fichier ni coordonnées). Si vous avez retenu des candidats, seuls ceux-ci y figurent.",
+    shareCopy: "Copier le lien",
+    shareCopied: "Lien copié ✓",
+    shareOpen: "Ouvrir",
+    shareRevoke: "Révoquer",
+    shareRevokeConfirm: "Révoquer ce lien ? Il cessera immédiatement de fonctionner.",
+    shareErr: "Impossible de créer le lien.",
+    retryErrors: (n) => `🔄 Relancer ${n} erreur${n > 1 ? "s" : ""}`,
+    errNothing: "Aucun CV à analyser.",
+  },
+  en: {
+    dropHint: "PDF or Word (.docx) · Scanned PDFs accepted · Max 5 MB/file · 100 CVs max",
+    progressLine: (done, total) => `${done} / ${total} CVs analyzed`,
+    resumed: "The analysis resumed where it had stopped.",
+    critTitle: "Screening criteria",
+    critHint: "The score is computed from these criteria: every verdict is backed by an excerpt of the CV. Without criteria, the AI assesses overall fit.",
+    critSuggest: "✨ Suggest with AI",
+    critSuggesting: "Suggesting…",
+    critSuggestNeedDesc: "Fill in the title and a detailed job description first.",
+    critSuggestErr: "Suggestion unavailable right now. Add your criteria manually.",
+    critAdd: "+ Add a criterion",
+    critPh: "e.g. 3 years of React experience",
+    critMust: "Required",
+    critWeight: { 1: "Bonus", 2: "Important", 3: "Essential" },
+    critRemove: "Remove",
+    critMax: "10 criteria maximum.",
+    critEdit: "Edit",
+    critSave: "Save",
+    critSaved: "Criteria saved. They apply to the next CVs analyzed.",
+    critNone: "No criteria: overall assessment against the job description.",
+    thDecision: "Decision",
+    decide: { shortlisted: "✓ Shortlist", to_review: "↻ To review", rejected: "✗ Reject" },
+    decisionLabel: { shortlisted: "Shortlisted", to_review: "To review", rejected: "Rejected" },
+    decisionClear: "Clear decision",
+    notePh: "Note (optional, shown in the export and the client report)",
+    decisionHint: "The AI suggests, you decide: every decision is timestamped in the audit log.",
+    verdict: { met: "Yes", partial: "Partial", missing: "No" },
+    criteriaTitle: "🎯 CRITERIA",
+    readVision: "Scanned PDF read by the AI",
+    shareBtn: "🔗 Client report",
+    shareCompanyPrompt: "Name shown on the report (your agency, optional):",
+    shareTitle: "Shared client report",
+    shareHint: "Read-only, anonymised link (no file names or contact details). If you shortlisted candidates, only they are included.",
+    shareCopy: "Copy link",
+    shareCopied: "Link copied ✓",
+    shareOpen: "Open",
+    shareRevoke: "Revoke",
+    shareRevokeConfirm: "Revoke this link? It will stop working immediately.",
+    shareErr: "Unable to create the link.",
+    retryErrors: (n) => `🔄 Retry ${n} error${n > 1 ? "s" : ""}`,
+    errNothing: "No CVs to analyze.",
+  },
+  ar: {
+    dropHint: "PDF أو Word (.docx) · تُقبل ملفات PDF الممسوحة ضوئيًا · 5 ميغابايت كحد أقصى لكل ملف · 100 سيرة ذاتية كحد أقصى",
+    progressLine: (done, total) => `تم تحليل ${done} / ${total} سيرة ذاتية`,
+    resumed: "تم استئناف التحليل من حيث توقف.",
+    critTitle: "معايير الفرز",
+    critHint: "يُحتسب التقييم من هذه المعايير: كل حكم مدعوم بمقتطف من السيرة الذاتية. بدون معايير، يقيّم الذكاء الاصطناعي الملاءمة العامة.",
+    critSuggest: "✨ اقتراح بالذكاء الاصطناعي",
+    critSuggesting: "جارٍ الاقتراح…",
+    critSuggestNeedDesc: "أدخل أولاً المسمى الوظيفي ووصفًا وظيفيًا مفصلاً.",
+    critSuggestErr: "الاقتراح غير متاح حاليًا. أضف معاييرك يدويًا.",
+    critAdd: "+ إضافة معيار",
+    critPh: "مثال: 3 سنوات خبرة في React",
+    critMust: "إلزامي",
+    critWeight: { 1: "إضافي", 2: "مهم", 3: "أساسي" },
+    critRemove: "حذف",
+    critMax: "10 معايير كحد أقصى.",
+    critEdit: "تعديل",
+    critSave: "حفظ",
+    critSaved: "تم حفظ المعايير. تُطبَّق على السير الذاتية التي ستُحلَّل لاحقًا.",
+    critNone: "لا توجد معايير: تقييم عام مقارنة بالوصف الوظيفي.",
+    thDecision: "القرار",
+    decide: { shortlisted: "✓ اختيار", to_review: "↻ للمراجعة", rejected: "✗ استبعاد" },
+    decisionLabel: { shortlisted: "مختار", to_review: "للمراجعة", rejected: "مستبعد" },
+    decisionClear: "إلغاء القرار",
+    notePh: "ملاحظة (اختيارية، تظهر في التصدير وتقرير العميل)",
+    decisionHint: "الذكاء الاصطناعي يقترح وأنت تقرر: كل قرار مؤرخ في سجل التدقيق.",
+    verdict: { met: "نعم", partial: "جزئي", missing: "لا" },
+    criteriaTitle: "🎯 المعايير",
+    readVision: "PDF ممسوح قرأه الذكاء الاصطناعي",
+    shareBtn: "🔗 تقرير العميل",
+    shareCompanyPrompt: "الاسم المعروض في التقرير (مكتبك، اختياري):",
+    shareTitle: "تقرير العميل المشترك",
+    shareHint: "رابط للقراءة فقط ومجهول الهوية (بدون أسماء ملفات أو بيانات اتصال). إذا اخترت مرشحين، فلن يظهر سواهم.",
+    shareCopy: "نسخ الرابط",
+    shareCopied: "تم نسخ الرابط ✓",
+    shareOpen: "فتح",
+    shareRevoke: "إلغاء",
+    shareRevokeConfirm: "إلغاء هذا الرابط؟ سيتوقف عن العمل فورًا.",
+    shareErr: "تعذّر إنشاء الرابط.",
+    retryErrors: (n) => `🔄 إعادة محاولة ${n} خطأ`,
+    errNothing: "لا توجد سير ذاتية للتحليل.",
+  },
+};
+
+const DECISION_COLOR = { shortlisted:"#10B981", to_review:"#F59E0B", rejected:"#EF4444" };
+const VERDICT_COLOR  = { met:"#10B981", partial:"#F59E0B", missing:"#6B7A99" };
+
 const CSS = `
   @keyframes spin { to { transform:rotate(360deg); } }
   @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
@@ -252,7 +385,7 @@ const PLAN_CARDS = [
 // ─────────────────────────────────────────────────────────────────────────────
 export default function HrDashboardPage() {
   const locale = useLocale();
-  const t = COPY[locale] ?? COPY.fr;
+  const t = { ...(COPY[locale] ?? COPY.fr), ...(COPY_V2[locale] ?? COPY_V2.fr) };
   const localePrefix = locale === "fr" ? "" : `/${locale}`;
   const { data: session, status: sessionStatus } = useSession();
 
@@ -315,6 +448,20 @@ export default function HrDashboardPage() {
   const [jobDesc, setJobDesc]         = useState("");
   const [creating, setCreating]       = useState(false);
   const [createError, setCreateError] = useState("");
+  const [criteria, setCriteria]       = useState([]);   // [{id,label,weight,must}]
+  const [suggesting, setSuggesting]   = useState(false);
+  const [critMsg, setCritMsg]         = useState("");
+
+  // ── Criteria on an existing job ─────────────────────────────────────────
+  const [editCrit, setEditCrit]       = useState(null); // draft array while editing
+  const [savingCrit, setSavingCrit]   = useState(false);
+
+  // ── Decisions & share ───────────────────────────────────────────────────
+  const [notes, setNotes]             = useState({});   // cvId -> draft note
+  const [deciding, setDeciding]       = useState(null); // cvId being saved
+  const [sharing, setSharing]         = useState(false);
+  const [copied, setCopied]           = useState(false);
+  const [resumedMsg, setResumedMsg]   = useState(false);
 
   // ── Active job ──────────────────────────────────────────────────────────
   const [activeJob, setActiveJob]   = useState(null);  // full job object
@@ -350,6 +497,7 @@ export default function HrDashboardPage() {
         const data = await r.json();
         setActiveJob(data.job);
         setAnalyses(data.analyses ?? []);
+        if (data.job.resumed) setResumedMsg(true);
         if (data.job.status === "done" || data.job.status === "error") {
           clearInterval(timer);
           setPollTimer(null);
@@ -370,6 +518,7 @@ export default function HrDashboardPage() {
     setActiveJob(job);
     setAnalyses([]);
     setCvFiles([]);
+    setEditCrit(null); setCritMsg(""); setResumedMsg(false); setDetailRow(null); setNotes({});
     if (job.status === "analyzing") {
       setAnalyzing(true);
       startPolling(job.id);
@@ -388,14 +537,80 @@ export default function HrDashboardPage() {
     if (!jobTitle.trim() || !jobDesc.trim()) { setCreateError(t.errFillAll); return; }
     setCreating(true); setCreateError("");
     try {
-      const r = await fetch("/api/hr/job", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ title:jobTitle, description:jobDesc }) });
+      const r = await fetch("/api/hr/job", { method:"POST", headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({ title:jobTitle, description:jobDesc, criteria:criteria.filter(c => c.label.trim()), language:locale }) });
       const data = await r.json();
       if (!r.ok) { setCreateError(data.message ?? t.errCreate); return; }
       await loadJobs();
-      setJobTitle(""); setJobDesc("");
+      setJobTitle(""); setJobDesc(""); setCriteria([]); setCritMsg("");
       openJob(data);
     } catch { setCreateError(t.errNetwork); }
     finally { setCreating(false); }
+  };
+
+  // ── Criteria: AI suggestion & save ──────────────────────────────────────
+  const suggest = async (title, description, apply) => {
+    if (!title.trim() || description.trim().length < 40) { setCritMsg(t.critSuggestNeedDesc); return; }
+    setSuggesting(true); setCritMsg("");
+    try {
+      const r = await fetch("/api/hr/criteria/suggest", { method:"POST", headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({ title, description, language:locale }) });
+      const data = await r.json();
+      if (!r.ok || !data.criteria?.length) { setCritMsg(t.critSuggestErr); return; }
+      apply(data.criteria);
+    } catch { setCritMsg(t.critSuggestErr); }
+    finally { setSuggesting(false); }
+  };
+
+  const saveCriteria = async () => {
+    if (!activeJob || !editCrit) return;
+    setSavingCrit(true); setCritMsg("");
+    try {
+      const r = await fetch(`/api/hr/${activeJob.id}`, { method:"PATCH", headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({ criteria:editCrit.filter(c => c.label.trim()) }) });
+      const data = await r.json();
+      if (!r.ok) { setCritMsg(data.message ?? t.errGeneric); return; }
+      setActiveJob(j => ({ ...j, criteria:data.criteria }));
+      setEditCrit(null); setCritMsg(t.critSaved);
+    } catch { setCritMsg(t.errNetwork); }
+    finally { setSavingCrit(false); }
+  };
+
+  // ── Human decision on a CV ──────────────────────────────────────────────
+  const decide = async (cv, decision) => {
+    setDeciding(cv.id);
+    try {
+      const r = await fetch(`/api/hr/cv/${cv.id}/decision`, { method:"POST", headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({ decision, note: notes[cv.id] ?? cv.decision_note ?? "" }) });
+      const data = await r.json();
+      if (!r.ok) { alert(t.errGeneric); return; }
+      setAnalyses(list => list.map(a => a.id === cv.id ? { ...a, ...data } : a));
+    } catch { alert(t.errNetworkShort); }
+    finally { setDeciding(null); }
+  };
+
+  // ── Client report link ──────────────────────────────────────────────────
+  const shareUrl = activeJob?.share && typeof window !== "undefined" ? `${window.location.origin}${localePrefix}/hr/rapport/${activeJob.share.token}` : "";
+  const createShare = async () => {
+    if (!activeJob) return;
+    const company = window.prompt(t.shareCompanyPrompt, activeJob.share?.company ?? "");
+    if (company === null) return;
+    setSharing(true);
+    try {
+      const r = await fetch(`/api/hr/${activeJob.id}/share`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ company }) });
+      const data = await r.json();
+      if (!r.ok) { alert(t.shareErr); return; }
+      setActiveJob(j => ({ ...j, share:{ token:data.token, company:data.company, shared_at:new Date().toISOString() } }));
+    } catch { alert(t.errNetworkShort); }
+    finally { setSharing(false); }
+  };
+  const revokeShare = async () => {
+    if (!activeJob || !window.confirm(t.shareRevokeConfirm)) return;
+    const r = await fetch(`/api/hr/${activeJob.id}/share`, { method:"DELETE" });
+    if (r.ok) setActiveJob(j => ({ ...j, share:null }));
+  };
+  const copyShare = async () => {
+    try { await navigator.clipboard.writeText(shareUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch {}
   };
 
   // ── Upload CVs ───────────────────────────────────────────────────────────
@@ -424,7 +639,7 @@ export default function HrDashboardPage() {
       const r = await fetch(`/api/hr/${activeJob.id}/analyze`, { method:"POST" });
       const data = await r.json();
       if (!r.ok) {
-        alert(data.message ?? t.errAnalyze);
+        alert(data.message ?? (data.error === "NOTHING_TO_ANALYZE" ? t.errNothing : t.errAnalyze));
         setAnalyzing(false); return;
       }
       startPolling(activeJob.id);
@@ -450,7 +665,7 @@ export default function HrDashboardPage() {
   // ── File drop handlers ───────────────────────────────────────────────────
   const handleDrop = (e) => {
     e.preventDefault(); dragRef.current = false;
-    const files = Array.from(e.dataTransfer.files).filter(f => f.type === "application/pdf" || f.name.endsWith(".pdf"));
+    const files = Array.from(e.dataTransfer.files).filter(f => /\.(pdf|docx)$/i.test(f.name));
     setCvFiles(prev => {
       const names = new Set(prev.map(f => f.name));
       return [...prev, ...files.filter(f => !names.has(f.name))].slice(0, 100);
@@ -464,6 +679,9 @@ export default function HrDashboardPage() {
     });
     e.target.value = "";
   };
+
+  const pendingCount = analyses.filter(a => a.status === "pending").length;
+  const errorCount   = analyses.filter(a => a.status === "error").length;
 
   // ── Progress ─────────────────────────────────────────────────────────────
   const progress = activeJob
@@ -625,6 +843,9 @@ export default function HrDashboardPage() {
               style={{ width:"100%",background:"#07090F",border:"1px solid #1E2733",borderRadius:10,padding:"12px 14px",color:"#F0F4FF",fontSize:14,resize:"vertical",marginBottom:20,boxSizing:"border-box",outline:"none",fontFamily:"inherit" }}
             />
 
+            <CriteriaEditor t={t} value={criteria} onChange={setCriteria}
+              onSuggest={() => suggest(jobTitle, jobDesc, setCriteria)} suggesting={suggesting} message={critMsg} />
+
             {createError && <p style={{ color:"#EF4444",fontSize:13,marginBottom:12 }}>{createError}</p>}
 
             <div style={{ display:"flex",gap:12 }}>
@@ -654,6 +875,53 @@ export default function HrDashboardPage() {
             </span>
           </div>
 
+          {resumedMsg && (
+            <div style={{ background:"rgba(59,130,246,.08)",border:"1px solid rgba(59,130,246,.25)",color:"#93C5FD",borderRadius:12,padding:"10px 16px",fontSize:13,marginBottom:20 }}>
+              {t.resumed}
+            </div>
+          )}
+
+          {/* ── CRITERIA ── */}
+          <div style={{ background:"#0D1117",border:"1px solid #1E2733",borderRadius:20,padding:"20px 24px",marginBottom:24 }}>
+            {editCrit ? (
+              <>
+                <CriteriaEditor t={t} value={editCrit} onChange={setEditCrit}
+                  onSuggest={() => suggest(activeJob.title, activeJob.description ?? "", setEditCrit)} suggesting={suggesting} message={critMsg} />
+                <div style={{ display:"flex",gap:10 }}>
+                  <button className="btn" onClick={() => { setEditCrit(null); setCritMsg(""); }}
+                    style={{ background:"transparent",border:"1px solid #1E2733",color:"#8892AA",padding:"9px 18px",borderRadius:10,fontSize:13,fontWeight:600 }}>{t.cancel}</button>
+                  <button className="btn" onClick={saveCriteria} disabled={savingCrit}
+                    style={{ background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",border:"none",padding:"9px 22px",borderRadius:10,fontSize:13,fontWeight:700,opacity:savingCrit?.6:1 }}>
+                    {savingCrit ? "…" : t.critSave}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,marginBottom:10 }}>
+                  <h3 style={{ fontSize:14,fontWeight:800,margin:0,color:"#C0CBE0" }}>{t.critTitle}</h3>
+                  {activeJob.status !== "analyzing" && (
+                    <button className="btn" onClick={() => { setEditCrit((activeJob.criteria ?? []).map(c => ({ ...c }))); setCritMsg(""); }}
+                      style={{ background:"none",border:"1px solid #1E2733",color:"#8892AA",padding:"5px 12px",borderRadius:8,fontSize:12,fontWeight:600 }}>
+                      {t.critEdit}
+                    </button>
+                  )}
+                </div>
+                {(activeJob.criteria ?? []).length ? (
+                  <div style={{ display:"flex",flexWrap:"wrap",gap:8 }}>
+                    {activeJob.criteria.map(c => (
+                      <span key={c.id} style={{ fontSize:12,color:"#C0CBE0",background:"#07090F",border:"1px solid #1E2733",borderRadius:20,padding:"4px 12px" }}>
+                        {c.label}
+                        <span style={{ marginInlineStart:6,fontWeight:700,color:c.must ? "#F87171" : "#6B7A99" }}>{c.must ? t.critMust : t.critWeight[c.weight]}</span>
+                      </span>
+                    ))}
+                  </div>
+                ) : <p style={{ color:"#6B7A99",fontSize:13,margin:0 }}>{t.critNone}</p>}
+                {critMsg && <p style={{ color:"#10B981",fontSize:12,margin:"10px 0 0" }}>{critMsg}</p>}
+              </>
+            )}
+          </div>
+
           {/* ── UPLOAD SECTION (if not analyzing/done) ── */}
           {activeJob.status !== "analyzing" && (
             <div style={{ background:"#0D1117",border:"1px solid #1E2733",borderRadius:20,padding:28,marginBottom:24 }}>
@@ -675,7 +943,7 @@ export default function HrDashboardPage() {
                 </p>
                 <p style={{ color:"#4B5563",fontSize:12,margin:0 }}>{t.dropHint}</p>
               </div>
-              <input ref={fileInputRef} type="file" accept=".pdf" multiple style={{ display:"none" }} onChange={handleFileInput} />
+              <input ref={fileInputRef} type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple style={{ display:"none" }} onChange={handleFileInput} />
 
               {/* File list preview */}
               {cvFiles.length > 0 && (
@@ -696,10 +964,10 @@ export default function HrDashboardPage() {
                     {uploading ? t.uploading : t.uploadBtn(cvFiles.length)}
                   </button>
                 )}
-                {activeJob.cv_count > 0 && !analyzing && (
+                {pendingCount > 0 && !analyzing && (
                   <button className="btn" onClick={startAnalysis}
                     style={{ background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",border:"none",padding:"11px 28px",borderRadius:10,fontSize:14,fontWeight:700 }}>
-                    {t.analyzeBtn(activeJob.cv_count)}
+                    {t.analyzeBtn(pendingCount)}
                   </button>
                 )}
               </div>
@@ -742,13 +1010,33 @@ export default function HrDashboardPage() {
                       style={{ background:"rgba(239,68,68,.08)",color:"#FCA5A5",border:"1px solid rgba(239,68,68,.25)",padding:"8px 18px",borderRadius:8,fontSize:13,fontWeight:700 }}>
                       {t.deleteBtn}
                     </button>
-                    <button className="btn" onClick={startAnalysis} disabled={analyzing}
-                      style={{ background:"rgba(59,130,246,.1)",color:"#60A5FA",border:"1px solid rgba(59,130,246,.25)",padding:"8px 18px",borderRadius:8,fontSize:13,fontWeight:700 }}>
-                      {t.rerun}
+                    <button className="btn" onClick={createShare} disabled={sharing}
+                      style={{ background:"rgba(249,115,22,.1)",color:"#FB923C",border:"1px solid rgba(249,115,22,.3)",padding:"8px 18px",borderRadius:8,fontSize:13,fontWeight:700,opacity:sharing?.6:1 }}>
+                      {sharing ? "…" : t.shareBtn}
                     </button>
+                    {errorCount > 0 && (
+                      <button className="btn" onClick={startAnalysis} disabled={analyzing}
+                        style={{ background:"rgba(59,130,246,.1)",color:"#60A5FA",border:"1px solid rgba(59,130,246,.25)",padding:"8px 18px",borderRadius:8,fontSize:13,fontWeight:700 }}>
+                        {t.retryErrors(errorCount)}
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
+
+              {/* Shared client report */}
+              {activeJob.share && shareUrl && (
+                <div style={{ padding:"14px 22px",borderBottom:"1px solid #1E2733",background:"rgba(249,115,22,.04)" }}>
+                  <div style={{ fontSize:13,fontWeight:700,color:"#FB923C",marginBottom:4 }}>{t.shareTitle}</div>
+                  <div style={{ fontSize:12,color:"#6B7A99",marginBottom:10 }}>{t.shareHint}</div>
+                  <div style={{ display:"flex",gap:8,flexWrap:"wrap",alignItems:"center" }}>
+                    <code dir="ltr" style={{ flex:"1 1 260px",fontSize:12,color:"#C0CBE0",background:"#07090F",border:"1px solid #1E2733",borderRadius:8,padding:"7px 10px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap" }}>{shareUrl}</code>
+                    <button className="btn" onClick={copyShare} style={{ background:"#1E2733",color:"#F0F4FF",border:"none",padding:"7px 14px",borderRadius:8,fontSize:12,fontWeight:700 }}>{copied ? t.shareCopied : t.shareCopy}</button>
+                    <a href={shareUrl} target="_blank" rel="noopener noreferrer" style={{ color:"#93C5FD",fontSize:12,fontWeight:700,textDecoration:"none",padding:"7px 6px" }}>{t.shareOpen} ↗</a>
+                    <button className="btn" onClick={revokeShare} style={{ background:"none",border:"1px solid rgba(239,68,68,.3)",color:"#FCA5A5",padding:"6px 12px",borderRadius:8,fontSize:12,fontWeight:700 }}>{t.shareRevoke}</button>
+                  </div>
+                </div>
+              )}
 
               {/* Stats row */}
               <div style={{ display:"flex",gap:0,borderBottom:"1px solid #1E2733" }}>
@@ -769,19 +1057,19 @@ export default function HrDashboardPage() {
                 <table style={{ width:"100%",borderCollapse:"collapse",fontSize:13 }}>
                   <thead>
                     <tr style={{ borderBottom:"1px solid #1E2733" }}>
-                      {[t.thFile,t.thScore,t.thStatus,t.thSummary,""].map(h => (
-                        <th key={h} style={{ padding:"10px 18px",textAlign:"left",color:"#4B5563",fontWeight:600,fontSize:11,letterSpacing:.5,textTransform:"uppercase",whiteSpace:"nowrap" }}>{h}</th>
+                      {[t.thFile,t.thScore,t.thStatus,t.thDecision,t.thSummary,""].map(h => (
+                        <th key={h} style={{ padding:"10px 18px",textAlign:"start",color:"#4B5563",fontWeight:600,fontSize:11,letterSpacing:.5,textTransform:"uppercase",whiteSpace:"nowrap" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {analyses.map((a, i) => (
-                      <>
-                        <tr key={a.id} className="cv-row"
+                      <Fragment key={a.id}>
+                        <tr className="cv-row"
                           style={{ borderBottom:"1px solid #0A0D14",background:i%2===0?"#0A0E17":"transparent",cursor:"pointer" }}
                           onClick={() => setDetailRow(detailRow===a.id ? null : a.id)}>
                           <td style={{ padding:"12px 18px",color:"#C0CBE0",fontWeight:600,maxWidth:180,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap" }}>
-                            {a.filename.replace(/\.pdf$/i,"")}
+                            {a.filename.replace(/\.(pdf|docx)$/i,"")}
                           </td>
                           <td style={{ padding:"12px 18px" }}>
                             {a.score != null ? (
@@ -799,6 +1087,11 @@ export default function HrDashboardPage() {
                               {t.statusLabel[a.status] ?? a.status}
                             </span>
                           </td>
+                          <td style={{ padding:"12px 18px",whiteSpace:"nowrap" }}>
+                            {a.decision ? (
+                              <span style={{ color:DECISION_COLOR[a.decision],fontSize:12,fontWeight:800 }}>● {t.decisionLabel[a.decision]}</span>
+                            ) : <span style={{ color:"#374151" }}>—</span>}
+                          </td>
                           <td style={{ padding:"12px 18px",color:"#6B7A99",maxWidth:260,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap" }}>
                             {a.summary || (a.status === "pending" ? t.pendingAnalysis : a.error_msg ?? "—")}
                           </td>
@@ -809,9 +1102,29 @@ export default function HrDashboardPage() {
 
                         {/* Expanded detail row */}
                         {detailRow === a.id && (
-                          <tr key={`${a.id}-detail`}>
-                            <td colSpan={5} style={{ padding:"16px 22px 20px",background:"#060911",borderBottom:"1px solid #1E2733" }}>
-                              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:20 }}>
+                          <tr>
+                            <td colSpan={6} style={{ padding:"16px 22px 20px",background:"#060911",borderBottom:"1px solid #1E2733" }}>
+                              {a.read_mode === "vision" && (
+                                <div style={{ fontSize:11,color:"#93C5FD",marginBottom:10 }}>🔎 {t.readVision}</div>
+                              )}
+                              {(a.criteria_results ?? []).length > 0 && (
+                                <div style={{ marginBottom:16 }}>
+                                  <div style={{ fontSize:12,fontWeight:700,color:"#FB923C",marginBottom:8,letterSpacing:.5 }}>{t.criteriaTitle}</div>
+                                  <div style={{ display:"flex",flexDirection:"column",gap:6 }}>
+                                    {a.criteria_results.map(v => {
+                                      const c = (activeJob.criteria ?? []).find(x => x.id === v.id);
+                                      return (
+                                        <div key={v.id} style={{ display:"grid",gridTemplateColumns:"minmax(140px,1fr) 70px 2fr",gap:10,fontSize:13,alignItems:"baseline" }}>
+                                          <span style={{ color:"#C0CBE0" }}>{c?.label ?? v.id}{c?.must && <span style={{ color:"#F87171",fontSize:11,marginInlineStart:6 }}>{t.critMust}</span>}</span>
+                                          <span style={{ color:VERDICT_COLOR[v.verdict],fontWeight:800 }}>{t.verdict[v.verdict]}</span>
+                                          <span style={{ color:"#6B7A99" }}>{v.evidence}</span>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              )}
+                              <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:20 }}>
                                 <div>
                                   <div style={{ fontSize:12,fontWeight:700,color:"#10B981",marginBottom:8,letterSpacing:.5 }}>{t.strengths}</div>
                                   {(a.strengths ?? []).length ? (
@@ -842,10 +1155,32 @@ export default function HrDashboardPage() {
                                   💬 {a.summary}
                                 </p>
                               )}
+                              {["recommended","consider","rejected"].includes(a.status) && (
+                                <div style={{ borderTop:"1px solid #1E2733",marginTop:16,paddingTop:14 }}>
+                                  <div style={{ display:"flex",gap:8,flexWrap:"wrap",marginBottom:10 }}>
+                                    {["shortlisted","to_review","rejected"].map(d => (
+                                      <button key={d} className="btn" disabled={deciding === a.id}
+                                        onClick={e => { e.stopPropagation(); decide(a, a.decision === d ? null : d); }}
+                                        style={{ background:a.decision === d ? DECISION_COLOR[d] : "transparent",color:a.decision === d ? "#fff" : DECISION_COLOR[d],
+                                          border:`1px solid ${DECISION_COLOR[d]}66`,padding:"7px 14px",borderRadius:8,fontSize:12,fontWeight:800,opacity:deciding===a.id?.6:1 }}
+                                        title={a.decision === d ? t.decisionClear : undefined}>
+                                        {t.decide[d]}
+                                      </button>
+                                    ))}
+                                  </div>
+                                  <textarea rows={2} maxLength={500} placeholder={t.notePh}
+                                    value={notes[a.id] ?? a.decision_note ?? ""}
+                                    onClick={e => e.stopPropagation()}
+                                    onChange={e => setNotes(n => ({ ...n, [a.id]: e.target.value }))}
+                                    onBlur={() => { if (a.decision && (notes[a.id] ?? null) !== null && notes[a.id] !== (a.decision_note ?? "")) decide(a, a.decision); }}
+                                    style={{ width:"100%",boxSizing:"border-box",background:"#07090F",border:"1px solid #1E2733",borderRadius:8,padding:"8px 10px",color:"#C0CBE0",fontSize:12,fontFamily:"inherit",resize:"vertical" }} />
+                                  <div style={{ fontSize:11,color:"#4B5563",marginTop:6 }}>{t.decisionHint}</div>
+                                </div>
+                              )}
                             </td>
                           </tr>
                         )}
-                      </>
+                      </Fragment>
                     ))}
                   </tbody>
                 </table>
@@ -863,6 +1198,60 @@ export default function HrDashboardPage() {
         </div>
       )}
     </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+function CriteriaEditor({ t, value, onChange, onSuggest, suggesting, message }) {
+  const update = (i, patch) => onChange(value.map((c, j) => (j === i ? { ...c, ...patch } : c)));
+  const add = () => {
+    if (value.length >= 10) return;
+    const used = new Set(value.map(c => c.id));
+    let n = value.length + 1;
+    while (used.has(`c${n}`)) n++;
+    onChange([...value, { id:`c${n}`, label:"", weight:2, must:false }]);
+  };
+  const field = { background:"#07090F",border:"1px solid #1E2733",borderRadius:8,color:"#F0F4FF",fontSize:13,padding:"8px 10px",outline:"none",fontFamily:"inherit" };
+
+  return (
+    <div style={{ marginBottom:20 }}>
+      <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap",marginBottom:6 }}>
+        <label style={{ fontSize:13,fontWeight:600,color:"#8892AA" }}>{t.critTitle}</label>
+        <button type="button" className="btn" onClick={onSuggest} disabled={suggesting}
+          style={{ background:"rgba(249,115,22,.1)",color:"#FB923C",border:"1px solid rgba(249,115,22,.3)",padding:"6px 14px",borderRadius:8,fontSize:12,fontWeight:700,opacity:suggesting?.6:1 }}>
+          {suggesting ? t.critSuggesting : t.critSuggest}
+        </button>
+      </div>
+      <p style={{ fontSize:12,color:"#6B7A99",margin:"0 0 12px" }}>{t.critHint}</p>
+
+      <div style={{ display:"flex",flexDirection:"column",gap:8 }}>
+        {value.map((c, i) => (
+          <div key={c.id} style={{ display:"flex",gap:8,alignItems:"center",flexWrap:"wrap" }}>
+            <input value={c.label} maxLength={160} placeholder={t.critPh}
+              onChange={e => update(i, { label:e.target.value })}
+              style={{ ...field, flex:"1 1 220px" }} />
+            <select value={c.weight} onChange={e => update(i, { weight:Number(e.target.value) })} style={{ ...field, flex:"0 0 auto" }}>
+              {[3, 2, 1].map(w => <option key={w} value={w}>{t.critWeight[w]}</option>)}
+            </select>
+            <label style={{ display:"flex",alignItems:"center",gap:6,fontSize:12,color:c.must ? "#F87171" : "#8892AA",cursor:"pointer" }}>
+              <input type="checkbox" checked={c.must} onChange={e => update(i, { must:e.target.checked })} />
+              {t.critMust}
+            </label>
+            <button type="button" onClick={() => onChange(value.filter((_, j) => j !== i))} aria-label={t.critRemove} title={t.critRemove}
+              style={{ background:"none",border:"none",color:"#6B7A99",fontSize:16,cursor:"pointer",padding:"4px 6px" }}>✕</button>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display:"flex",alignItems:"center",gap:12,marginTop:10 }}>
+        <button type="button" className="btn" onClick={add} disabled={value.length >= 10}
+          style={{ background:"none",border:"1px dashed #1E2733",color:"#8892AA",padding:"7px 14px",borderRadius:8,fontSize:12,fontWeight:600,opacity:value.length>=10?.5:1 }}>
+          {t.critAdd}
+        </button>
+        {value.length >= 10 && <span style={{ fontSize:12,color:"#6B7A99" }}>{t.critMax}</span>}
+      </div>
+      {message && <p style={{ fontSize:12,color:"#F59E0B",margin:"10px 0 0" }}>{message}</p>}
     </div>
   );
 }
